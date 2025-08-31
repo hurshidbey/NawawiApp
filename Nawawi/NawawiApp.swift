@@ -59,6 +59,28 @@ struct NawawiApp: App {
 }
 
 // MARK: - App State Management
+enum AppLanguage: String, CaseIterable {
+    case arabic = "ar"
+    case english = "en"
+    case uzbek = "uz"
+    
+    var displayName: String {
+        switch self {
+        case .arabic: return "العربية"
+        case .english: return "English"
+        case .uzbek: return "O'zbek"
+        }
+    }
+    
+    var flag: String {
+        switch self {
+        case .arabic: return "🇸🇦"
+        case .english: return "🇬🇧"
+        case .uzbek: return "🇺🇿"
+        }
+    }
+}
+
 class AppState: ObservableObject {
     @Published var currentHadithIndex = 0
     @Published var favorites: Set<Int> = []
@@ -66,6 +88,11 @@ class AppState: ObservableObject {
     @Published var hasActiveReminder = false
     @Published var reminderInterval: TimeInterval = 3600 // 1 hour default
     @Published var lastViewedDate = Date()
+    @Published var selectedLanguage: AppLanguage = .english {
+        didSet {
+            UserDefaults.standard.set(selectedLanguage.rawValue, forKey: "selectedLanguage")
+        }
+    }
     @Published var reminderEnabled = false {
         didSet {
             UserDefaults.standard.set(reminderEnabled, forKey: "reminderEnabled")
@@ -90,6 +117,12 @@ class AppState: ObservableObject {
     func loadData() {
         currentHadithIndex = savedIndex
         loadFavorites()
+        
+        // Load language preference
+        if let savedLanguage = UserDefaults.standard.string(forKey: "selectedLanguage"),
+           let language = AppLanguage(rawValue: savedLanguage) {
+            selectedLanguage = language
+        }
         
         // Load reminder settings from UserDefaults
         reminderEnabled = UserDefaults.standard.bool(forKey: "reminderEnabled")

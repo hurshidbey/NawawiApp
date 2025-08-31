@@ -28,9 +28,21 @@ struct MenuBarView: View {
     var currentHadith: Hadith? {
         guard !hadiths.isEmpty else { return nil }
         let displayHadiths = filteredHadiths
-        guard !displayHadiths.isEmpty else { return hadiths[0] }
-        let index = min(appState.currentHadithIndex, displayHadiths.count - 1)
-        return displayHadiths[max(0, index)]
+        guard !displayHadiths.isEmpty else { 
+            // Reset index when no filtered results
+            DispatchQueue.main.async {
+                appState.currentHadithIndex = 0
+            }
+            return nil
+        }
+        // Ensure index is within bounds
+        let safeIndex = min(max(0, appState.currentHadithIndex), displayHadiths.count - 1)
+        if safeIndex != appState.currentHadithIndex {
+            DispatchQueue.main.async {
+                appState.currentHadithIndex = safeIndex
+            }
+        }
+        return displayHadiths[safeIndex]
     }
     
     var filteredHadiths: [Hadith] {
@@ -41,10 +53,22 @@ struct MenuBarView: View {
         }
         
         if !searchText.isEmpty {
-            filtered = filtered.filter {
-                $0.englishTranslation.localizedCaseInsensitiveContains(searchText) ||
-                $0.narrator.localizedCaseInsensitiveContains(searchText) ||
-                String($0.number).contains(searchText)
+            filtered = filtered.filter { hadith in
+                // Search in the appropriate language
+                let searchTarget: String
+                switch appState.selectedLanguage {
+                case .arabic:
+                    searchTarget = hadith.arabicText
+                case .uzbek:
+                    searchTarget = hadith.uzbekTranslation ?? hadith.englishTranslation
+                case .english:
+                    searchTarget = hadith.englishTranslation
+                }
+                
+                return searchTarget.localizedCaseInsensitiveContains(searchText) ||
+                       hadith.narrator.localizedCaseInsensitiveContains(searchText) ||
+                       hadith.arabicText.contains(searchText) ||
+                       String(hadith.number).contains(searchText)
             }
         }
         
@@ -107,7 +131,9 @@ struct MenuBarView: View {
                         showingFavoritesOnly: $showingFavoritesOnly,
                         showSettings: $showSettings,
                         filteredCount: filteredHadiths.count,
-                        currentView: $currentView
+                        currentView: $currentView,
+                        navigateNext: navigateToNextHadith,
+                        navigatePrevious: navigateToPreviousHadith
                     )
                     .environmentObject(appState)
                 }
@@ -122,27 +148,51 @@ struct MenuBarView: View {
     }
     
     private func loadHadiths() {
-        guard let url = Bundle.main.url(forResource: "hadiths", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let decoded = try? JSONDecoder().decode([Hadith].self, from: data) else {
+        guard let url = Bundle.main.url(forResource: "hadiths", withExtension: "json") else {
+            print("Error: Could not find hadiths.json in bundle")
             return
         }
-        hadiths = decoded
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let decoded = try JSONDecoder().decode([Hadith].self, from: data)
+            hadiths = decoded
+            print("Successfully loaded \(decoded.count) hadiths")
+        } catch {
+            print("Error loading hadiths: \(error)")
+            // Try to provide more detailed error information
+            if let decodingError = error as? DecodingError {
+                switch decodingError {
+                case .dataCorrupted(let context):
+                    print("Data corrupted: \(context.debugDescription)")
+                case .keyNotFound(let key, let context):
+                    print("Key '\(key.stringValue)' not found: \(context.debugDescription)")
+                case .typeMismatch(let type, let context):
+                    print("Type mismatch for type \(type): \(context.debugDescription)")
+                case .valueNotFound(let type, let context):
+                    print("Value not found for type \(type): \(context.debugDescription)")
+                @unknown default:
+                    print("Unknown decoding error")
+                }
+            }
+        }
     }
     
-    private func nextHadith() {
+    func navigateToNextHadith() {
         guard !filteredHadiths.isEmpty else { return }
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            appState.currentHadithIndex = (appState.currentHadithIndex + 1) % filteredHadiths.count
+            let nextIndex = (appState.currentHadithIndex + 1) % filteredHadiths.count
+            appState.currentHadithIndex = nextIndex
             appState.saveCurrentIndex()
         }
     }
     
-    private func previousHadith() {
+    func navigateToPreviousHadith() {
         guard !filteredHadiths.isEmpty else { return }
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            appState.currentHadithIndex = appState.currentHadithIndex == 0 ? 
+            let prevIndex = appState.currentHadithIndex == 0 ? 
                 filteredHadiths.count - 1 : appState.currentHadithIndex - 1
+            appState.currentHadithIndex = prevIndex
             appState.saveCurrentIndex()
         }
     }
@@ -164,6 +214,25 @@ struct HeaderView: View {
             Text("40 Hadith")
                 .font(.headline)
             
+            // Language selector
+            Menu {
+                ForEach(AppLanguage.allCases, id: \.self) { language in
+                    Button(action: { appState.selectedLanguage = language }) {
+                        HStack {
+                            Text(language.flag)
+                            Text(language.displayName)
+                            if appState.selectedLanguage == language {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                }
+            } label: {
+                Text(appState.selectedLanguage.flag)
+                    .font(.title3)
+            }
+            .menuStyle(.borderlessButton)
+            
             Spacer()
             
             // Search field
@@ -174,6 +243,10 @@ struct HeaderView: View {
                 TextField("Search", text: $searchText)
                     .textFieldStyle(.plain)
                     .focused($isSearchFocused)
+                    .onChange(of: searchText) { _, _ in
+                        // Reset to first result when search changes
+                        appState.currentHadithIndex = 0
+                    }
                 
                 if !searchText.isEmpty {
                     Button(action: { searchText = "" }) {
@@ -219,21 +292,51 @@ struct HadithCard: View {
                 .buttonStyle(.plain)
             }
             
-            // Arabic text with glass background
-            Text(hadith.arabicText)
-                .font(.custom("SF Arabic", size: 20))
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .lineLimit(3)
-                .padding()
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+            // Arabic text with glass background (always shown)
+            if appState.selectedLanguage == .arabic || appState.selectedLanguage == .english {
+                Text(hadith.arabicText)
+                    .font(.system(size: 20))
+                    .multilineTextAlignment(.trailing)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .lineLimit(3)
+                    .padding()
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                    .environment(\.layoutDirection, .rightToLeft)
+            }
             
-            // English translation
-            Text(hadith.englishTranslation)
-                .font(.system(size: 14))
-                .foregroundStyle(.primary)
-                .lineLimit(4)
-                .lineSpacing(4)
+            // Translation based on selected language
+            Group {
+                switch appState.selectedLanguage {
+                case .arabic:
+                    // Arabic only - no additional translation needed
+                    EmptyView()
+                case .english:
+                    Text(hadith.englishTranslation)
+                        .font(.system(size: 14))
+                        .foregroundStyle(.primary)
+                        .lineLimit(4)
+                        .lineSpacing(4)
+                case .uzbek:
+                    if let uzbekTranslation = hadith.uzbekTranslation {
+                        Text(uzbekTranslation)
+                            .font(.system(size: 14))
+                            .foregroundStyle(.primary)
+                            .lineLimit(4)
+                            .lineSpacing(4)
+                    } else {
+                        // Fallback to English if Uzbek not available
+                        Text(hadith.englishTranslation)
+                            .font(.system(size: 14))
+                            .foregroundStyle(.primary)
+                            .lineLimit(4)
+                            .lineSpacing(4)
+                            .opacity(0.7)
+                        Text("(Translation not yet available)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
             
             // Narrator
             Label(hadith.narrator, systemImage: "person.circle")
@@ -256,25 +359,29 @@ struct ToolbarView: View {
     let filteredCount: Int
     @Binding var currentView: MenuBarView.ViewMode
     @EnvironmentObject var appState: AppState
+    let navigateNext: () -> Void
+    let navigatePrevious: () -> Void
     
     var body: some View {
         HStack {
             // Navigation buttons
             HStack(spacing: 8) {
-                Button(action: previousHadith) {
+                Button(action: navigatePrevious) {
                     Image(systemName: "chevron.left")
                 }
                 .buttonStyle(.plain)
+                .disabled(filteredCount == 0)
                 
-                Text("\(appState.currentHadithIndex + 1) / \(filteredCount)")
+                Text("\(filteredCount > 0 ? appState.currentHadithIndex + 1 : 0) / \(filteredCount)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
                 
-                Button(action: nextHadith) {
+                Button(action: navigateNext) {
                     Image(systemName: "chevron.right")
                 }
                 .buttonStyle(.plain)
+                .disabled(filteredCount == 0)
             }
             
             Spacer()
@@ -284,6 +391,8 @@ struct ToolbarView: View {
                 Button(action: {
                     withAnimation {
                         showingFavoritesOnly.toggle()
+                        // Reset index when toggling filter
+                        appState.currentHadithIndex = 0
                     }
                 }) {
                     Image(systemName: showingFavoritesOnly ? "heart.fill" : "heart")
@@ -310,23 +419,6 @@ struct ToolbarView: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
-    }
-    
-    private func nextHadith() {
-        guard filteredCount > 0 else { return }
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            appState.currentHadithIndex = (appState.currentHadithIndex + 1) % filteredCount
-            appState.saveCurrentIndex()
-        }
-    }
-    
-    private func previousHadith() {
-        guard filteredCount > 0 else { return }
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            appState.currentHadithIndex = appState.currentHadithIndex == 0 ? 
-                filteredCount - 1 : appState.currentHadithIndex - 1
-            appState.saveCurrentIndex()
-        }
     }
 }
 
@@ -396,33 +488,81 @@ struct HadithDetailInlineView: View {
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    // Arabic text
-                    VStack(alignment: .trailing, spacing: 8) {
-                        Text("Arabic")
+                    // Language selector
+                    HStack {
+                        Text("Language:")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                         
-                        Text(hadith.arabicText)
-                            .font(.custom("SF Arabic", size: 18))
-                            .multilineTextAlignment(.trailing)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .lineSpacing(6)
-                            .padding(12)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
+                        Picker("", selection: $appState.selectedLanguage) {
+                            ForEach(AppLanguage.allCases, id: \.self) { language in
+                                HStack {
+                                    Text(language.flag)
+                                    Text(language.displayName)
+                                }
+                                .tag(language)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .frame(width: 200)
+                    }
+                    .padding(.horizontal)
+                    
+                    // Arabic text (shown for Arabic and English modes)
+                    if appState.selectedLanguage == .arabic || appState.selectedLanguage == .english {
+                        VStack(alignment: .trailing, spacing: 8) {
+                            Text("Arabic")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            Text(hadith.arabicText)
+                                .font(.system(size: 18))
+                                .multilineTextAlignment(.trailing)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                .lineSpacing(6)
+                                .padding(12)
+                                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
+                                .environment(\.layoutDirection, .rightToLeft)
+                        }
                     }
                     
-                    // English translation
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Translation")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        
-                        Text(hadith.englishTranslation)
-                            .font(.system(size: 14))
-                            .lineSpacing(4)
-                            .padding(12)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
+                    // Translation based on selected language
+                    if appState.selectedLanguage != .arabic {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(appState.selectedLanguage == .uzbek ? "O'zbek tarjimasi" : "Translation")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            
+                            if appState.selectedLanguage == .uzbek {
+                                if let uzbekTranslation = hadith.uzbekTranslation {
+                                    Text(uzbekTranslation)
+                                        .font(.system(size: 14))
+                                        .lineSpacing(4)
+                                        .padding(12)
+                                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
+                                } else {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text(hadith.englishTranslation)
+                                            .font(.system(size: 14))
+                                            .lineSpacing(4)
+                                            .opacity(0.7)
+                                        
+                                        Text("(O'zbek tarjimasi hali mavjud emas)")
+                                            .font(.caption)
+                                            .foregroundStyle(.orange)
+                                    }
+                                    .padding(12)
+                                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
+                                }
+                            } else {
+                                Text(hadith.englishTranslation)
+                                    .font(.system(size: 14))
+                                    .lineSpacing(4)
+                                    .padding(12)
+                                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
+                            }
+                        }
                     }
                 }
                 .padding()
@@ -647,6 +787,7 @@ struct Hadith: Codable, Identifiable {
     let number: Int
     let arabicText: String
     let englishTranslation: String
+    let uzbekTranslation: String?
     let narrator: String
     
     var id: Int { number }
