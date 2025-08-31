@@ -26,8 +26,18 @@ struct NawawiApp: App {
                     appState.loadData()
                 }
         } label: {
-            Image(systemName: appState.hasActiveReminder ? "book.fill" : "book")
-                .symbolRenderingMode(.hierarchical)
+            // Custom menu bar icon with lantern-inspired design
+            if let nsImage = NSImage(named: "AppIcon") {
+                Image(nsImage: nsImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 18, height: 18)
+                    .opacity(appState.hasActiveReminder ? 1.0 : 0.8)
+            } else {
+                // Fallback to SF Symbol if custom icon not found
+                Image(systemName: appState.hasActiveReminder ? "lamp.ceiling.fill" : "lamp.ceiling")
+                    .symbolRenderingMode(.hierarchical)
+            }
         }
         .menuBarExtraStyle(.window)
     }

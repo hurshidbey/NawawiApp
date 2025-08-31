@@ -155,10 +155,19 @@ struct HeaderView: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "book.fill")
-                .font(.title2)
-                .foregroundStyle(.tint)
-                .symbolEffect(.pulse, isActive: appState.hasActiveReminder)
+            // Use custom lantern icon
+            if let nsImage = NSImage(named: "AppIcon") {
+                Image(nsImage: nsImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 28, height: 28)
+                    .opacity(appState.hasActiveReminder ? 1.0 : 0.8)
+            } else {
+                Image(systemName: "lamp.ceiling.fill")
+                    .font(.title2)
+                    .foregroundStyle(.tint)
+                    .symbolEffect(.pulse, isActive: appState.hasActiveReminder)
+            }
             
             Text("40 Hadith")
                 .font(.headline)
