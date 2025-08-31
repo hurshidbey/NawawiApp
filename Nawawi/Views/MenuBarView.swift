@@ -155,19 +155,10 @@ struct HeaderView: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            // Use custom lantern icon
-            if let nsImage = NSImage(named: "AppIcon") {
-                Image(nsImage: nsImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 28, height: 28)
-                    .opacity(appState.hasActiveReminder ? 1.0 : 0.8)
-            } else {
-                Image(systemName: "lamp.ceiling.fill")
-                    .font(.title2)
-                    .foregroundStyle(.tint)
-                    .symbolEffect(.pulse, isActive: appState.hasActiveReminder)
-            }
+            Image(systemName: "book.fill")
+                .font(.title2)
+                .foregroundStyle(.tint)
+                .symbolEffect(.pulse, isActive: appState.hasActiveReminder)
             
             Text("40 Hadith")
                 .font(.headline)
@@ -518,6 +509,12 @@ struct SettingsInlineView: View {
                                     appState.reminderMinute = components.minute ?? 0
                                     appState.scheduleReminder()
                                 }
+                            
+                            Button("Test Notification (5 seconds)") {
+                                appState.sendTestNotification()
+                            }
+                            .buttonStyle(.link)
+                            .foregroundStyle(.blue)
                         }
                     }
                     .padding()
