@@ -6,49 +6,126 @@
 //
 
 import SwiftUI
-import SwiftData
+import UserNotifications
+import Combine
 
 @main
 struct NawawiApp: App {
-    @StateObject private var hadithManager = HadithManager()
-    @StateObject private var notificationManager = NotificationManager()
-    @AppStorage("showMenuBarIcon") private var showMenuBarIcon = true
+    @StateObject private var appState = AppState()
+    @State private var isAppActive = true
     
     init() {
-        // Setup relationship between managers after initialization
-        _hadithManager = StateObject(wrappedValue: HadithManager())
-        _notificationManager = StateObject(wrappedValue: NotificationManager())
+        setupNotifications()
     }
     
-    var sharedModelContainer: ModelContainer {
-        let schema = Schema([
-            Hadith.self,
-            Settings.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            // Better error handling - log and create in-memory container as fallback
-            print("Failed to create persistent ModelContainer: \(error)")
-            print("Falling back to in-memory storage")
-            let fallbackConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-            return try! ModelContainer(for: schema, configurations: [fallbackConfig])
-        }
-    }
-
     var body: some Scene {
-        MenuBarExtra("Nawawi", systemImage: "book.fill") {
+        MenuBarExtra {
             MenuBarView()
-                .environmentObject(hadithManager)
-                .environmentObject(notificationManager)
-                .modelContainer(sharedModelContainer)
+                .environmentObject(appState)
                 .onAppear {
-                    // Connect managers after UI is ready
-                    hadithManager.setNotificationManager(notificationManager)
+                    appState.loadData()
                 }
+        } label: {
+            Image(systemName: appState.hasActiveReminder ? "book.fill" : "book")
+                .symbolRenderingMode(.hierarchical)
         }
         .menuBarExtraStyle(.window)
+    }
+    
+    private func setupNotifications() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
+        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
+    }
+}
+
+// MARK: - App State Management
+class AppState: ObservableObject {
+    @Published var currentHadithIndex = 0
+    @Published var favorites: Set<Int> = []
+    @Published var showSettings = false
+    @Published var hasActiveReminder = false
+    @Published var reminderInterval: TimeInterval = 3600 // 1 hour default
+    @Published var lastViewedDate = Date()
+    
+    @AppStorage("favorites") private var favoritesData = Data()
+    @AppStorage("lastHadithIndex") private var savedIndex = 0
+    @AppStorage("reminderEnabled") var reminderEnabled = false
+    @AppStorage("reminderHour") var reminderHour = 9
+    @AppStorage("reminderMinute") var reminderMinute = 0
+    
+    private var reminderTimer: Timer?
+    
+    func loadData() {
+        currentHadithIndex = savedIndex
+        loadFavorites()
+        if reminderEnabled {
+            scheduleReminder()
+        }
+    }
+    
+    func saveCurrentIndex() {
+        savedIndex = currentHadithIndex
+    }
+    
+    func toggleFavorite(_ number: Int) {
+        if favorites.contains(number) {
+            favorites.remove(number)
+        } else {
+            favorites.insert(number)
+        }
+        saveFavorites()
+    }
+    
+    private func loadFavorites() {
+        if let decoded = try? JSONDecoder().decode(Set<Int>.self, from: favoritesData) {
+            favorites = decoded
+        }
+    }
+    
+    func saveFavorites() {
+        if let encoded = try? JSONEncoder().encode(favorites) {
+            favoritesData = encoded
+        }
+    }
+    
+    func scheduleReminder() {
+        reminderTimer?.invalidate()
+        
+        guard reminderEnabled else {
+            hasActiveReminder = false
+            return
+        }
+        
+        hasActiveReminder = true
+        
+        // Schedule daily notification
+        let content = UNMutableNotificationContent()
+        content.title = "Daily Hadith Reminder"
+        content.body = "Time to read today's hadith"
+        content.sound = .default
+        
+        var dateComponents = DateComponents()
+        dateComponents.hour = reminderHour
+        dateComponents.minute = reminderMinute
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        let request = UNNotificationRequest(identifier: "daily-hadith", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request)
+    }
+    
+    func cancelReminder() {
+        reminderTimer?.invalidate()
+        hasActiveReminder = false
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["daily-hadith"])
+    }
+}
+
+// MARK: - Notification Delegate
+class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
+    static let shared = NotificationDelegate()
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        return [.alert, .sound, .badge]
     }
 }
