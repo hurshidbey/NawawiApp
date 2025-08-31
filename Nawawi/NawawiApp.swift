@@ -34,18 +34,26 @@ struct NawawiApp: App {
     }
     
     private func setupNotifications() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            if granted {
-                print("Notification permission granted")
-            } else if let error = error {
-                print("Notification permission error: \(error)")
-            }
-        }
+        // Set the delegate first
         UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
         
-        // Check and print current notification settings for debugging
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            print("Notification settings: \(settings.authorizationStatus.rawValue)")
+        // Request authorization with completion handler
+        Task {
+            do {
+                let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+                print("Notification permission granted: \(granted)")
+                
+                // Check current settings
+                let settings = await UNUserNotificationCenter.current().notificationSettings()
+                print("Authorization status: \(settings.authorizationStatus.rawValue)")
+                
+                if settings.authorizationStatus == .notDetermined {
+                    print("Permissions not determined - requesting again")
+                    _ = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+                }
+            } catch {
+                print("Error requesting notification permission: \(error)")
+            }
         }
     }
 }
@@ -207,6 +215,30 @@ class AppState: ObservableObject {
                 print("Test notification error: \(error)")
             } else {
                 print("Test notification scheduled - will appear in 5 seconds")
+            }
+        }
+    }
+    
+    func requestNotificationPermission(completion: @escaping (Bool) -> Void) {
+        Task {
+            do {
+                let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+                await MainActor.run {
+                    completion(granted)
+                }
+            } catch {
+                print("Permission request error: \(error)")
+                await MainActor.run {
+                    completion(false)
+                }
+            }
+        }
+    }
+    
+    func checkNotificationPermission(completion: @escaping (UNAuthorizationStatus) -> Void) {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                completion(settings.authorizationStatus)
             }
         }
     }

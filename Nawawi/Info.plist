@@ -24,5 +24,7 @@
     <true/>
     <key>NSUserNotificationAlertStyle</key>
     <string>alert</string>
+    <key>NSUserNotificationsUsageDescription</key>
+    <string>Nawawi needs notification access to send you daily hadith reminders.</string>
 </dict>
 </plist>

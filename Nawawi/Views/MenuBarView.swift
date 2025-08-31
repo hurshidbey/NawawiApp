@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
@@ -461,6 +462,8 @@ struct SettingsInlineView: View {
     @EnvironmentObject var appState: AppState
     @Binding var currentView: MenuBarView.ViewMode
     @State private var selectedTime = Date()
+    @State private var permissionStatus: UNAuthorizationStatus = .notDetermined
+    @State private var showingPermissionAlert = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -490,16 +493,60 @@ struct SettingsInlineView: View {
                         Label("Notifications", systemImage: "bell")
                             .font(.headline)
                         
+                        // Show permission status
+                        if permissionStatus == .denied {
+                            HStack {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.yellow)
+                                Text("Notifications are disabled")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            
+                            Button("Open System Settings") {
+                                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+                                    NSWorkspace.shared.open(url)
+                                }
+                            }
+                            .buttonStyle(.link)
+                            .foregroundStyle(.blue)
+                        } else if permissionStatus == .notDetermined {
+                            Button("Enable Notifications") {
+                                appState.requestNotificationPermission { granted in
+                                    checkPermissionStatus()
+                                    if granted {
+                                        appState.reminderEnabled = true
+                                        appState.scheduleReminder()
+                                    }
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                        
                         Toggle("Daily Reminder", isOn: $appState.reminderEnabled)
+                            .disabled(permissionStatus != .authorized)
                             .onChange(of: appState.reminderEnabled) { _, enabled in
                                 if enabled {
-                                    appState.scheduleReminder()
+                                    if permissionStatus == .authorized {
+                                        appState.scheduleReminder()
+                                    } else if permissionStatus == .notDetermined {
+                                        appState.requestNotificationPermission { granted in
+                                            checkPermissionStatus()
+                                            if granted {
+                                                appState.scheduleReminder()
+                                            } else {
+                                                appState.reminderEnabled = false
+                                            }
+                                        }
+                                    } else {
+                                        appState.reminderEnabled = false
+                                    }
                                 } else {
                                     appState.cancelReminder()
                                 }
                             }
                         
-                        if appState.reminderEnabled {
+                        if appState.reminderEnabled && permissionStatus == .authorized {
                             DatePicker("Reminder Time",
                                       selection: $selectedTime,
                                       displayedComponents: .hourAndMinute)
@@ -562,6 +609,14 @@ struct SettingsInlineView: View {
             components.hour = appState.reminderHour
             components.minute = appState.reminderMinute
             selectedTime = Calendar.current.date(from: components) ?? Date()
+            
+            checkPermissionStatus()
+        }
+    }
+    
+    private func checkPermissionStatus() {
+        appState.checkNotificationPermission { status in
+            permissionStatus = status
         }
     }
 }
