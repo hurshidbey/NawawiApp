@@ -13,40 +13,41 @@ import Combine
 struct NawawiApp: App {
     @StateObject private var appState = AppState()
     @State private var isAppActive = true
-    
+
     init() {
         setupNotifications()
     }
-    
+
     var body: some Scene {
         MenuBarExtra {
             MenuBarView()
                 .environmentObject(appState)
                 .onAppear {
                     appState.loadData()
+                    // Activate app for macOS 26 Tahoe visibility
+                    NSApp.activate(ignoringOtherApps: true)
                 }
         } label: {
-            // Use simple book icon for menu bar - custom icons don't scale well here
             Image(systemName: appState.hasActiveReminder ? "book.fill" : "book")
-                .symbolRenderingMode(.hierarchical)
+                .renderingMode(.template) // Critical for macOS 26 Tahoe
         }
-        .menuBarExtraStyle(.window)
+        .menuBarExtraStyle(.window) // Use window style for richer UI
     }
-    
+
     private func setupNotifications() {
         // Set the delegate first
         UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
-        
+
         // Request authorization with completion handler
         Task {
             do {
                 let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
                 print("Notification permission granted: \(granted)")
-                
+
                 // Check current settings
                 let settings = await UNUserNotificationCenter.current().notificationSettings()
                 print("Authorization status: \(settings.authorizationStatus.rawValue)")
-                
+
                 if settings.authorizationStatus == .notDetermined {
                     print("Permissions not determined - requesting again")
                     _ = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
@@ -63,7 +64,7 @@ enum AppLanguage: String, CaseIterable {
     case arabic = "ar"
     case english = "en"
     case uzbek = "uz"
-    
+
     var displayName: String {
         switch self {
         case .arabic: return "العربية"
@@ -71,7 +72,7 @@ enum AppLanguage: String, CaseIterable {
         case .uzbek: return "O'zbek"
         }
     }
-    
+
     var flag: String {
         switch self {
         case .arabic: return "🇸🇦"
@@ -108,42 +109,42 @@ class AppState: ObservableObject {
             UserDefaults.standard.set(reminderMinute, forKey: "reminderMinute")
         }
     }
-    
+
     @AppStorage("favorites") private var favoritesData = Data()
     @AppStorage("lastHadithIndex") private var savedIndex = 0
-    
+
     private var reminderTimer: Timer?
-    
+
     func loadData() {
         currentHadithIndex = savedIndex
         loadFavorites()
-        
+
         // Load language preference
         if let savedLanguage = UserDefaults.standard.string(forKey: "selectedLanguage"),
            let language = AppLanguage(rawValue: savedLanguage) {
             selectedLanguage = language
         }
-        
+
         // Load reminder settings from UserDefaults
         reminderEnabled = UserDefaults.standard.bool(forKey: "reminderEnabled")
         reminderHour = UserDefaults.standard.integer(forKey: "reminderHour")
         reminderMinute = UserDefaults.standard.integer(forKey: "reminderMinute")
-        
+
         // Set defaults if not set
         if reminderHour == 0 && reminderMinute == 0 {
             reminderHour = 9
             reminderMinute = 0
         }
-        
+
         if reminderEnabled {
             scheduleReminder()
         }
     }
-    
+
     func saveCurrentIndex() {
         savedIndex = currentHadithIndex
     }
-    
+
     func toggleFavorite(_ number: Int) {
         if favorites.contains(number) {
             favorites.remove(number)
@@ -152,52 +153,52 @@ class AppState: ObservableObject {
         }
         saveFavorites()
     }
-    
+
     private func loadFavorites() {
         if let decoded = try? JSONDecoder().decode(Set<Int>.self, from: favoritesData) {
             favorites = decoded
         }
     }
-    
+
     func saveFavorites() {
         if let encoded = try? JSONEncoder().encode(favorites) {
             favoritesData = encoded
         }
     }
-    
+
     func scheduleReminder() {
         reminderTimer?.invalidate()
-        
+
         guard reminderEnabled else {
             hasActiveReminder = false
             return
         }
-        
+
         // First check notification permissions
         UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
             guard let self = self else { return }
-            
+
             DispatchQueue.main.async {
                 if settings.authorizationStatus == .authorized {
                     self.hasActiveReminder = true
-                    
+
                     // Remove existing notifications
                     UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["daily-hadith"])
-                    
+
                     // Schedule daily notification
                     let content = UNMutableNotificationContent()
                     content.title = "Daily Hadith Reminder"
                     content.body = "Time to read today's hadith"
                     content.sound = .default
                     content.categoryIdentifier = "HADITH_REMINDER"
-                    
+
                     var dateComponents = DateComponents()
                     dateComponents.hour = self.reminderHour
                     dateComponents.minute = self.reminderMinute
-                    
+
                     let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
                     let request = UNNotificationRequest(identifier: "daily-hadith", content: content, trigger: trigger)
-                    
+
                     UNUserNotificationCenter.current().add(request) { error in
                         if let error = error {
                             print("Error scheduling notification: \(error)")
@@ -214,7 +215,7 @@ class AppState: ObservableObject {
                     self.reminderEnabled = false
                     self.hasActiveReminder = false
                     print("Notification permission not granted")
-                    
+
                     // Request permission again
                     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
                         if granted {
@@ -227,22 +228,22 @@ class AppState: ObservableObject {
             }
         }
     }
-    
+
     func cancelReminder() {
         reminderTimer?.invalidate()
         hasActiveReminder = false
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["daily-hadith"])
     }
-    
+
     func sendTestNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Test Reminder"
         content.body = "Your daily hadith reminders are working!"
         content.sound = .default
-        
+
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
         let request = UNNotificationRequest(identifier: "test-notification", content: content, trigger: trigger)
-        
+
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("Test notification error: \(error)")
@@ -251,7 +252,7 @@ class AppState: ObservableObject {
             }
         }
     }
-    
+
     func requestNotificationPermission(completion: @escaping (Bool) -> Void) {
         Task {
             do {
@@ -267,7 +268,7 @@ class AppState: ObservableObject {
             }
         }
     }
-    
+
     func checkNotificationPermission(completion: @escaping (UNAuthorizationStatus) -> Void) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
@@ -280,7 +281,7 @@ class AppState: ObservableObject {
 // MARK: - Notification Delegate
 class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationDelegate()
-    
+
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         return [.alert, .sound, .badge]
     }
