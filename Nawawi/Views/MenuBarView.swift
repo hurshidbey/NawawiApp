@@ -17,7 +17,7 @@ struct MenuBarView: View {
     @State private var showingFavoritesOnly = false
     @State private var searchText = ""
     @State private var currentView: ViewMode = .main
-    @State private var windowSize = CGSize(width: 450, height: 550)
+    @State private var windowSize = CGSize(width: 450, height: 600)
     @State private var showExportMenu = false
 
     @FocusState private var isSearchFocused: Bool
@@ -94,23 +94,23 @@ struct MenuBarView: View {
                     // Loading or Error state
                     if dataManager.isLoading {
                         LoadingView()
-                            .frame(width: windowSize.width, height: windowSize.height - 120)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else if let error = dataManager.error {
                         ErrorView(error: error) {
                             dataManager.loadHadiths()
                         }
-                        .frame(width: windowSize.width, height: windowSize.height - 120)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else if let hadith = currentHadith {
                         // Main content with animation
                         ScrollView {
-                            VStack(spacing: 20) {
+                            VStack(spacing: 16) {
                                 // Progress indicator
                                 HadithProgressIndicator(
                                     current: appState.currentHadithIndex + 1,
                                     total: filteredHadiths.count,
                                     selectedIndex: $appState.currentHadithIndex
                                 )
-                                .padding(.top)
+                                .padding(.top, 8)
 
                                 // Enhanced Hadith card
                                 EnhancedHadithCard(
@@ -132,18 +132,15 @@ struct MenuBarView: View {
                             }
                             .padding()
                         }
-                        .frame(width: windowSize.width, height: windowSize.height - 120)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
                         ContentUnavailableView(
                             "No Hadiths",
                             systemImage: "book.closed",
                             description: Text(searchText.isEmpty ? "No hadiths available" : "No hadiths match your search")
                         )
-                        .frame(width: windowSize.width, height: windowSize.height - 120)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
-
-                    Divider()
-                        .opacity(0.3)
 
                     // Enhanced toolbar
                     EnhancedToolbarView(
@@ -325,7 +322,7 @@ struct EnhancedHeaderView: View {
             in: RoundedRectangle(cornerRadius: 12)
         )
         .padding(.horizontal)
-        .padding(.top)
+        .padding(.top, 8)
     }
 }
 
@@ -523,11 +520,12 @@ struct EnhancedToolbarView: View {
     let onExport: () -> Void
 
     var body: some View {
-        HStack {
-            // Navigation group
-            HStack(spacing: 12) {
+        HStack(spacing: 20) {
+            // Navigation group with subtle background
+            HStack(spacing: 16) {
                 Button(action: navigatePrevious) {
                     Image(systemName: "chevron.left")
+                        .font(.system(size: 14))
                 }
                 .buttonStyle(.plain)
                 .disabled(filteredCount == 0)
@@ -537,22 +535,27 @@ struct EnhancedToolbarView: View {
                     .font(.system(.caption, design: .rounded))
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
-                    .frame(minWidth: 50)
+                    .frame(minWidth: 60)
 
                 Button(action: navigateNext) {
                     Image(systemName: "chevron.right")
+                        .font(.system(size: 14))
                 }
                 .buttonStyle(.plain)
                 .disabled(filteredCount == 0)
                 .keyboardShortcut(.rightArrow, modifiers: [.command])
             }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(.quaternary.opacity(0.3), in: Capsule())
 
             Spacer()
 
-            // Action buttons
-            HStack(spacing: 16) {
+            // Action buttons with consistent spacing
+            HStack(spacing: 20) {
                 Button(action: onRandomHadith) {
                     Image(systemName: "shuffle")
+                        .font(.system(size: 14))
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
@@ -561,6 +564,7 @@ struct EnhancedToolbarView: View {
 
                 Button(action: onExport) {
                     Image(systemName: "square.and.arrow.up")
+                        .font(.system(size: 14))
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
@@ -568,28 +572,29 @@ struct EnhancedToolbarView: View {
 
                 Button(action: { currentView = .settings }) {
                     Image(systemName: "gearshape")
+                        .font(.system(size: 14))
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
                 .help("Settings")
                 .keyboardShortcut(",", modifiers: [.command])
-
-                Divider()
-                    .frame(height: 20)
-
-                Button(action: {
-                    NSApplication.shared.terminate(nil)
-                }) {
-                    Image(systemName: "power")
-                        .foregroundStyle(.red)
-                }
-                .buttonStyle(.plain)
-                .help("Quit (⌘Q)")
-                .keyboardShortcut("q", modifiers: [.command])
             }
+
+            // Power button separated with more space
+            Button(action: {
+                NSApplication.shared.terminate(nil)
+            }) {
+                Image(systemName: "power.circle.fill")
+                    .font(.system(size: 16))
+                    .foregroundStyle(.red)
+                    .symbolRenderingMode(.hierarchical)
+            }
+            .buttonStyle(.plain)
+            .help("Quit (⌘Q)")
+            .keyboardShortcut("q", modifiers: [.command])
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.vertical, 8)
         .background(.ultraThinMaterial)
     }
 }
