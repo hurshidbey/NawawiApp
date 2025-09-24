@@ -570,6 +570,26 @@ struct EnhancedToolbarView: View {
                 .buttonStyle(.plain)
                 .help("Export")
 
+                Button(action: {
+                    // Open main window using AppKit
+                    if let window = NSApp.windows.first(where: { $0.title == "40 Hadith Nawawi" }) {
+                        window.makeKeyAndOrderFront(nil)
+                        NSApp.activate(ignoringOtherApps: true)
+                    } else {
+                        // Create a new window by opening it
+                        DispatchQueue.main.async {
+                            NSApp.activate(ignoringOtherApps: true)
+                        }
+                    }
+                }) {
+                    Image(systemName: "macwindow")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.gray)
+                }
+                .buttonStyle(.plain)
+                .help("Open Main Window")
+                .keyboardShortcut("m", modifiers: [.command])
+
                 Button(action: { currentView = .settings }) {
                     Image(systemName: "gearshape")
                         .font(.system(size: 14))

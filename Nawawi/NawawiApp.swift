@@ -19,6 +19,22 @@ struct NawawiApp: App {
     }
 
     var body: some Scene {
+        // Main standalone window
+        WindowGroup("40 Hadith Nawawi", id: "main-window") {
+            MainWindowView()
+                .environmentObject(appState)
+                .colorScheme(.light) // Force light mode globally
+                .foregroundColor(.black) // Force all text to be black
+                .onAppear {
+                    appState.loadData()
+                    // Activate app for macOS 26 Tahoe visibility
+                    NSApp.activate(ignoringOtherApps: true)
+                }
+        }
+        .defaultSize(width: 900, height: 700)
+        .defaultPosition(.center)
+
+        // Menu bar extra for quick access
         MenuBarExtra {
             MenuBarView()
                 .environmentObject(appState)
@@ -111,6 +127,7 @@ class AppState: ObservableObject {
             UserDefaults.standard.set(reminderMinute, forKey: "reminderMinute")
         }
     }
+    @Published var shouldOpenMainWindow = false
 
     @AppStorage("favorites") private var favoritesData = Data()
     @AppStorage("lastHadithIndex") private var savedIndex = 0
