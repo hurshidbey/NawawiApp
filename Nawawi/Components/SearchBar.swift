@@ -16,10 +16,12 @@ struct SearchBar: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.gray)
                 .symbolEffect(.pulse, isActive: !text.isEmpty)
 
             TextField(placeholder, text: $text)
+                .font(.nohemiBody)
+                .foregroundStyle(.black)
                 .textFieldStyle(.plain)
                 .focused(isFocused)
                 .onSubmit {
@@ -33,7 +35,7 @@ struct SearchBar: View {
                     onClear()
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.gray)
                         .symbolEffect(.bounce, value: text)
                 }
                 .buttonStyle(.plain)
@@ -43,21 +45,17 @@ struct SearchBar: View {
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
         .background(
-            // macOS 26 Tahoe Liquid Glass effect
             RoundedRectangle(cornerRadius: 10)
-                .fill(.regularMaterial)
+                .fill(Color.nawawi_softCream)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(
-                            LinearGradient(
-                                colors: [.white.opacity(0.3), .clear],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
+                            Color.nawawi_darkGreen.opacity(0.2),
                             lineWidth: 0.5
                         )
                 )
         )
+        .nawawi_subtleShadow()
         .animation(.spring(response: 0.3), value: text)
     }
 }
@@ -69,7 +67,7 @@ struct HighlightedText: View {
     let font: Font
     let color: Color
 
-    init(_ text: String, highlight: String, font: Font = .body, color: Color = .primary) {
+    init(_ text: String, highlight: String, font: Font = .nohemiBody, color: Color = .black) {
         self.text = text
         self.highlight = highlight
         self.font = font
@@ -91,9 +89,9 @@ struct HighlightedText: View {
                     if index < parts.count - 1 {
                         Text(highlight)
                             .font(font)
-                            .foregroundColor(.accentColor)
-                            .bold()
-                            .background(Color.yellow.opacity(0.3))
+                            .foregroundColor(Color.nawawi_darkGreen)
+                            .fontWeight(.semibold)
+                            .background(Color.nawawi_darkGreen.opacity(0.15))
                     }
                 }
             }

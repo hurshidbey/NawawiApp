@@ -26,5 +26,17 @@
     <string>alert</string>
     <key>NSUserNotificationsUsageDescription</key>
     <string>Nawawi needs notification access to send you daily hadith reminders.</string>
+    <key>UIAppFonts</key>
+    <array>
+        <string>Fonts/Nohemi-Thin.ttf</string>
+        <string>Fonts/Nohemi-ExtraLight.ttf</string>
+        <string>Fonts/Nohemi-Light.ttf</string>
+        <string>Fonts/Nohemi-Regular.ttf</string>
+        <string>Fonts/Nohemi-Medium.ttf</string>
+        <string>Fonts/Nohemi-SemiBold.ttf</string>
+        <string>Fonts/Nohemi-Bold.ttf</string>
+        <string>Fonts/Nohemi-ExtraBold.ttf</string>
+        <string>Fonts/Nohemi-Black.ttf</string>
+    </array>
 </dict>
 </plist>

@@ -56,8 +56,8 @@ struct MenuBarView: View {
 
     var body: some View {
         ZStack {
-            // Enhanced Liquid Glass background for macOS 26
-            LiquidGlassBackground()
+            // Modern cream background with subtle texture
+            ModernBackgroundView()
 
             switch currentView {
             case .settings:
@@ -253,8 +253,8 @@ struct EnhancedHeaderView: View {
                     .symbolEffect(.pulse, isActive: appState.hasActiveReminder)
 
                 Text("40 Hadith")
-                    .font(.headline)
-                    .fontWeight(.semibold)
+                    .font(.nohemiHeadline)
+                    .foregroundColor(.black)
 
                 // Language selector with flags
                 Menu {
@@ -267,6 +267,7 @@ struct EnhancedHeaderView: View {
                             Label {
                                 HStack {
                                     Text(language.displayName)
+                                        .font(.nohemiCaption)
                                     if appState.selectedLanguage == language {
                                         Image(systemName: "checkmark")
                                             .foregroundStyle(.green)
@@ -298,7 +299,8 @@ struct EnhancedHeaderView: View {
                     }
                 }) {
                     Label("Favorites", systemImage: showingFavoritesOnly ? "heart.fill" : "heart")
-                        .foregroundStyle(showingFavoritesOnly ? .red : .secondary)
+                        .font(.nohemiButton)
+                        .foregroundStyle(showingFavoritesOnly ? Color.nawawi_darkGreen : .black)
                         .symbolEffect(.bounce, value: showingFavoritesOnly)
                 }
                 .buttonStyle(.plain)
@@ -317,10 +319,8 @@ struct EnhancedHeaderView: View {
             .keyboardShortcut("f", modifiers: [.command])
         }
         .padding()
-        .background(
-            .ultraThinMaterial,
-            in: RoundedRectangle(cornerRadius: 12)
-        )
+        .nawawi_creamGlass()
+        .nawawi_subtleShadow()
         .padding(.horizontal)
         .padding(.top, 8)
     }
@@ -341,14 +341,13 @@ struct EnhancedHadithCard: View {
             HStack {
                 Label {
                     Text("Hadith #\(hadith.number)")
-                        .font(.caption)
-                        .fontWeight(.medium)
+                        .font(.nohemiCaption)
                 } icon: {
                     Image(systemName: "number.circle.fill")
-                        .font(.caption)
+                        .font(.nohemiCaption)
                         .symbolRenderingMode(.hierarchical)
                 }
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.nawawi_secondary)
 
                 Spacer()
 
@@ -380,7 +379,7 @@ struct EnhancedHadithCard: View {
                     }
                 }) {
                     Image(systemName: appState.favorites.contains(hadith.number) ? "heart.fill" : "heart")
-                        .foregroundStyle(appState.favorites.contains(hadith.number) ? .red : .secondary)
+                        .foregroundStyle(appState.favorites.contains(hadith.number) ? Color.nawawi_darkGreen : Color.nawawi_secondary)
                         .symbolEffect(.bounce, value: appState.favorites.contains(hadith.number))
                         .scaleEffect(isFavoriteAnimating ? 1.2 : 1.0)
                 }
@@ -406,7 +405,7 @@ struct EnhancedHadithCard: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(.ultraThinMaterial)
+                        .fill(Color.nawawi_softCream)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
                                 .stroke(
@@ -472,13 +471,12 @@ struct EnhancedHadithCard: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(.regularMaterial)
-                .shadow(color: .black.opacity(0.1), radius: isHovered ? 8 : 4)
+                .fill(Color.nawawi_surface)
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(
                             LinearGradient(
-                                colors: [.white.opacity(isHovered ? 0.4 : 0.2), .clear],
+                                colors: [Color.nawawi_darkGreen.opacity(isHovered ? 0.15 : 0.08), Color.clear],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             ),
@@ -486,6 +484,7 @@ struct EnhancedHadithCard: View {
                         )
                 )
         )
+        .nawawi_cardShadow(elevated: isHovered)
         .scaleEffect(isHovered ? 1.02 : 1.0)
         .onHover { hovering in
             withAnimation(.spring(response: 0.3)) {
@@ -532,8 +531,8 @@ struct EnhancedToolbarView: View {
                 .keyboardShortcut(.leftArrow, modifiers: [.command])
 
                 Text("\(filteredCount > 0 ? appState.currentHadithIndex + 1 : 0) / \(filteredCount)")
-                    .font(.system(.caption, design: .rounded))
-                    .foregroundStyle(.secondary)
+                    .font(.nohemiNumber)
+                    .foregroundStyle(.black)
                     .monospacedDigit()
                     .frame(minWidth: 60)
 
@@ -595,7 +594,7 @@ struct EnhancedToolbarView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
-        .background(.ultraThinMaterial)
+        .background(Color.nawawi_surface)
     }
 }
 
@@ -659,42 +658,42 @@ struct ErrorView: View {
     }
 }
 
-// MARK: - Liquid Glass Background
-struct LiquidGlassBackground: View {
+// MARK: - Modern Background
+struct ModernBackgroundView: View {
     var body: some View {
         ZStack {
-            // Base layer
+            // Base cream layer
             Rectangle()
-                .fill(.ultraThinMaterial)
+                .fill(Color.nawawi_background)
 
-            // Gradient overlay for depth
+            // Subtle texture overlay
             LinearGradient(
                 stops: [
-                    .init(color: .clear, location: 0),
-                    .init(color: .accentColor.opacity(0.02), location: 0.5),
-                    .init(color: .clear, location: 1)
+                    .init(color: Color.clear, location: 0),
+                    .init(color: Color.nawawi_darkGreen.opacity(0.01), location: 0.5),
+                    .init(color: Color.clear, location: 1)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
 
-            // Animated gradient for liquid effect
-            TimelineView(.animation) { timeline in
+            // Animated subtle accent
+            TimelineView(.animation(minimumInterval: 2.0)) { timeline in
                 let time = timeline.date.timeIntervalSinceReferenceDate
 
                 RadialGradient(
                     colors: [
-                        .accentColor.opacity(0.03),
-                        .clear
+                        Color.nawawi_darkGreen.opacity(0.008),
+                        Color.clear
                     ],
                     center: UnitPoint(
-                        x: 0.5 + 0.3 * sin(time * 0.5),
-                        y: 0.5 + 0.3 * cos(time * 0.3)
+                        x: 0.5 + 0.2 * sin(time * 0.3),
+                        y: 0.5 + 0.2 * cos(time * 0.2)
                     ),
-                    startRadius: 50,
-                    endRadius: 200
+                    startRadius: 80,
+                    endRadius: 300
                 )
-                .blur(radius: 20)
+                .blur(radius: 40)
             }
         }
         .ignoresSafeArea()
@@ -821,7 +820,7 @@ struct HadithDetailInlineView: View {
                                 .padding()
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(.ultraThinMaterial)
+                                        .fill(Color.nawawi_softCream)
                                 )
                                 .environment(\.layoutDirection, .rightToLeft)
                         }
@@ -856,7 +855,7 @@ struct HadithDetailInlineView: View {
                                     .padding()
                                     .background(
                                         RoundedRectangle(cornerRadius: 12)
-                                            .fill(.ultraThinMaterial)
+                                            .fill(Color.nawawi_softCream)
                                     )
                             } else {
                                 Text(hadith.englishTranslation)
@@ -865,7 +864,7 @@ struct HadithDetailInlineView: View {
                                     .padding()
                                     .background(
                                         RoundedRectangle(cornerRadius: 12)
-                                            .fill(.ultraThinMaterial)
+                                            .fill(Color.nawawi_softCream)
                                     )
                             }
                         }
@@ -885,7 +884,7 @@ struct HadithDetailInlineView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(.ultraThinMaterial)
+                            .fill(Color.nawawi_softCream)
                     )
                 }
                 .padding()

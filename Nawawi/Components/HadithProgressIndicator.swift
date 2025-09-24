@@ -52,23 +52,22 @@ struct HadithProgressIndicator: View {
                 // Show condensed view for many items
                 HStack(spacing: 8) {
                     Text("\(current)")
-                        .font(.system(.caption, design: .rounded))
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.primary)
+                        .font(.nohemiNumber)
+                        .foregroundStyle(.black)
                         .monospacedDigit()
 
                     GeometryReader { geometry in
                         ZStack(alignment: .leading) {
                             // Background track
                             Capsule()
-                                .fill(.quaternary)
+                                .fill(Color.nawawi_cream.opacity(0.6))
                                 .frame(height: 4)
 
                             // Progress fill
                             Capsule()
                                 .fill(
                                     LinearGradient(
-                                        colors: [.accentColor, .accentColor.opacity(0.7)],
+                                        colors: [Color.nawawi_darkGreen, Color.nawawi_lightGreen],
                                         startPoint: .leading,
                                         endPoint: .trailing
                                     )
@@ -83,9 +82,8 @@ struct HadithProgressIndicator: View {
                     .frame(width: 120, height: 4)
 
                     Text("\(total)")
-                        .font(.system(.caption, design: .rounded))
-                        .fontWeight(.regular)
-                        .foregroundStyle(.secondary)
+                        .font(.nohemiCaptionLight)
+                        .foregroundStyle(.gray)
                         .monospacedDigit()
                 }
             }
@@ -108,18 +106,18 @@ struct HadithProgressIndicator: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(.ultraThinMaterial, in: Capsule())
+        .background(
+            Capsule()
+                .fill(Color.nawawi_softCream)
+        )
         .overlay(
             Capsule()
                 .stroke(
-                    LinearGradient(
-                        colors: [.white.opacity(0.2), .clear],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    ),
+                    Color.nawawi_darkGreen.opacity(0.15),
                     lineWidth: 0.5
                 )
         )
+        .nawawi_subtleShadow()
     }
 }
 
@@ -131,7 +129,7 @@ struct DotIndicator: View {
     var body: some View {
         Button(action: action) {
             Circle()
-                .fill(isActive ? Color.accentColor : Color.secondary.opacity(0.3))
+                .fill(isActive ? Color.nawawi_darkGreen : Color.nawawi_secondary.opacity(0.4))
                 .frame(width: isActive ? 10 : 6, height: isActive ? 10 : 6)
                 .overlay(
                     Text("\(number)")
