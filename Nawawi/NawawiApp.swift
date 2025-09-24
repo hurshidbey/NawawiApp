@@ -22,6 +22,8 @@ struct NawawiApp: App {
         MenuBarExtra {
             MenuBarView()
                 .environmentObject(appState)
+                .colorScheme(.light) // Force light mode globally
+                .foregroundColor(.black) // Force all text to be black
                 .onAppear {
                     appState.loadData()
                     // Activate app for macOS 26 Tahoe visibility

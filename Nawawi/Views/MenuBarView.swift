@@ -618,7 +618,7 @@ struct LoadingView: View {
 
             Text("Loading Hadiths...")
                 .font(.headline)
-                .foregroundStyle(.gray)
+                .foregroundColor(.black)
 
             ProgressView()
                 .progressViewStyle(.linear)
@@ -644,11 +644,12 @@ struct ErrorView: View {
                 .symbolEffect(.bounce)
 
             Text("Unable to Load Hadiths")
+                .foregroundColor(.black)
                 .font(.headline)
 
             Text(error.localizedDescription)
                 .font(.caption)
-                .foregroundStyle(.gray)
+                .foregroundColor(.black)
                 .multilineTextAlignment(.center)
 
             Button("Try Again", action: retry)
@@ -937,6 +938,7 @@ struct SettingsInlineView: View {
             // Header
             HStack {
                 Text("Settings")
+                    .foregroundColor(.black)
                     .font(.title2.bold())
 
                 Spacer()
