@@ -64,8 +64,13 @@ extension Color {
     static let nawawi_primary = nawawi_darkGreen
     static let nawawi_onBackground = Color.black // Force pure black for text readability
     static let nawawi_onSurface = Color.black // Force pure black for text readability
-    static let nawawi_secondary = Color(red: 0.3, green: 0.3, blue: 0.3) // Darker secondary text
+    static let nawawi_secondary = Color.black // Force black for secondary text (was too light gray)
     static let nawawi_accent = nawawi_darkGreen
+
+    // MARK: - Text Color Helpers (Prevent future white text issues)
+    static let nawawi_primaryText = Color.black
+    static let nawawi_secondaryText = Color.gray
+    static let nawawi_subtleText = Color(red: 0.4, green: 0.4, blue: 0.4)
 }
 
 // MARK: - Modern Spacing System

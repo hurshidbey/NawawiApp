@@ -379,7 +379,7 @@ struct EnhancedHadithCard: View {
                     }
                 }) {
                     Image(systemName: appState.favorites.contains(hadith.number) ? "heart.fill" : "heart")
-                        .foregroundStyle(appState.favorites.contains(hadith.number) ? Color.nawawi_darkGreen : Color.nawawi_secondary)
+                        .foregroundStyle(appState.favorites.contains(hadith.number) ? Color.nawawi_darkGreen : .gray)
                         .symbolEffect(.bounce, value: appState.favorites.contains(hadith.number))
                         .scaleEffect(isFavoriteAnimating ? 1.2 : 1.0)
                 }
@@ -428,24 +428,24 @@ struct EnhancedHadithCard: View {
                 case .english:
                     if !searchHighlight.isEmpty && hadith.englishTranslation.localizedCaseInsensitiveContains(searchHighlight) {
                         HighlightedText(hadith.englishTranslation, highlight: searchHighlight, font: .system(size: 14))
-                            .foregroundStyle(.primary)
+                            .foregroundColor(.black)
                             .lineSpacing(4)
                     } else {
                         Text(hadith.englishTranslation)
                             .font(.system(size: 14))
-                            .foregroundStyle(.primary)
+                            .foregroundColor(.black)
                             .lineSpacing(4)
                     }
                 case .uzbek:
                     if let uzbekTranslation = hadith.uzbekTranslation {
                         if !searchHighlight.isEmpty && uzbekTranslation.localizedCaseInsensitiveContains(searchHighlight) {
                             HighlightedText(uzbekTranslation, highlight: searchHighlight, font: .system(size: 14))
-                                .foregroundStyle(.primary)
+                                .foregroundColor(.black)
                                 .lineSpacing(4)
                         } else {
                             Text(uzbekTranslation)
                                 .font(.system(size: 14))
-                                .foregroundStyle(.primary)
+                                .foregroundColor(.black)
                                 .lineSpacing(4)
                         }
                     }
@@ -735,7 +735,7 @@ struct HadithDetailInlineView: View {
                     }) {
                         Image(systemName: appState.favorites.contains(hadith.number) ? "heart.fill" : "heart")
                             .font(.title3)
-                            .foregroundStyle(appState.favorites.contains(hadith.number) ? .red : .secondary)
+                            .foregroundStyle(appState.favorites.contains(hadith.number) ? .red : .gray)
                             .symbolEffect(.bounce, value: appState.favorites.contains(hadith.number))
                     }
                     .buttonStyle(.plain)
@@ -758,7 +758,7 @@ struct HadithDetailInlineView: View {
                     } label: {
                         Image(systemName: copiedToClipboard ? "checkmark.circle.fill" : "square.and.arrow.up")
                             .font(.title3)
-                            .foregroundStyle(copiedToClipboard ? .green : .secondary)
+                            .foregroundStyle(copiedToClipboard ? .green : .gray)
                             .symbolEffect(.bounce, value: copiedToClipboard)
                     }
                     .menuStyle(.borderlessButton)
