@@ -1,0 +1,966 @@
+
+--- Section 1 ---
+1. An-Nawawi, Imam
+ISBN 1897940 74 2
+Layout by: Bookwright:
+Web site: http://www.bogvaerker.dk/Bookwright
+Email: bookwright@bogvaerker.dk
+Printed and bound by:
+
+--- Page 5 ---
+Acknowledgements
+I gratefully acknowledge the help of two scholars: Dr. Yasin
+Dutton of Edinburgh University, and Shaykh Ali Laraki both
+of whom gave generously of their time and knowledge, and
+unravelled several seemingly intractable problems. My thanks
+also to Imam Yahya Muhammad al-Hussein of Dublin for help in
+one particularly obstinate passage. However, since I was unable
+to show the complete typescript to any of the above the mistakes
+are mine, and the praise for its merits belongs to Allah.
+
+--- Page 6 ---
+vvii
+
+--- Page 7 ---
+Preface to the First Edition
+This translation was prepared from two editions: the first
+edited and annotated by Abdullah Ibrahim al-Ansari,
+and published by Maktabah Jiddah, the second edition
+from Maktabah al-Qudsi in Cairo.
+The original intention of the Imam was to put these hadith and
+his explanatory text in front of the Muslims in a way which would
+be useful to them, and so for that reason we have attempted to
+keep this translation accurate but not academic. To that end I
+have not used the Arabic script at all except in two or three places
+in which the Imam explains Arabic words and where phonetics
+became more complicated than the Arabic.
+As to the footnotes on the sources of the ayat and the hadith
+and for biographies of the Companions, I have largely drawn
+on the notes of Abdullah Ibrahim al-Ansari from the first of the
+above-mentioned editions.
+Since much Arabic writing is concise I have added extra
+explanatory words in brackets [ ] if it seemed that the words
+were implicit in the Arabic. Sometimes I added extra explanatory
+comments of my own in parentheses ( ). If the matter seemed to
+call for extra material I gave it a footnote.
+Preface to the Second Edition
+In this edition we include the Arabic texts of the forty hadith.
+While doing that we took the opportunity to update a few matters
+in the text, the most substantial of which is to use the translations
+vvii vii
+
+--- Page 8 ---
+of the ayat of al-Qur’an al-Karim from The Noble Qur’an: a new
+rendering of its meaning in English by Abdalhaqq and Aisha Bewley,
+
+
+--- Section 2 ---
+published by Bookwork, Norwich 1999. We do that because their
+translation is based on the meanings always understood by the
+Muslims as expressed in the classical tafsir literature. Besides
+that, the Bewleys are also native English speakers and this is the
+most readable translation of the meanings of the Qur’an and the
+most direct.
+Preface to the Third Edition
+The most substantial change to this edition has been to name
+
+
+--- Section 3 ---
+the hadith, for example: 1. Intention, 2. Islam, Iman and Ihsan,
+etc., and to use these names in the table of contents and the
+headers to facilitate use of the book, for it is clear that this is a
+book that ought to be used rather than read once and left.
+vviiiiii
+
+--- Page 9 ---
+Translator’s Introduction
+Imam an-Nawawi, may Allah show mercy to him, never
+intended merely to record forty hadith in a book and
+release them to the public. The book which he wrote was
+his collection of forty-two hadith together with the absolute
+minimum of fiqh and linguistic commentary which he felt
+necessary for people not to misunderstand the import of these
+hadith. Ibn ‘Uyaynah said, “Hadith are misleading except to
+those who have fiqh.” Ibn Wahb said, “Every man of hadith who
+has no imam in fiqh is astray. If Allah had not rescued us by
+Malik and al-Layth we would have gone astray.”
+It is clear from reading the hadith literature that the
+Companions, who were pre-eminently men of fiqh, received their
+Islam by means of what we would call ‘taqlid’ which continued
+to be the means of Islam’s transmission from one generation
+to the next. Taqlid is that people see with the eyes of the heart
+something so overwhelmingly clear that they imitate it, whether
+consciously or unconsciously. While this is not a decision to
+abandon the intellect, this word is usually translated pejoratively
+as ‘blind imitation’. Many modern Muslims imagine that we have
+a wisdom superior to that because of living in a ‘more enlightened’
+techno-scientific age. We place that concept in inverted commas
+because our measure of all enlightenment is the noble conduct
+of the Messenger of Allah @ and his Companions in Madinah,
+a measure which shows this age to be one of the most barbaric
+there has ever been.
+Imam Malik is reported to have said, “Only that which was
+vviiiiii ix
+
+--- Page 10 ---
+The Complete Forty Hadith
+effective for the first of this community will be effective for the
+last of it.” For the Companions the encounter with the Prophet
+@ was so extraordinary that they modelled themselves entirely
+upon him, sometimes even in the smallest customs and actions.
+As every parent witnesses, that is a major part of the process by
+which children learn to become adult human beings. It is from
+the very essence of the human being. Knowledge is not merely
+sets of propositions and transmission is not just to convey those
+propositions to another.
+This is not to denigrate the author of this book or any of the
+noble transmitters of traditional knowledge of this Muslim
+community. If we were to examine the lives of the great people
+of knowledge of our community we would find them to have
+been overwhelmed by the luminous characters and behaviour of
+the men and women from whom they learnt. For if the sciences
+have not illuminated their transmitters there is little point in
+transmitting them.
+Thus we find Imam Malik, may Allah show mercy to him,
+saying, “Knowledge is a light which Allah places where He will;
+it is not much narration.” We must accept this from Malik since
+his capacity for accurate narration of hadith is not in doubt, but
+here he is calling us to something beyond texts and certainly
+beyond isnads.
+The unique achievement of the Prophet @ unparalleled in
+all history before or since, is to have transformed the lives and
+practice of the elite and the ordinary people of an entire city,
+and from there to have transformed Arabia and the world. That
+miracle continues in our time. Yet Madinah was the core group,
+trained, educated and civilised by the last of the Messengers @.
+The next generations learnt their Islam as a generation from
+the Companions ô. That transmission was most concentrated
+and authentic in Madinah. ‘Amal is the term which denotes the
+actual practice of the people of Madinah. The Companions
+transmitted it to the Followers, and they to the Followers of the
+Followers. All of these generations further enriched the record
+of the practice by their intelligent resolution of new issues in
+xx
+
+--- Page 11 ---
+Translator’s Introduction
+accordance with their profound knowledge of the Book and
+the Sunnah. Most significantly, that record includes their mode
+of transacting commercially without usury, the knowledge of
+which sustained and enriched Muslim culture for centuries and
+is desperately needed by the world today. The practice of the
+people of Madinah of those first generations is itself the best
+evidence of the Sunnah because it is like a mutawatir hadith
+which has been transmitted by huge numbers of reliable people
+of one generation to equally large numbers of reliable people of
+the next. In this age the best result expected of the culture of
+the solitary narrator is the well-meaning ‘good Muslim’ who is
+himself only too aware that he is ineffectual.
+Malik, along with his pre-eminence as a narrator of hadith,
+recorded the ‘amal – the practice – so that it might be a wellspring
+for civilisations to come, as it has been and as it will continue to
+be insha’Allah. These hadith from the noble Imam an-Nawawi,
+may Allah show mercy to him, make most sense when set within
+the ‘amal of a dynamic and resurgent Islam like jewels in the
+bezel of the ring.
+Two further matters in particular need to be clarified, as they
+constitute two of the warp threads on which the weft of this text
+is woven and thus all of Islam. First is the issue of sadaqah. The
+worst translation of this word is the Christian ‘charity’. It is a
+salutary lesson for those Muslims rushing to embrace the Jews
+and Christians as brothers from the ‘Abrahamic and monotheistic
+faiths’ – an abhorrent concept covering over the Jews’ crimes of
+slandering and murdering the prophets and men of Allah, and the
+Christians’ idolisation of Sayyiduna ‘Isa ï – that over a century
+ago a non-Muslim, the German philosopher Nietzsche, showed
+how terminally sick Judaeo-Christian culture is. Nietzsche called
+for a revaluation of all values. In his most thorough statement
+of that analysis, The Antichrist, he had also begun to declare that
+Islam does not share in that degeneracy. Perhaps if he had been
+granted more years of sanity by the grace of Allah he might have
+come to see that Islam is itself the very revaluation of all values
+for which he had called. However, we have been disappointed in
+xx xi
+
+--- Page 12 ---
+The Complete Forty Hadith
+some of our early translators into English who went out of their
+way to prove that Islam is absolutely acceptable to the Jews and
+the Christians. Thus these translators have wherever possible
+taken hold of Christian ecclesiastical language to translate the
+classic texts of Islam. Al-hamdulillah, more recent translators
+have accepted that key Arabic terms are untranslatable and that
+with the increasing familiarity with Arabic of English-speaking
+Muslims it is simplest to leave words like ‘deen’, for example, rather
+than choosing ‘religion’.
+However, with a word such as ‘sadaqah’, we must remove a
+misunderstanding that now adheres to the Arabic word itself.
+That is that in current usage sadaqah is used for the extra optional
+acts of generosity after the payment of zakah. However, even a
+slight acquaintance with our heritage of tafsir and fiqh quickly
+disabuses us of this erroneous notion. Sadaqah is the entire zone
+which encompasses the obligatory zakah, the optional extra acts
+of giving, and other acts such as establishing awqaf endowments,
+but it is very often used exclusively for zakah itself. It is used in
+these forty-two hadith both in the sense of zakah and extra acts
+of generosity.
+This is of importance to us in this age because, properly
+speaking, the pillar of zakah does not exist. That is for a number
+of reasons. The first reason is that zakah is not a charity. It is
+certainly a noble intention to pay from one’s earnings in order to
+discharge the obligation that one owes to Allah, but something
+more is called for – a striving to recreate the authentic form of
+zakah. Zakah is not a voluntary giving to the poor, but rather it
+is an obligation of Islam. It is collected by the imams – i.e. the
+khalifah and the amirs of the Muslims – by force if necessary. A
+man may be fought and killed for refusing to pay the zakah as the
+Imam states so unequivocally.
+The second reason is that the zakah can only be taken in
+something real which is itself halal and from a halal economy;
+it must be paid in gold, silver, cattle, or grains, etc. If the
+entire economy is based on usurious instruments, what zakah is
+possible? I must refer the reader to the works of Umar Ibrahim
+xxiiii
+
+--- Page 13 ---
+Translator’s Introduction
+Vadillo, particularly The Return of the Gold Dinar, for a thorough
+exposition of this matter. However, in summary it is that the
+banknote and other credit instruments are entirely usurious
+even before we consider the matter of interest, and may not be
+used to pay zakah.
+Let us not be sidetracked into the fruitless debates of amateur
+‘ulama which so plague our age. Let us instead be a little political.
+All these instruments are entirely the creation of the enemies of
+Islam and are under their control. All banks, including equity
+banks, which are sometimes called Islamic banks, operate under
+usurious prerequisites that allow them to lend money created
+out of nothing. Thus most of the currency of the paper-money
+system that we use comes into circulation as a debt to the banks.
+Neither the banknote, a usurious instrument, nor any kind of
+promissory note (in Arabic called dayn) can be used to pay
+zakah.
+It is the individual obligation of every Muslim to restore that
+pillar, since zakah is an individual obligation on every Muslim
+man and woman. The Muslim must pay zakah in gold and silver.
+We need no argument for the above. If any argument were
+needed for the Dinar and Dirham, it would be sufficient to say
+that they were the usage of the Messenger of Allah @ and of the
+Companions and of all the right-acting generations of Muslims
+up to our day, and that all the texts mention them and all of these
+generations paid their zakah with them. Banks and paper money
+are the invention of kuffar and they continue to impoverish us.
+The return to the Islamic Dinar as the one world currency of the
+Muslims is the beginning of our prosperity.
+The second warp thread of our text is inextricably linked with
+the first: it is the matter of leadership, authority and governance.
+The abolition of the Khilafah is the other great bid’ah of our
+time. It is an awkward fact of history that the very movement
+which is most vocal in speaking out against bid’ah participated
+treacherously with kuffar in the destruction of the Khalifate. The
+story of that event is for the first time clearly exposed in the The
+Return of the Khalifate by Shaykh Dr Abdalqadir as-Sufi, in which
+xxiiii xiii
+
+--- Page 14 ---
+The Complete Forty Hadith
+he also outlines the route to its revival. The restoration of the
+Khalifate and its amirates is an individual obligation on every
+Muslim. Every single Muslim is obliged to pledge allegiance to a
+leader, as is established in the Sunnah, and to obey him and pay
+his zakah to him. That restoration will not proceed by the erection
+of an Islamic State, but by the compelling imperative on each
+Muslim to obey one worthy to lead. This is no more complicated
+than the issue a group of Muslims face each prayer time; someone
+is always found who is most fitted to lead the prayer and everyone
+intuitively recognises the right man. Leadership is analogous to
+that. If each Muslim community accepts and affirms its natural
+leaders, from among the leaders of the leaders most assuredly
+an Amir for the Muslims will emerge. This is the Sunnah of the
+Muslims, just as representational democracy, constitutionalism
+and republicanism are innovations of the Jews, Christians and
+Freemasons. We need no excuse nor proof for choosing the
+former and only a clear hypocrite could call us to the latter.
+That is our situation. A pillar of Islam and the entire model of
+Islamic governance-without-state have been demolished, and it is
+the personal obligation of every Muslim and Muslimah to see them
+restored. It is not from the fiqh of Islam to engage in an optional
+act when the obligatory act has not been discharged, nor to
+expend energy in combating things which are disapproved when
+the haram is everywhere in evidence. It is a deviant understanding
+of Islam that levels all of these distinctions of fiqh and reduces
+matters to whether or not a text has an isnad. With this text we
+are safe, however, since it comes from a man of knowledge who
+was ‘amil, i.e. active in establishing the deen, and who was himself
+a noted faqih.
+For this text to make sense it must not be modified to fit into the
+age in which we live as if the parameters of kufr were immutable,
+rather it must be an instrument we use in shaping the age in which
+we live for the sake of Allah.
+xxiivv
+
+--- Page 15 ---
+Imam an-Nawawi’s Introduction
+Praise belongs to Allah, Lord of the Worlds, the One Who
+sustains the heavens and the earth, the One Who manages
+all the creatures, Who sent the messengers – the blessings
+of Allah and His peace be upon them all – to those who are
+charged with responsibility, to guide them and to make clear
+to them the laws of the deen, with absolute evidences and clear
+proofs. I praise Him for all of His blessings, and I ask Him for
+increase of His bounty and His generosity. I witness that there is
+no god but Allah alone, no partner to Him, the Overpowering
+One, the Nobly Generous, the Repeatedly Forgiving. I witness
+that Sayyiduna1 Muhammad is His Slave and His Messenger,
+and His Beloved and His Intimate Friend, the best of created
+beings, the one who was honoured with the Mighty Qur’an –
+the miracle which continues with the succession of years – and
+with the Sunnahs which are illuminating for those who seek to
+take the right way, Sayyiduna Muhammad who was singled out
+with comprehensive words which gather many different levels
+of meaning in them, and ease and liberality in the deen, the
+blessings of Allah and His peace be upon him and upon the rest
+of the prophets and messengers, and the families of all of them
+1 Sayyid is translated in Lane’s Lexicon as chief, lord, master. Sometimes a
+confusion arises in the use of a word such as ‘lord’ since that is also used to
+translate ‘rabb’ although then in English it is conventional to use a capital letter,
+i.e. ‘Lord’. Indeed, even the Arabic term ‘rabb’ may be used linguistically for
+other than Allah, e.g. rabb al-bayt ‘the man of the house’, although by a specific
+hadith it is frowned upon for a slave to address his master as ‘rabbi – my lord’ or
+conversely for the master to address a slave as ‘abdi – my slave’.
+xxiivv 1
+
+--- Page 16 ---
+The Complete Forty Hadith
+and the rest of the people of right action.
+We have narrated from ‘Ali ibn Abi Talib, ‘Abdullah ibn Mas’ud,
+Mu’adh ibn Jabal, Abu’d-Darda’, Ibn ‘Umar, Ibn ‘Abbas, Anas ibn
+Malik, Abu Hurairah and Abu Sa’id al-Khudri ô through many
+different paths and varieties of narrations, that the Messenger of
+Allah @ said, “Whoever preserves forty hadith for my ummah in
+the affair of their deen, then Allah will raise him up on the Day
+of Rising in the company of the people of fiqh2 and the people of
+knowledge,” and in the narration of Abu’d-Darda’, “And I will be
+for him on the Day of Rising an intercessor and a witness,” and in
+the narration of Ibn Mas’ud, “It will be said to him ‘Enter through
+whichever door of the Garden you will,” and in the narration of
+Ibn ‘Umar, “He will be recorded in the company of the people of
+knowledge and gathered in the company of the shuhada3.” Those
+who memorise hadith agree that it is a weak hadith even though
+it is narrated through many different paths.
+The people of knowledge ô have compiled innumerable
+books in this area. The first that I know to have compiled in this
+area was ‘Abdullah ibn Mubarak, then later Ibn Aslam at-Tusi
+the lordly man of knowledge, then later al-Hasan ibn Sufyan
+an-Nasa’i and Abu Bakr al-Ajuri, Abu Bakr Muhammad ibn
+Ibrahim al-Asfahani, ad-Daraqutni, al-Hakim, Abu Nu’aym, Abu
+‘Abd ar-Rahman as-Sulami, Abu Sa’id al-Malini, Abu ‘Uthman
+as-Sabuni, Abdullah ibn Muhammad al-Ansari, Abu Bakr
+al-Bayhaqi, and a whole lot of other people of the first and later
+generations who cannot be enumerated.
+I sought the choice of Allah [through the du’a known as
+istikharah] as to the matter of collecting forty hadith, modelling
+myself on the noted people of knowledge and guardian
+2 Fiqh is discrimination, the ability to discern what is obligatory,
+recommended, permitted, disapproved, and forbidden. Its root meaning is
+‘understanding’ and it is used in this way in the Noble Qur’an.
+3 Shuhada’ ‘the witnesses’ are first and foremost those who die fighting in
+the way of Allah, although other categories are mentioned in hadith. They
+pass straight to the Garden at death and do not await the Resurrection or the
+Reckoning.
+22
+
+--- Page 17 ---
+Imam an-Nawawi’s Introduction
+memorisers of Islam. The people of knowledge are unanimously
+agreed that it is permissible to act upon a weak hadith in the
+excellences of actions.4 However, along with that I do not depend
+on this hadith, but rather on his saying @ in the sahih hadith,
+“Let whoever of you witnesses convey it to those who are absent,”
+and his words @ “May Allah illuminate a man who hears my
+words and keeps them in mind and then conveys them just as he
+heard them.”
+Among the people of knowledge there are those who collected
+forty hadith on the principles of the deen, some of them on the
+derivative rulings, some on jihad, some on zuhd – doing without,
+some on courtesies, some of them on public addresses, all of
+which are worthy purposes, may Allah be pleased with those who
+purposed them. My view was that I should collect forty hadith
+more important than all of that, i.e. forty hadith encompassing
+all of that, every one of which is one of the great principles of
+the deen and which the people of knowledge have described in
+such terms as “the deen revolves around it,” or “it is a half of
+Islam” or “a third of it,” etc. Moreover, I decided to insist on
+these forty being sahih, the majority of them being from the two
+sahih books of al-Bukhari and Muslim, and that I should mention
+them without their chains of transmission in order to make their
+memorisation easy and to make the benefit derived from them
+more universal, insha’Allah, exalted is He. Then I decided to
+follow up each one with a chapter elucidating what is hidden in
+their wordings. Whoever longs for the next life ought to know
+these hadith because of the important matters they comprise,
+and that which they encapsulate which draws attention to all the
+acts of obedience, and that is obvious to whoever considers it. I
+depend upon Allah and to Him do I commit myself and His is
+the praise and the blessing, and by Him is success and protection
+from error.
+4 As opposed to the fundamentals and obligations.
+22 3
+
+--- Page 18 ---
+4
+
+--- Page 19 ---
+
+
+--- Section 4 ---
+1. Intention
+1: Intention
+The Amir al-Muminin Abu Hafs ‘Umar ibn al-Khattab1 î
+said, “I heard the Messenger of Allah @ saying, ‘Actions
+are only by intentions, and every man has only that
+which he intended. Whoever’s emigration is for Allah and His
+Messenger then his emigration is for Allah and His Messenger.
+Whoever’s emigration is for some worldly gain which he can
+acquire or a woman he will marry then his emigration is for
+that for which he emigrated’.”
+The two Imams of the hadith scholars narrated it – Abu
+Abdullah Muhammad ibn Isma’il ibn Ibrahim ibn al-Mughirah
+ibn Bardizbah al-Bukhari and Abu’l-Husein Muslim ibn
+al-Hajjaj ibn Muslim al-Qushayri an-Naysaburi – in their two
+sahih books which are the most sahih books compiled.
+1 He was the first to be titled “the Amir al-Muminin”. The one who gave him
+the kunya of Abu Hafs was the Prophet @ because of the severity that he saw in
+him. Al-Hafs is a dialect meaning “Lion”. He gave him the title of “al-Farouq –
+the Discriminator” because he used to distinguish and discriminate between
+truth and falsehood. He was the first to declare his Islam openly, and by Him
+Allah aided the da’wah of the Affirmed Truthful One when he said @ “O
+Allah, strengthen Islam by the more beloved of the two men to you: ‘Umar ibn
+al-Khattab or ‘Amr ibn Hisham (Abu Jahl).”
+The reason for his Islam was that when the acceptance of Islam by his sister
+Fatimah and her husband Sa’d ibn Zayd reached him, he intended to go and
+punish them, then his sister recited to him something from the Qur’an and he
+accepted Islam.
+The Muslims greatly rejoiced in his acceptance of Islam and the Prophet
+@ gave him good news of the Garden, and bore witness for him that Allah,
+exalted is He, put the truth upon his tongue and in his heart, and that shaytan
+fled from him. He is the best of the Companions after Abu Bakr î and they
+agree unanimously about the great quantity of his knowledge, the strength of
+his intelligence and of his doing-without, his humility and gentleness towards
+the Muslims, and his great concern for whatever would benefit them. He has
+many virtues. ‘Umar narrated five hundred and thirty nine hadith from the
+Messenger of Allah @. He lived for sixty-three years and died as a shaheed,
+stabbed by Abu Lu’lu’ah, and was buried along with the Prophet @. His khilafah
+lasted ten years, six months and five nights.
+4 5
+
+--- Page 20 ---
+The Complete Forty Hadith
+Commentary
+The hadith indicates that intention is the measure for rendering
+actions true, so that where intention is sound action is sound, and
+where it is corrupt then action is corrupt.
+Wherever there is action accompanied by intention, then there are
+three states:
+First, that one does it out of fear of Allah, exalted is He, and this
+is the worship of slaves.
+Second, that one does it seeking the Garden and reward, and this
+is the worship of traders.
+Third, that one does it out of modesty and shame before Allah,
+exalted is He, discharging the right of service and discharging [the
+duty of] gratitude, along with that seeing oneself falling short, and
+that one’s heart is fearful because one does not know whether or
+not one’s action is accepted. This is the worship of free people, and
+the Messenger of Allah @ indicated it when ‘A’ishah, may Allah be
+pleased with her, said to him, when he stood at night until his two
+feet swoll, “Messenger of Allah, why do you impose this upon yourself
+whilst Allah has forgiven you your earlier errors and any later ones?”2 He
+said, “Shall I not be a grateful slave?”
+If it is said, “Is it better to worship with fear or with hope?” It
+must be said, “Al-Ghazali said, may Allah show mercy to him,
+‘Worship with hope is better because hope causes love and fear
+causes despair’.”
+There are three divisions with respect to those who are sincere.
+You must know that sincerity is exposed to the defect of conceit
+and whoever is conceited about his action then his action is
+invalid, as it is invalid if he is arrogantly proud. The second state
+is that one does that seeking both the world and the next life.
+One of the people of knowledge took the position that [in that
+case] his action is rejected and he sought a proof of that from
+his words @ in the Lordly hadith (hadith qudsi), “Allah, exalted
+is He, says, ‘I am the most independent of partners, so whoever
+does an action in which he makes other than Me a partner, then
+2 Surat al-Fath: 2.
+66
+
+--- Page 21 ---
+
+
+--- Section 5 ---
+1. Intention
+I am free of it’.”3 This was the position that al-Harith al-Muhasibi
+took in the book ar-Ri’ayah. He said, “Sincerity is that you intend
+Him by obedience to Him and that you do not intend any other
+than Him.” There are two types of showing off: first, that one
+only intends people by obedience to Him. The second is that
+one intends people and the Lord of people, and both of these
+invalidate action. The Hafidh Abu Nu’aym transmitted this
+statement from some of the first communities in al-Hilyah. One
+of them took a proof of that from His words, exalted is He, “The
+Compeller, the Supremely Great. Glory be to Allah above all they associate
+with Him.”4 For just as He is too great to have a wife and child and
+a partner, He is too great to accept an action in which other than
+Him is made a partner. He, exalted is He, is Greater and Great
+and Supremely Great. As-Samarqandi said, may Allah show mercy
+to him, “Whatever is done for the sake of Allah is accepted, and
+whatever is done for the sake of people is rejected.” An example
+of that is whoever prays Dhuhr, and intends by it to discharge
+the duty of what Allah has made obligatory upon him, but he
+lengthens its parts and its recitation and makes its organisation
+beautiful for the sake of people; the basic part of the prayer is
+acceptable, but its length and its beautification for the sake of
+people are unacceptable because he intends people by them.
+Shaykh ‘Izzu’d-Din ibn ‘Abd as-Salam was asked about someone
+who prays and lengthens his prayer because of people, and he
+said, “I hope that his action will not be invalid.” All of this is in
+the case where the association of partners occurs in attributes
+of the action. However, if it happens in the source of the action
+so that one prays the obligatory prayer for the sake of Allah,
+exalted is He, and for the sake of people, then one’s prayer is
+not acceptable because of the association of partners in the very
+source of the action.
+Just as showing off can be in an action, it can be in the
+abandonment of an action. Al-Fudayl ibn ‘Iyad said, “Leaving
+3 Ibn Majah, Ibn Khuzaymah and al-Bayhaqi narrated it. Ibn Majah
+narrated it (among the) trustworthy.
+4 Surat al-Hashr: 23.
+66 7
+
+--- Page 22 ---
+The Complete Forty Hadith
+an action because of people is showing off, and doing an action
+because of people is associating a partner with Allah, and
+sincerity is that Allah should protect one from both of them.”
+The meaning of what he said, may Allah show mercy to him, is
+that whoever resolves on an act of worship and leaves it for fear
+that people may see it, then it is a form of showing off since he
+gave up an action because of people. However, if he gave it up
+in order to pray it in solitude this is recommended and desirable
+unless it is an obligatory prayer or an obligatory zakah, or he is
+a man of knowledge upon whom people model themselves, for
+being open about an act of worship in these cases is better.
+Just as showing off invalidates action, so does seeking good
+report, which is that one does an act for Allah in solitude and
+then later tells people what one did. He said @ “Whoever makes
+others hear [of his actions] Allah will make others hear of him,
+and whoever makes a show [of his actions] Allah will make a
+show of him.”5 The people of knowledge say that if one is a man
+of knowledge upon whom people model themselves and one
+mentions it in order to encourage the listeners to action so that
+they might act in accordance with it, then there is no harm in it.
+Al-Mirzabani said, may Allah show mercy to him, “The one who
+prays needs four qualities so that his prayer will be raised up [to
+Allah]: presence of the heart, witnessing of the intellect, stillness
+in the basic elements and submission of the limbs. Whoever
+prays without the presence of heart is distracted, whoever prays
+without the witnessing of the intellect is forgetful, whoever prays
+without humility of the limbs is mistaken, whoever prays without
+stillness in the basic elements is uncouth, and whoever prays with
+all these elements has fulfilled the prayer.”
+By his saying @ “Actions are only by intentions” he meant acts
+of obedience aside from acts which are permissible. Al-Harith
+al-Muhasibi said, “Sincerity is not relevant for permitted actions
+because they are not acts of drawing near [to Allah] nor do
+they lead to drawing near, for example raising up buildings for
+5 Al-Bukhari and Muslim narrated it.
+88
+
+--- Page 23 ---
+
+
+--- Section 6 ---
+1. Intention
+no [higher] purpose other than frivolity. However, if it is for a
+purpose such as mosques, aqueducts and ribat-fortresses then
+they are desirable and recommended [acts and not merely
+permissible].” He said, “There is no sincerity in an act which is
+forbidden nor in something frowned upon, such as someone who
+looks at that which is not permitted for him to look at, claiming
+that he looks at it in order to reflect upon the workmanship of
+Allah, exalted is He, for example, one who looks at a beardless
+youth. There is no sincerity in this, indeed there is no act of
+drawing near [to Allah] in it at all.” He said, “Truthfulness in
+the attribute of the slave is in the matching of the secret and the
+public, the outward and the inward. Truthfulness is realised by
+realising all of the stations and states, so much so that sincerity
+needs truthfulness, and truthfulness does not need anything,
+since the reality of sincerity is intending Allah, exalted is He,
+by the act of worship. One may intend Allah by the prayer but
+be neglectful of the presence of the heart in it. Truthfulness is
+intending Allah, exalted is He, by the act of worship along with
+the presence of the heart with Him. Every true one is sincere, but
+not every sincere one is true. That is the meaning of ‘union and
+separation’, since he has separated from other than Allah and
+united with the presence by Allah. It is the meaning of isolation
+from what is other than Allah and adornment with the presence
+before Allah i.”
+His saying @ “Actions are only by intentions” carries the
+possibilities of “the soundness of actions are only …” or “the
+rendering of actions sound…” or “the acceptance of actions…” or
+“the perfection of actions…”. This was what Imam Abu Hanifah
+took, may Allah be merciful to him. One excludes from actions
+those of the category of removal, such as removing dirt, returning
+property obtained through extortion and loans, conveying a
+present, etc., for the soundness of these actions does not depend
+upon the intention having been made authentic, rather the
+reward for them depends upon having intended them as acts of
+drawing near. For example, one who feeds his animal, if he does
+so in obedience to the command of Allah, exalted is He, will be
+88 9
+
+--- Page 24 ---
+The Complete Forty Hadith
+rewarded, but if he intends by it preservation of his wealth then
+there is no reward for that, as al-Qarafi said. The exception to
+that case is the horse of a man fighting jihad, for when he ties
+it up in the way of Allah, if it drinks and he did not intend to
+give it water he will be rewarded for that, as is narrated in Sahih
+al-Bukhari, and similarly for one’s wife. Also locking the door
+and extinguishing the lamp upon going to sleep, if one intends
+by them obedience to the command of Allah one is rewarded,
+and if one intends some other thing, then one will not.
+You must know that ‘intention’ is a word for ‘purpose’. It is
+said, “May Allah intend good for you,” i.e. “May He purpose it
+for you.” Intention in the shari’ah is to purpose a thing coupled
+with the doing of it. If one purposes it and then does it later it is
+‘resolve’.
+Intention is made a part of the shari’ah in order to distinguish
+customary actions from acts of worship, or to distinguish one
+act of worship from another. An example of the former is sitting
+in the mosque, which is customarily intended for rest but could
+also be meant as worship if the intention is for i’tikaf .6 That which
+distinguishes custom from worship is intention. Similarly one
+customarily intends by a complete washing of the body to clean
+the body, but the intention can also be as an act of worship (i.e.
+ghusl). That which distinguishes these two cases is the intention,
+which the Prophet @ indicated when he was asked about the man
+who fought in order to show off, the man who fought defensively
+and the man who fought courageously, as to which of them is
+fighting in the way of Allah, exalted is He? He said, “Whoever
+fights so that the word of Allah should be the uppermost then he
+is in the way of Allah, exalted is He.”7
+An example of the latter, which is distinguishing between the
+different degrees of worship, is someone who prays four rak’ats
+6 I’tikaf is retreat within the mosque in the last ten days of Ramadan.
+Similarly, sitting having prayed the sunnah prayers and waiting for the
+obligatory prayer is an act of worship.
+7 Al-Bukhari and Muslim narrated it.
+1100
+
+--- Page 25 ---
+
+
+--- Section 7 ---
+1. Intention
+by which he could intend the midday prayer or sunnah prayers,8
+and that which distinguishes these two is the intention. Similarly,
+freeing a slave can be intended as an expiation for a wrong action
+and for other purposes such as [expiation of] vows [which have
+been broken] etc., and here that which distinguishes them is the
+intention.
+Respecting his words @ “There is only for each man that
+which he intends”, there is an indication that it is not permitted
+to deputise for someone else in acts of worship nor appoint
+someone as an agent from the same intention. The exceptions in
+this case are distribution of zakah and sacrifice of an ‘Eid animal,
+for appointing someone as an agent is permissible in both these
+cases in the intention, and to slaughter [an animal for ‘Eid] and
+to distribute [the zakah] along with the capability to make the
+intention. In the Hajj it is not permitted [to appoint someone to
+go in one’s place] if one has the capability [of doing it oneself].
+Paying a debt: as for when it is for one purpose it does not need an
+intention. But if it is for two purposes such as someone who owes
+two thousands, one of which is for something he has pawned,
+and he pays a thousand and says “I have paid it for the pawned
+item,” then he is right. If he did not intend anything at the time
+he paid he may form and declare the intention after that and
+make it for whatever he wishes [i.e. to pay for the pawned item or
+just as a payment for his debt. It assumes that both debts are to
+the same person.] There is no other intention which we can delay
+until after the action and yet it remains sound except here.
+His saying @ “Whoever’s emigration is for Allah and His
+Messenger then his emigration is for Allah and His Messenger.
+Whoever’s emigration is for some worldly gain which he can
+acquire or a woman he will marry then his emigration is for
+that for which he emigrated”: the root of ‘emigration’ is ‘flight’
+and ‘abandoning’. The term ‘Hijrah’ is used for a number of
+matters:
+First, the emigration of the Companions ô from Makkah
+8 Hanafis permit four rak’ats without a tasleem after the second rak’ah as a
+sunnah prayer.
+1100 11
+
+--- Page 26 ---
+The Complete Forty Hadith
+to Abyssinia when those who associated partners with Allah
+were harming the Messenger of Allah @ so they fled from it
+to the Negus. This was five years after the sending [of the
+Messenger @], al-Bayhaqi said.
+The second emigration was from Makkah to Madinah, and
+it was thirteen years after the sending [of the Prophet @]. It
+was obligatory on every Muslim in Makkah to emigrate to
+the Messenger of Allah @ in Madinah. A group said without
+qualification that emigration was obligatory from Makkah to
+Madinah, however this is not the unqualified case, since there
+is no particular virtue in Madinah, and what was obligatory
+was the emigration to the Messenger of Allah @.
+[Qadi Abu Bakr] Ibn al-‘Arabi said, “The people of knowledge
+ô divided travel in the earth into flight and search, and the
+former sub-divides into six sub-divisions:
+“First, going out from the abode of war to the abode of
+Islam, and this remains until the Day of Rising. That which
+ceased with the Opening [of Makkah to Islam] according to
+his words @ ‘There is no emigration after the Opening’,9 was
+the emigration to the Messenger of Allah @ where he was.
+“Second, leaving the people of innovation. Ibn al-Qasim
+said, ‘I heard Malik say, “It is not permitted for anyone to
+remain in a land in which the first community are being
+cursed.”10’
+“Third, leaving a land where the haram is predominant,
+since it is obligatory on every Muslim to seek the halal.
+“Fourth, fleeing from harm to one’s body. It is one of the
+bounties of Allah that He makes an allowance for that. If
+someone fears for himself in a place then Allah permits him
+to leave it, and fleeing with oneself will save one from that
+peril. The first to do that was Ibrahim ï when he feared his
+people and said, ‘I am leaving this place to follow the pleasure of
+9 Al-Bukhari and Muslim narrated it.
+10 Extremist shi’ahs such as the Fatimids used to pronounce curses on some
+of the Companions.
+1122
+
+--- Page 27 ---
+
+
+--- Section 8 ---
+1. Intention
+my Lord.’11 He, exalted is He, says, telling of Musa ï ‘So he left
+there fearful and on his guard.’12
+“Fifth, leaving unhealthy cities from fear of illness to go to
+a healthy land. He @ permitted those suffering from a disease
+called ‘aran,13 when they found Madinah bad for their health,
+to leave and go to pasture-land.
+“Sixth, leaving from fear of financial harm, since the sanctity
+of a Muslim’s wealth is the same as the sanctity of his blood.
+“As for the division of [travelling in] search, it sub-divides into
+ten sub-divisions [under two main headings]: seeking the deen
+and seeking the world. Seeking the deen has nine types:
+“First, travelling for reflection; Allah, exalted is He,
+says, ‘Have they not travelled in the earth and seen the final fate
+of those before them?’14 Indeed, Dhu’l-Qarnayn travelled
+around in the world in order to see its wonders.
+“Second, the journey for Hajj.
+“Third, the journey for Jihad.
+“Fourth, the journey for livelihood.
+“Fifth, the journey for trade and extra earning over
+and above one’s food, which is permissible because of
+His words, exalted is He, ‘There is nothing wrong in seeking
+bounty from your Lord.’15
+“Sixth, seeking knowledge.
+“Seventh, intending to visit honoured places; he said
+@ ‘Strenuous journeys are not undertaken except to
+three mosques.’16
+“Eighth, intending to go to the frontiers for ribat.17
+11 Surat al-‘Ankabut: 29.
+12 Surat al-Qasas: 20.
+13 Pustules or possibly cracking and chapping of the skin, the former more
+commonly arising among camels and the latter among horses.
+14 Surat ar-Rum: 9.
+15 Surat al-Baqarah: 198.
+16 Al-Bukhari and Muslim narrated it.
+17 Manning ribat fortresses on the frontiers in defence of the Muslims, and
+there training for war, practising dhikr of Allah and studying the deen. Said
+by some to be superior even to jihad since ribat is striving to defend the lives,
+1122 13
+
+--- Page 28 ---
+The Complete Forty Hadith
+“Ninth, visiting one’s brothers for the sake of Allah,
+exalted is He. He said @ ‘A man visited a brother of
+his in a town, and so Allah sent an angel in his path
+who said to him, “Where do you intend [to go]?” He
+said, “I am going to see a brother of mine in this town.”
+He said, “Do you owe him any favour which you must
+repay him?” He said, “No, it is only that I love him for
+the sake of Allah, exalted is He.” He said, “Then I am
+the messenger of Allah to you [with the message] that
+Allah loves you just as you love him”.’ Muslim and others
+narrated it.” [This is the end of what Qadi Abu Bakr ibn
+al-‘Arabi said.]
+[Continuing the list of types of hijrah:]
+Third, the emigration of the tribes to the Messenger of
+Allah @ in order to learn the laws of the shari’ah and then
+return to their people and teach them.
+Fourth, the emigration of one of the people of Makkah,
+who became a Muslim, in order to come to the Prophet @ and
+then return to his people.
+Fifth, the emigration from the countries of kufr to the
+countries of Islam for it is not desirable for a Muslim to reside
+in the abode of kufr. Al-Mawardi said, “If he acquires family
+and relatives, and it is possible for him to perform his deen
+openly then it is not permissible for him to emigrate, since the
+place in which he is has become for him an abode of Islam.”
+Sixth, the Muslim’s forsaking (hijrah) his brother for more than
+three days without a reason in the shari’ah, which is disapproved
+of during the three days and haram every day beyond them,
+unless because of an over-riding necessity. It has been told as a
+story that a man forsook his brother for more than three days,
+so he [his brother] wrote these verses of poetry to him:
+“O my master, you have done me an injustice,
+so seek from Ibn Abi Khaythamah a judgement about it,
+because he narrates from his grandfather
+property and honour of the Muslims whereas jihad is striving to spill the blood
+of the kafirun.
+1144
+
+--- Page 29 ---
+
+
+--- Section 9 ---
+1. Intention
+that which ad-Dahhak narrated from ‘Ikrimah,
+from Ibn ‘Abbas from the Chosen One,
+our Prophet who was sent with mercy,
+that a close friend’s turning away from his close friend
+for more than three days, our Lord has forbidden.”
+Seventh, the husband’s forsaking his wife if her disobedience
+is a fact. He said, exalted is He, “refuse to sleep with them (lit.:
+forsake them in the beds).”18 Of that [too] is forsaking (hijrah)
+disobedient people in place, in speech, in returning the
+greeting and in opening with a greeting.
+Eighth, the forsaking of everything which Allah has
+forbidden and it is the most general and universal type of
+hijrah.
+His saying @ “So whoever’s emigration is for Allah and His
+Messenger” i.e. in intention and purpose “then his emigration is
+for Allah and His Messenger” in judgement and in shari’ah.
+“Whoever’s emigration is for some worldly gain which he can
+acquire…”. They transmit that a man emigrated from Makkah
+to Madinah not wishing by that the excellence of emigration,
+but only emigrating in order to marry a woman called Umm
+Qays, and so he was called the Emigrant for the sake of Umm
+Qays. If someone says that marriage is one of the things sought
+of people in the shari’ah so why is it [here counted as] one of the
+requirements of the world? Then the answer is, “Outwardly he
+didn’t emigrate for her sake but for the sake of performing hijrah,
+so that when [that which] he concealed [was] the opposite of
+what he made known to people then he was worthy of reproach
+and blame.” Analogous to that is someone who goes out with the
+apparent intention of performing the Hajj but really intends to
+go for trade.19 Similar [to that is] someone who travels to seek
+knowledge and his purpose in that is to obtain leadership or a
+18 Surat an-Nisa: 34.
+19 Trade at Mina during Hajj after ‘Arafat is permissible by the specific
+ayah of Qur’an “There is nothing wrong in seeking bounty from your Lord” (Surat
+al-Baqarah: 198) which occurs in the midst of the ayat on Hajj, but the intention
+of going on Hajj must have been for the Hajj and not t he trade.
+1144 15
+
+--- Page 30 ---
+The Complete Forty Hadith
+governorship.
+From his saying @ “Then his emigration is for that for which
+he emigrated,” it necessarily follows that there is no reward for
+someone whose purpose in the Hajj is trade and for visiting.
+The hadith has to be interpreted that if the thing which set him
+moving and sent him to the Hajj was only the trade [then he
+has no reward], but if the thing which sent him was [the desire
+to perform] the Hajj then he will have the reward and [he will
+have] the trade consequent to it, except that he will have a lesser
+reward than someone who brought himself out for the Hajj
+[alone]. If the thing which sent him out on the Hajj was both of
+them then it is conceivable that he will obtain the reward, since
+his travel was not set in motion for the sake of the world, but the
+opposite is also conceivable (i.e. that he has no reward), since he
+mixed an action for the next life with an action for the world.
+However, the hadith grades the judgement according to the
+purpose purely, and so it is not true that someone who intended
+both of them (the next life and the world) only intended the
+world, and Allah i knows best.
+16
+
+--- Page 31 ---
+16
+
+--- Page 32 ---
+The Complete Forty Hadith
+1188
+
+--- Page 33 ---
+
+
+--- Section 10 ---
+2. Islam, Iman and Ihsan
+2: The Hadith of Jibril
+on Islam, Iman and Ihsan
+Umar î also said, “One day while we were sitting with
+the Messenger of Allah @ a man came up to us whose
+clothes were extremely white, whose hair was extremely
+black, upon whom traces of travelling could not be seen, and
+whom none of us knew, until he sat down close to the Prophet
+@ so that he rested his knees upon his knees and placed his two
+hands upon his thighs and said, ‘Muhammad, tell me about
+Islam.’ The Messenger of Allah @ said, ‘Islam is that you witness
+that there is no god but Allah and that Muhammad is the
+Messenger of Allah, and establish the prayer, and give the zakah,
+and fast Ramadan, and perform the Hajj of the House if you are
+able to take a way to it.’ He said, ‘You have told the truth,’ and
+we were amazed at him asking him and [then] telling him that
+he told the truth. He said, ‘Tell me about iman.’ He said, ‘That
+you believe in Allah, His angels, His books, His messengers,
+and the Last Day, and that you believe in the Decree, the good
+of it and the bad of it.’ He said, ‘You have told the truth.’ He
+said, ‘Tell me about ihsan.’ He said, ‘That you worship Allah
+as if you see Him, for if you don’t see Him then truly He sees
+you.’ He said, ‘Tell me about the Hour.’ He said, ‘The one asked
+about it knows no more than the one asking.’ He said, ‘Then
+tell me about its signs.’ He said, ‘That the female slave should
+give birth to her mistress, and you see poor, naked, barefoot
+shepherds of sheep and goats competing in raising buildings.’
+He went away, and I remained some time. Then he said, ‘Umar,
+do you know who the questioner was?’ I said, ‘Allah and His
+Messenger know best.’ He said, ‘He was Jibril who came to you
+to teach you your deen’.” Muslim narrated it.
+1188 19
+
+--- Page 34 ---
+The Complete Forty Hadith
+Commentary
+His saying ï “Tell me about iman.” Linguistically, iman is
+unqualified ‘affirmation’, and in the shari’ah it is an expression
+denoting a particular affirmation, which is affirmation of
+Allah, His angels, His books, His messengers, the Last Day, and
+the Decree, the good and the bad of it. As for Islam, it is an
+expression denoting the performance of the obligatory duties,
+and it is compliance with [performance of] outward action.
+Allah, exalted is He, [in Qur’an] contrasts Islam and iman as
+in the hadith: Allah, exalted is He, says, “The desert Arabs say,
+‘We have iman.’ Say: ‘You do not have iman. Say rather, “We have
+become Muslim”.’”1 That is because the hypocrites used to pray,
+fast and give sadaqah (i.e. the zakah) while yet denying it in
+their hearts, so that when they claimed iman, Allah, exalted is
+He, denied their claim of iman because of their hearts’ denial,
+and He affirmed their claim of Islam because of their practice
+of it. Allah, exalted is He, says, “When the hypocrites come to you
+…” up until His words, exalted is He, “…and Allah bears witness
+that the hypocrites are certainly liars,”2 i.e. [they are liars] in their
+claiming to bear witness to the message while their hearts are
+opposed, because their tongues do not agree with their hearts,
+and the pre-condition of witnessing to the message is that the
+tongue and the heart should be in agreement. Since iman is
+a pre-condition for the soundness of Islam, Allah singled the
+Muslims out from the mu’minun. Allah, exalted is He, says, “We
+brought out all the mu’minun who were there but found in it only one
+house of Muslims.”3 This is a homogeneous exception4 because of
+1 Surat al-Hujurat: 14.
+

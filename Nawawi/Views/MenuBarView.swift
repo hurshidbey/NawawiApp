@@ -284,7 +284,7 @@ struct EnhancedHeaderView: View {
                             .font(.title3)
                         Image(systemName: "chevron.down")
                             .font(.caption2)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.gray)
                     }
                 }
                 .menuStyle(.borderlessButton)
@@ -347,7 +347,7 @@ struct EnhancedHadithCard: View {
                         .font(.nohemiCaption)
                         .symbolRenderingMode(.hierarchical)
                 }
-                .foregroundStyle(Color.nawawi_secondary)
+                .foregroundStyle(.black)
 
                 Spacer()
 
@@ -364,7 +364,7 @@ struct EnhancedHadithCard: View {
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.gray)
                 }
                 .menuStyle(.borderlessButton)
 
@@ -456,11 +456,11 @@ struct EnhancedHadithCard: View {
             Label {
                 if !searchHighlight.isEmpty && hadith.narrator.localizedCaseInsensitiveContains(searchHighlight) {
                     HighlightedText(hadith.narrator, highlight: searchHighlight, font: .caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.gray)
                 } else {
                     Text(hadith.narrator)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.gray)
                 }
             } icon: {
                 Image(systemName: "person.circle.fill")
@@ -555,7 +555,7 @@ struct EnhancedToolbarView: View {
                 Button(action: onRandomHadith) {
                     Image(systemName: "shuffle")
                         .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.gray)
                 }
                 .buttonStyle(.plain)
                 .help("Random Hadith (⌘R)")
@@ -564,7 +564,7 @@ struct EnhancedToolbarView: View {
                 Button(action: onExport) {
                     Image(systemName: "square.and.arrow.up")
                         .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.gray)
                 }
                 .buttonStyle(.plain)
                 .help("Export")
@@ -572,7 +572,7 @@ struct EnhancedToolbarView: View {
                 Button(action: { currentView = .settings }) {
                     Image(systemName: "gearshape")
                         .font(.system(size: 14))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.gray)
                 }
                 .buttonStyle(.plain)
                 .help("Settings")
@@ -618,7 +618,7 @@ struct LoadingView: View {
 
             Text("Loading Hadiths...")
                 .font(.headline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.gray)
 
             ProgressView()
                 .progressViewStyle(.linear)
@@ -648,7 +648,7 @@ struct ErrorView: View {
 
             Text(error.localizedDescription)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.gray)
                 .multilineTextAlignment(.center)
 
             Button("Try Again", action: retry)
@@ -720,7 +720,7 @@ struct HadithDetailInlineView: View {
 
                     Label(hadith.narrator, systemImage: "person.circle.fill")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.gray)
                 }
 
                 Spacer()
@@ -770,7 +770,7 @@ struct HadithDetailInlineView: View {
                     }) {
                         Label("Back", systemImage: "arrow.left.circle.fill")
                             .font(.title3)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.gray)
                     }
                     .buttonStyle(.plain)
                     .keyboardShortcut(.escape, modifiers: [])
@@ -802,12 +802,12 @@ struct HadithDetailInlineView: View {
                             HStack {
                                 Text("Arabic Text")
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.gray)
                                 Spacer()
                                 Button(action: { speakText(hadith.arabicText, language: "ar-SA") }) {
                                     Image(systemName: "speaker.wave.2")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.gray)
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -832,7 +832,7 @@ struct HadithDetailInlineView: View {
                             HStack {
                                 Text(appState.selectedLanguage == .uzbek ? "O'zbek tarjimasi" : "English Translation")
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.gray)
                                 Spacer()
                                 Button(action: {
                                     let text = appState.selectedLanguage == .uzbek ?
@@ -843,7 +843,7 @@ struct HadithDetailInlineView: View {
                                 }) {
                                     Image(systemName: "speaker.wave.2")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.gray)
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -874,7 +874,7 @@ struct HadithDetailInlineView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Label("Narrator", systemImage: "person.circle")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.gray)
 
                         Text(hadith.narrator)
                             .font(.body)
@@ -971,14 +971,14 @@ struct SettingsInlineView: View {
                             }
                             Text("Width: \(Int(windowSize.width))px")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.gray)
 
                             Slider(value: $windowSize.height, in: 450...700, step: 10) {
                                 Text("Height")
                             }
                             Text("Height: \(Int(windowSize.height))px")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.gray)
                         }
                     }
 
@@ -994,7 +994,7 @@ struct SettingsInlineView: View {
                                         .foregroundStyle(.yellow)
                                     Text("Notifications are disabled in System Settings")
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.gray)
                                 }
 
                                 Button("Open System Settings") {
@@ -1053,7 +1053,7 @@ struct SettingsInlineView: View {
 
                             if appState.favorites.isEmpty {
                                 Text("No favorites yet")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.gray)
                             } else {
                                 Text("\(appState.favorites.count) hadith\(appState.favorites.count == 1 ? "" : "s") marked as favorite")
 
@@ -1094,10 +1094,10 @@ struct SettingsInlineView: View {
                                 .font(.body)
                             Text("Version 1.0.0")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.gray)
                             Text("A collection of forty hadiths compiled by Imam Nawawi")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.gray)
                         }
                     }
                 }
@@ -1140,7 +1140,7 @@ struct ShortcutRow: View {
 
             Text(action)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.gray)
 
             Spacer()
         }

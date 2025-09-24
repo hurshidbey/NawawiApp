@@ -26,7 +26,7 @@ struct HadithProgressIndicator: View {
             }) {
                 Image(systemName: "chevron.left.circle.fill")
                     .font(.title3)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.gray)
             }
             .buttonStyle(.plain)
             .disabled(selectedIndex == 0)
@@ -98,7 +98,7 @@ struct HadithProgressIndicator: View {
             }) {
                 Image(systemName: "chevron.right.circle.fill")
                     .font(.title3)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.gray)
             }
             .buttonStyle(.plain)
             .disabled(selectedIndex >= total - 1)
