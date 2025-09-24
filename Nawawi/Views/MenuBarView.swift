@@ -138,6 +138,7 @@ struct MenuBarView: View {
                             "No Hadiths",
                             systemImage: "book.closed",
                             description: Text(searchText.isEmpty ? "No hadiths available" : "No hadiths match your search")
+                                .foregroundColor(.black)
                         )
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
@@ -718,6 +719,7 @@ struct HadithDetailInlineView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Hadith #\(hadith.number)")
                         .font(.title2.bold())
+                        .foregroundColor(.black)
 
                     Label(hadith.narrator, systemImage: "person.circle.fill")
                         .font(.caption)
@@ -789,7 +791,9 @@ struct HadithDetailInlineView: View {
                         ForEach(AppLanguage.allCases, id: \.self) { language in
                             HStack {
                                 Text(language.flag)
+                                    .foregroundColor(.black)
                                 Text(language.displayName)
+                                    .foregroundColor(.black)
                             }
                             .tag(language)
                         }
@@ -815,6 +819,7 @@ struct HadithDetailInlineView: View {
 
                             Text(hadith.arabicText)
                                 .font(.system(size: 20))
+                                .foregroundColor(.black)
                                 .multilineTextAlignment(.trailing)
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                                 .lineSpacing(8)
@@ -852,6 +857,7 @@ struct HadithDetailInlineView: View {
                             if appState.selectedLanguage == .uzbek {
                                 Text(hadith.uzbekTranslation ?? hadith.englishTranslation)
                                     .font(.system(size: 15))
+                                    .foregroundColor(.black)
                                     .lineSpacing(6)
                                     .padding()
                                     .background(
@@ -861,6 +867,7 @@ struct HadithDetailInlineView: View {
                             } else {
                                 Text(hadith.englishTranslation)
                                     .font(.system(size: 15))
+                                    .foregroundColor(.black)
                                     .lineSpacing(6)
                                     .padding()
                                     .background(
@@ -879,6 +886,7 @@ struct HadithDetailInlineView: View {
 
                         Text(hadith.narrator)
                             .font(.body)
+                            .foregroundColor(.black)
                             .padding(.leading, 24)
                     }
                     .padding()
@@ -973,6 +981,7 @@ struct SettingsInlineView: View {
                             }
                             Text("Width: \(Int(windowSize.width))px")
                                 .font(.caption)
+                                .foregroundColor(.black)
                                 .foregroundStyle(.gray)
 
                             Slider(value: $windowSize.height, in: 450...700, step: 10) {
@@ -980,6 +989,7 @@ struct SettingsInlineView: View {
                             }
                             Text("Height: \(Int(windowSize.height))px")
                                 .font(.caption)
+                                .foregroundColor(.black)
                                 .foregroundStyle(.gray)
                         }
                     }
@@ -996,17 +1006,21 @@ struct SettingsInlineView: View {
                                         .foregroundStyle(.yellow)
                                     Text("Notifications are disabled in System Settings")
                                         .font(.caption)
+                                        .foregroundColor(.black)
                                         .foregroundStyle(.gray)
                                 }
 
-                                Button("Open System Settings") {
+                                Button(action: {
                                     if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
                                         NSWorkspace.shared.open(url)
                                     }
+                                }) {
+                                    Text("Open System Settings")
+                                        .foregroundColor(.black)
                                 }
                                 .buttonStyle(.link)
                             } else if permissionStatus == .notDetermined {
-                                Button("Enable Notifications") {
+                                Button(action: {
                                     appState.requestNotificationPermission { granted in
                                         checkPermissionStatus()
                                         if granted {
@@ -1014,6 +1028,9 @@ struct SettingsInlineView: View {
                                             appState.scheduleReminder()
                                         }
                                     }
+                                }) {
+                                    Text("Enable Notifications")
+                                        .foregroundColor(.white)
                                 }
                                 .buttonStyle(.borderedProminent)
                             }
@@ -1039,8 +1056,11 @@ struct SettingsInlineView: View {
                                         appState.scheduleReminder()
                                     }
 
-                                Button("Send Test Notification") {
+                                Button(action: {
                                     appState.sendTestNotification()
+                                }) {
+                                    Text("Send Test Notification")
+                                        .foregroundColor(.black)
                                 }
                                 .buttonStyle(.link)
                             }
@@ -1058,10 +1078,14 @@ struct SettingsInlineView: View {
                                     .foregroundStyle(.gray)
                             } else {
                                 Text("\(appState.favorites.count) hadith\(appState.favorites.count == 1 ? "" : "s") marked as favorite")
+                                    .foregroundColor(.black)
 
-                                Button("Clear All Favorites") {
+                                Button(action: {
                                     appState.favorites.removeAll()
                                     appState.saveFavorites()
+                                }) {
+                                    Text("Clear All Favorites")
+                                        .foregroundColor(.red)
                                 }
                                 .foregroundStyle(.red)
                             }
@@ -1094,11 +1118,14 @@ struct SettingsInlineView: View {
 
                             Text("40 Hadith Nawawi")
                                 .font(.body)
+                                .foregroundColor(.black)
                             Text("Version 1.0.0")
                                 .font(.caption)
+                                .foregroundColor(.black)
                                 .foregroundStyle(.gray)
                             Text("A collection of forty hadiths compiled by Imam Nawawi")
                                 .font(.caption)
+                                .foregroundColor(.black)
                                 .foregroundStyle(.gray)
                         }
                     }
@@ -1133,6 +1160,7 @@ struct ShortcutRow: View {
         HStack {
             Text(keys)
                 .font(.system(.caption, design: .monospaced))
+                .foregroundColor(.black)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 3)
                 .background(
@@ -1142,6 +1170,7 @@ struct ShortcutRow: View {
 
             Text(action)
                 .font(.caption)
+                .foregroundColor(.black)
                 .foregroundStyle(.gray)
 
             Spacer()
