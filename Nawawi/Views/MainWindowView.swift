@@ -323,35 +323,34 @@ struct HadithDetailView: View {
                     }
                 }
 
-                // Arabic text
-                if appState.selectedLanguage == .arabic || appState.selectedLanguage == .english {
-                    VStack(alignment: .trailing, spacing: 12) {
-                        HStack {
-                            Text("Arabic Text")
-                                .font(.nohemiCaption)
-                                .foregroundColor(.black)
-                            Spacer()
-                            Button(action: { speakText(hadith.arabicText, language: "ar-SA") }) {
-                                Image(systemName: "speaker.wave.2")
-                                    .foregroundStyle(.gray)
-                            }
-                            .buttonStyle(.plain)
-                        }
-
-                        Text(hadith.arabicText)
-                            .font(.system(size: 24, weight: .regular, design: .default))
+                // Arabic text (always shown first according to Islamic practice)
+                VStack(alignment: .trailing, spacing: 12) {
+                    HStack {
+                        Text("Arabic Text")
+                            .font(.nohemiCaption)
                             .foregroundColor(.black)
-                            .multilineTextAlignment(.trailing)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .lineSpacing(10)
-                            .padding(20)
-                            .background(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(Color.nawawi_softCream)
-                            )
-                            .environment(\.layoutDirection, .rightToLeft)
+                        Spacer()
+                        Button(action: { speakText(hadith.arabicText, language: "ar-SA") }) {
+                            Image(systemName: "speaker.wave.2")
+                                .foregroundStyle(.gray)
+                        }
+                        .buttonStyle(.plain)
                     }
+
+                    Text(hadith.arabicText)
+                        .font(.system(size: 24, weight: .regular, design: .default))
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .lineSpacing(10)
+                        .padding(20)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.nawawi_softCream)
+                        )
+                        .environment(\.layoutDirection, .rightToLeft)
                 }
+
 
                 // Translation
                 if appState.selectedLanguage != .arabic {

@@ -387,8 +387,7 @@ struct EnhancedHadithCard: View {
                 .buttonStyle(.plain)
             }
 
-            // Arabic text with glass background
-            if appState.selectedLanguage == .arabic || appState.selectedLanguage == .english {
+            // Arabic text with glass background (always shown first according to Islamic practice)
                 VStack(alignment: .trailing, spacing: 8) {
                     if !searchHighlight.isEmpty && hadith.arabicText.contains(searchHighlight) {
                         HighlightedText(hadith.arabicText, highlight: searchHighlight, font: .system(size: 20))
@@ -419,7 +418,6 @@ struct EnhancedHadithCard: View {
                                 )
                         )
                 )
-            }
 
             // Translation with highlighting
             Group {
@@ -821,8 +819,7 @@ struct HadithDetailInlineView: View {
                     .pickerStyle(.segmented)
                     .padding(.horizontal)
 
-                    // Arabic text
-                    if appState.selectedLanguage == .arabic || appState.selectedLanguage == .english {
+                    // Arabic text (always shown first according to Islamic practice)
                         VStack(alignment: .trailing, spacing: 10) {
                             HStack {
                                 Text("Arabic Text")
@@ -850,7 +847,6 @@ struct HadithDetailInlineView: View {
                                 )
                                 .environment(\.layoutDirection, .rightToLeft)
                         }
-                    }
 
                     // Translation
                     if appState.selectedLanguage != .arabic {
