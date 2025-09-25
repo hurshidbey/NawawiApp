@@ -31,7 +31,7 @@ struct NawawiApp: App {
                     NSApp.activate(ignoringOtherApps: true)
                 }
         }
-        .defaultSize(width: 900, height: 700)
+        .defaultSize(width: 1100, height: 750)
         .defaultPosition(.center)
 
         // Menu bar extra for quick access

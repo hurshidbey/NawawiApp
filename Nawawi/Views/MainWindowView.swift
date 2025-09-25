@@ -172,7 +172,7 @@ struct MainWindowView: View {
                 )
             }
         }
-        .navigationSplitViewColumnWidth(min: 400, ideal: 480, max: 600)
+        .navigationSplitViewColumnWidth(min: 500, ideal: 580, max: 700)
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button(action: {
