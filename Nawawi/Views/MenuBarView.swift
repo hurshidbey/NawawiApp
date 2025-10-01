@@ -163,6 +163,14 @@ struct MenuBarView: View {
         .onAppear {
             setupKeyboardShortcuts()
         }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("OpenHadith"))) { notification in
+            if let hadithIndex = notification.userInfo?["hadithIndex"] as? Int {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                    appState.currentHadithIndex = hadithIndex
+                    currentView = .main
+                }
+            }
+        }
         .onReceive(appState.$showSettings) { show in
             if show {
                 currentView = .settings
@@ -1079,6 +1087,21 @@ struct SettingsInlineView: View {
                                 }
                                 .buttonStyle(.link)
                             }
+                        }
+                    }
+
+                    // Startup Section
+                    GroupBox {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Label("Startup", systemImage: "power")
+                                .font(.headline)
+
+                            Toggle("Launch at Login", isOn: $appState.launchAtLogin)
+                                .help("Automatically launch the app when you log in to your Mac")
+
+                            Text("The app will start in the menu bar when your Mac starts")
+                                .font(.caption)
+                                .foregroundStyle(Color(red: 0.5, green: 0.5, blue: 0.5))
                         }
                     }
 

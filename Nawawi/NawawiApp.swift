@@ -8,6 +8,7 @@
 import SwiftUI
 import UserNotifications
 import Combine
+import ServiceManagement
 
 @main
 struct NawawiApp: App {
@@ -19,6 +20,23 @@ struct NawawiApp: App {
     }
 
     var body: some Scene {
+        // Onboarding window (shown on first launch)
+        WindowGroup("Welcome", id: "onboarding") {
+            if appState.showOnboarding {
+                OnboardingView {
+                    appState.completeOnboarding()
+                }
+                .environmentObject(appState)
+                .colorScheme(.light)
+                .onAppear {
+                    NSApp.activate(ignoringOtherApps: true)
+                }
+            }
+        }
+        .defaultSize(width: 600, height: 550)
+        .defaultPosition(.center)
+        .windowResizability(.contentSize)
+
         // Main standalone window
         WindowGroup("40 Hadith Nawawi", id: "main-window") {
             MainWindowView()
@@ -128,9 +146,16 @@ class AppState: ObservableObject {
         }
     }
     @Published var shouldOpenMainWindow = false
+    @Published var showOnboarding = false
 
     @AppStorage("favorites") private var favoritesData = Data()
     @AppStorage("lastHadithIndex") private var savedIndex = 0
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("launchAtLogin") var launchAtLogin = false {
+        didSet {
+            updateLaunchAtLogin()
+        }
+    }
 
     private var reminderTimer: Timer?
 
@@ -158,6 +183,14 @@ class AppState: ObservableObject {
         if reminderEnabled {
             scheduleReminder()
         }
+
+        // Check if onboarding should be shown
+        showOnboarding = !hasCompletedOnboarding
+    }
+
+    func completeOnboarding() {
+        hasCompletedOnboarding = true
+        showOnboarding = false
     }
 
     func saveCurrentIndex() {
@@ -204,12 +237,16 @@ class AppState: ObservableObject {
                     // Remove existing notifications
                     UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["daily-hadith"])
 
-                    // Schedule daily notification
+                    // Schedule daily notification with random hadith
                     let content = UNMutableNotificationContent()
                     content.title = "Daily Hadith Reminder"
-                    content.body = "Time to read today's hadith"
+
+                    // Select a random hadith number (1-40)
+                    let randomHadithNumber = Int.random(in: 1...40)
+                    content.body = "Time to read Hadith #\(randomHadithNumber)"
                     content.sound = .default
                     content.categoryIdentifier = "HADITH_REMINDER"
+                    content.userInfo = ["hadithNumber": randomHadithNumber]
 
                     var dateComponents = DateComponents()
                     dateComponents.hour = self.reminderHour
@@ -295,6 +332,26 @@ class AppState: ObservableObject {
             }
         }
     }
+
+    func updateLaunchAtLogin() {
+        do {
+            if launchAtLogin {
+                if SMAppService.mainApp.status == .enabled {
+                    print("Launch at login already enabled")
+                } else {
+                    try SMAppService.mainApp.register()
+                    print("Launch at login enabled")
+                }
+            } else {
+                if SMAppService.mainApp.status == .enabled {
+                    try SMAppService.mainApp.unregister()
+                    print("Launch at login disabled")
+                }
+            }
+        } catch {
+            print("Failed to update launch at login: \(error)")
+        }
+    }
 }
 
 // MARK: - Notification Delegate
@@ -303,5 +360,20 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         return [.alert, .sound, .badge]
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        // Handle notification tap
+        if let hadithNumber = response.notification.request.content.userInfo["hadithNumber"] as? Int {
+            print("User tapped notification for Hadith #\(hadithNumber)")
+            // Navigate to the specific hadith (index is number - 1)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(
+                    name: NSNotification.Name("OpenHadith"),
+                    object: nil,
+                    userInfo: ["hadithIndex": hadithNumber - 1]
+                )
+            }
+        }
     }
 }
