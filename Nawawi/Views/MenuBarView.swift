@@ -12,7 +12,7 @@ import Sparkle
 
 struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
-    @StateObject private var dataManager = HadithDataManager.shared
+    @EnvironmentObject var dataManager: HadithDataManager
     @Environment(\.openWindow) private var openWindow
     @State private var showFullHadith = false
     @State private var showSettings = false

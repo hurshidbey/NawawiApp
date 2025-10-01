@@ -11,8 +11,6 @@ import Combine
 
 @MainActor
 class HadithDataManager: ObservableObject {
-    static let shared = HadithDataManager()
-
     @Published var hadiths: [Hadith] = []
     @Published var isLoading = false
     @Published var error: Error?

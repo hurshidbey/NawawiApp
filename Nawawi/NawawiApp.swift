@@ -15,6 +15,7 @@ import Sparkle
 struct NawawiApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var appState = AppState()
+    @StateObject private var hadithDataManager = HadithDataManager()
     @State private var isAppActive = true
 
     init() {
@@ -51,6 +52,7 @@ struct NawawiApp: App {
         WindowGroup("40 Hadith Nawawi", id: "main-window") {
             MainWindowView()
                 .environmentObject(appState)
+                .environmentObject(hadithDataManager)
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
                 .task {
@@ -71,6 +73,7 @@ struct NawawiApp: App {
         MenuBarExtra {
             MenuBarView()
                 .environmentObject(appState)
+                .environmentObject(hadithDataManager)
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
                 .task {

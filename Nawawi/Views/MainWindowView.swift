@@ -12,7 +12,7 @@ import Sparkle
 
 struct MainWindowView: View {
     @EnvironmentObject var appState: AppState
-    @StateObject private var dataManager = HadithDataManager.shared
+    @EnvironmentObject var dataManager: HadithDataManager
     @State private var searchText = ""
     @State private var showingFavoritesOnly = false
     @State private var selectedHadithIndex: Int? = nil
