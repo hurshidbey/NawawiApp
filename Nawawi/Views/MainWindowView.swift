@@ -15,6 +15,8 @@ struct MainWindowView: View {
     @EnvironmentObject var dataManager: HadithDataManager
     @EnvironmentObject var favoritesManager: FavoritesManager
     @EnvironmentObject var notificationManager: NotificationManager
+    @EnvironmentObject var hadithActionService: HadithActionService
+    @EnvironmentObject var speechService: SpeechService
     @State private var searchText = ""
     @State private var showingFavoritesOnly = false
     @State private var selectedHadithIndex: Int? = nil
@@ -292,8 +294,8 @@ struct HadithDetailView: View {
     @EnvironmentObject var dataManager: HadithDataManager
     @EnvironmentObject var favoritesManager: FavoritesManager
     @EnvironmentObject var notificationManager: NotificationManager
-    @State private var copiedToClipboard = false
-    @State private var speechSynthesizer: NSSpeechSynthesizer?
+    @EnvironmentObject var hadithActionService: HadithActionService
+    @EnvironmentObject var speechService: SpeechService
 
     var body: some View {
         ScrollView {
@@ -328,24 +330,24 @@ struct HadithDetailView: View {
 
                         // Export menu
                         Menu {
-                            Button(action: { exportHadith(.plain) }) {
+                            Button(action: { hadithActionService.exportToClipboard(hadith, format: .plain, dataManager: dataManager) }) {
                                 Label("Export as Text", systemImage: "doc.text")
                             }
-                            Button(action: { exportHadith(.markdown) }) {
+                            Button(action: { hadithActionService.exportToClipboard(hadith, format: .markdown, dataManager: dataManager) }) {
                                 Label("Export as Markdown", systemImage: "text.badge.checkmark")
                             }
-                            Button(action: { exportHadith(.json) }) {
+                            Button(action: { hadithActionService.exportToClipboard(hadith, format: .json, dataManager: dataManager) }) {
                                 Label("Export as JSON", systemImage: "curlybraces")
                             }
                             Divider()
-                            Button(action: shareHadith) {
+                            Button(action: { hadithActionService.shareHadith(hadith, dataManager: dataManager) }) {
                                 Label("Share...", systemImage: "square.and.arrow.up")
                             }
                         } label: {
-                            Image(systemName: copiedToClipboard ? "checkmark.circle.fill" : "square.and.arrow.up")
+                            Image(systemName: hadithActionService.copiedToClipboard ? "checkmark.circle.fill" : "square.and.arrow.up")
                                 .font(.title2)
-                                .foregroundStyle(copiedToClipboard ? .green : .gray)
-                                .symbolEffect(.bounce, value: copiedToClipboard)
+                                .foregroundStyle(hadithActionService.copiedToClipboard ? .green : .gray)
+                                .symbolEffect(.bounce, value: hadithActionService.copiedToClipboard)
                         }
                         .menuStyle(.borderlessButton)
                     }
@@ -358,9 +360,9 @@ struct HadithDetailView: View {
                             .font(.nohemiCaption)
                             .foregroundColor(.black)
                         Spacer()
-                        Button(action: { speakText(hadith.arabicText, language: "ar-SA") }) {
-                            Image(systemName: "speaker.wave.2")
-                                .foregroundStyle(.gray)
+                        Button(action: { speechService.speak(hadith.arabicText, languageCode: "ar-SA") }) {
+                            Image(systemName: speechService.isSpeaking ? "speaker.wave.2.fill" : "speaker.wave.2")
+                                .foregroundStyle(speechService.isSpeaking ? .green : .gray)
                         }
                         .buttonStyle(.plain)
                     }
@@ -392,11 +394,11 @@ struct HadithDetailView: View {
                                 let text = appState.selectedLanguage == .uzbek ?
                                     (hadith.uzbekTranslation ?? hadith.englishTranslation) :
                                     hadith.englishTranslation
-                                let lang = appState.selectedLanguage == .uzbek ? "uz" : "en-US"
-                                speakText(text, language: lang)
+                                let lang = appState.selectedLanguage == .uzbek ? "uz-UZ" : "en-US"
+                                speechService.speak(text, languageCode: lang)
                             }) {
-                                Image(systemName: "speaker.wave.2")
-                                    .foregroundStyle(.gray)
+                                Image(systemName: speechService.isSpeaking ? "speaker.wave.2.fill" : "speaker.wave.2")
+                                    .foregroundStyle(speechService.isSpeaking ? .green : .gray)
                             }
                             .buttonStyle(.plain)
                         }
@@ -421,41 +423,6 @@ struct HadithDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.nawawi_background)
     }
-
-    private func exportHadith(_ format: ExportFormat) {
-        let text = dataManager.exportHadith(hadith, format: format)
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(text, forType: .string)
-
-        withAnimation {
-            copiedToClipboard = true
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            withAnimation {
-                copiedToClipboard = false
-            }
-        }
-    }
-
-    private func shareHadith() {
-        let text = dataManager.exportHadith(hadith, format: .plain)
-        let sharingPicker = NSSharingServicePicker(items: [text])
-        sharingPicker.show(relativeTo: .zero, of: NSApp.keyWindow?.contentView ?? NSView(), preferredEdge: .minY)
-    }
-
-    private func speakText(_ text: String, language: String) {
-        // Stop any ongoing speech
-        speechSynthesizer?.stopSpeaking()
-
-        // Create or reuse synthesizer
-        if speechSynthesizer == nil {
-            speechSynthesizer = NSSpeechSynthesizer()
-        }
-
-        speechSynthesizer?.setVoice(NSSpeechSynthesizer.VoiceName(rawValue: "com.apple.speech.synthesis.voice.\(language)"))
-        speechSynthesizer?.startSpeaking(text)
-    }
 }
 
 // MARK: - Settings Window View
@@ -464,8 +431,6 @@ struct SettingsWindowView: View {
     @EnvironmentObject var favoritesManager: FavoritesManager
     @EnvironmentObject var notificationManager: NotificationManager
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedTime = Date()
-    @State private var permissionStatus: UNAuthorizationStatus = .notDetermined
 
     var body: some View {
         VStack(spacing: 0) {
@@ -486,158 +451,13 @@ struct SettingsWindowView: View {
 
             Divider()
 
-            ScrollView {
-                VStack(spacing: 20) {
-                    // Notifications Section
-                    GroupBox {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("Notifications", systemImage: "bell")
-                                .font(.nohemiHeadline)
-                                .foregroundColor(.black)
-
-                            if permissionStatus == .denied {
-                                HStack {
-                                    Image(systemName: "exclamationmark.triangle.fill")
-                                        .foregroundStyle(.yellow)
-                                    Text("Notifications are disabled in System Settings")
-                                        .font(.nohemiCaption)
-                                        .foregroundColor(.gray)
-                                }
-
-                                Button(action: {
-                                    if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
-                                        NSWorkspace.shared.open(url)
-                                    }
-                                }) {
-                                    Text("Open System Settings")
-                                }
-                            } else if permissionStatus == .notDetermined {
-                                Button(action: {
-                                    notificationManager.requestNotificationPermission { granted in
-                                        checkPermissionStatus()
-                                        if granted {
-                                            notificationManager.reminderEnabled = true
-                                        }
-                                    }
-                                }) {
-                                    Text("Enable Notifications")
-                                }
-                                .buttonStyle(.borderedProminent)
-                            }
-
-                            Toggle("Daily Reminder", isOn: $notificationManager.reminderEnabled)
-                                .disabled(permissionStatus != .authorized)
-
-                            if notificationManager.reminderEnabled && permissionStatus == .authorized {
-                                DatePicker("Reminder Time",
-                                          selection: $selectedTime,
-                                          displayedComponents: .hourAndMinute)
-                                    .onChange(of: selectedTime) { _, newTime in
-                                        let components = Calendar.current.dateComponents([.hour, .minute], from: newTime)
-                                        notificationManager.reminderHour = components.hour ?? 9
-                                        notificationManager.reminderMinute = components.minute ?? 0
-                                    }
-
-                                Button(action: {
-                                    notificationManager.sendTestNotification()
-                                }) {
-                                    Text("Send Test Notification")
-                                }
-                            }
-                        }
-                    }
-
-                    // Updates Section (Sparkle)
-                    GroupBox {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("Updates", systemImage: "arrow.down.circle")
-                                .font(.nohemiHeadline)
-                                .foregroundColor(.black)
-
-                            Text("Automatic updates keep the app secure and add new features")
-                                .font(.nohemiCaption)
-                                .foregroundColor(.gray)
-                                .fixedSize(horizontal: false, vertical: true)
-
-                            Button(action: {
-                                if let appDelegate = NSApp.delegate as? AppDelegate,
-                                   let updater = appDelegate.updaterController {
-                                    updater.checkForUpdates(nil)
-                                } else {
-                                    let alert = NSAlert()
-                                    alert.messageText = "Update Check"
-                                    alert.informativeText = "Unable to check for updates. Please restart the app and try again."
-                                    alert.alertStyle = .warning
-                                    alert.addButton(withTitle: "OK")
-                                    alert.runModal()
-                                }
-                            }) {
-                                Text("Check for Updates...")
-                            }
-                        }
-                    }
-
-                    // Favorites Section
-                    GroupBox {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("Favorites", systemImage: "heart")
-                                .font(.nohemiHeadline)
-                                .foregroundColor(.black)
-
-                            if favoritesManager.favorites.isEmpty {
-                                Text("No favorites yet")
-                                    .foregroundColor(.gray)
-                            } else {
-                                Text("\(favoritesManager.favorites.count) hadith\(favoritesManager.favorites.count == 1 ? "" : "s") marked as favorite")
-                                    .foregroundColor(.black)
-
-                                Button(action: {
-                                    favoritesManager.clearAllFavorites()
-                                }) {
-                                    Text("Clear All Favorites")
-                                        .foregroundColor(.red)
-                                }
-                            }
-                        }
-                    }
-
-                    // About Section
-                    GroupBox {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("About", systemImage: "info.circle")
-                                .font(.nohemiHeadline)
-                                .foregroundColor(.black)
-
-                            Text("40 Hadith Nawawi")
-                                .font(.nohemiBody)
-                                .foregroundColor(.black)
-                            Text("Version 1.0.0")
-                                .font(.nohemiCaption)
-                                .foregroundColor(.black)
-                            Text("A collection of forty hadiths compiled by Imam Nawawi")
-                                .font(.nohemiCaption)
-                                .foregroundColor(.black)
-                        }
-                    }
-                }
-                .padding()
-            }
+            // Use unified settings content
+            SettingsContentView()
+                .environmentObject(appState)
+                .environmentObject(favoritesManager)
+                .environmentObject(notificationManager)
         }
         .frame(width: 500, height: 600)
         .background(Color.nawawi_background)
-        .onAppear {
-            var components = DateComponents()
-            components.hour = notificationManager.reminderHour
-            components.minute = notificationManager.reminderMinute
-            selectedTime = Calendar.current.date(from: components) ?? Date()
-
-            checkPermissionStatus()
-        }
-    }
-
-    private func checkPermissionStatus() {
-        notificationManager.checkNotificationPermission { status in
-            permissionStatus = status
-        }
     }
 }
