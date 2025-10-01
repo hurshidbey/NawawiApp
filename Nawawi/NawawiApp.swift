@@ -16,32 +16,24 @@ struct NawawiApp: App {
     @State private var isAppActive = true
 
     init() {
-        // Set activation policy to regular app (allows windows to open)
-        NSApp.setActivationPolicy(.regular)
-
         setupNotifications()
     }
 
     var body: some Scene {
         // Onboarding window (shown on first launch)
         WindowGroup("Welcome", id: "onboarding") {
-            if appState.showOnboarding {
-                OnboardingView {
-                    appState.completeOnboarding()
-                }
-                .environmentObject(appState)
-                .colorScheme(.light)
-                .onAppear {
-                    NSApp.activate(ignoringOtherApps: true)
-                }
-            } else {
-                EmptyView()
+            OnboardingView {
+                appState.completeOnboarding()
+            }
+            .environmentObject(appState)
+            .colorScheme(.light)
+            .onAppear {
+                NSApp.activate(ignoringOtherApps: true)
             }
         }
         .defaultSize(width: 600, height: 550)
         .defaultPosition(.center)
         .windowResizability(.contentSize)
-        .handlesExternalEvents(matching: ["onboarding"])
 
         // Main standalone window
         WindowGroup("40 Hadith Nawawi", id: "main-window") {
@@ -65,6 +57,9 @@ struct NawawiApp: App {
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
                 .task {
+                    // Set activation policy to allow windows to open
+                    NSApp.setActivationPolicy(.regular)
+
                     // Load data when menu bar appears
                     appState.loadData()
                     print("🚀 MenuBarExtra task - showOnboarding: \(appState.showOnboarding)")
