@@ -191,6 +191,23 @@ struct MainWindowView: View {
                 let safeIndex = min(max(0, appState.currentHadithIndex), filteredHadiths.count - 1)
                 selectedHadithIndex = safeIndex
             }
+
+            // Check for pending hadith navigation from notification
+            if let pending = appState.pendingHadithNavigation {
+                print("📍 MainWindowView: Navigating to pending hadith \(pending)")
+                selectedHadithIndex = pending
+                appState.currentHadithIndex = pending
+                appState.pendingHadithNavigation = nil
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("OpenHadith"))) { notification in
+            if let hadithIndex = notification.userInfo?["hadithIndex"] as? Int {
+                print("📍 MainWindowView: Received OpenHadith notification for index \(hadithIndex)")
+                withAnimation {
+                    selectedHadithIndex = hadithIndex
+                    appState.currentHadithIndex = hadithIndex
+                }
+            }
         }
         .onChange(of: selectedHadithIndex) { _, newIndex in
             if let index = newIndex, index < filteredHadiths.count {

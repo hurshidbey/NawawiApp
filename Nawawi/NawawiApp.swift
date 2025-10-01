@@ -478,28 +478,27 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
 
         // CRITICAL: Use MainActor for all UI operations
         await MainActor.run {
-            // 1. FIRST: Set activation policy to allow windows
+            // 1. Set activation policy and activate app
             NSApp.setActivationPolicy(.regular)
-
-            // 2. SECOND: Activate app and bring to front
             NSApp.activate(ignoringOtherApps: true)
 
-            // 3. THIRD: Store the hadith index in AppState
+            // 2. Store the hadith index in AppState FIRST
             if let appState = self.appState {
                 appState.currentHadithIndex = hadithNumber - 1
                 appState.pendingHadithNavigation = hadithNumber - 1
-                print("✅ Set current hadith to index \(hadithNumber - 1)")
+                appState.shouldOpenMainWindow = true  // Signal to open window
+                print("✅ Set hadith index and shouldOpenMainWindow flag")
             }
 
-            // 4. FOURTH: Open or bring forward the main window using AppKit
+            // 3. Open or bring forward window
             self.openMainWindow(forHadith: hadithNumber - 1)
         }
     }
 
     /// Opens the main window using proper AppKit APIs
     private func openMainWindow(forHadith index: Int) {
-        // Try to find existing main window
-        if let existingWindow = NSApp.windows.first(where: { $0.title == "40 Hadith Nawawi" }) {
+        // Try to find existing main window first
+        if let existingWindow = NSApp.windows.first(where: { $0.title == "40 Hadith Nawawi" || $0.identifier?.rawValue.contains("main-window") == true }) {
             print("✅ Found existing main window, bringing to front")
             existingWindow.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
@@ -514,30 +513,54 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
                 print("✅ Posted navigation to hadith \(index)")
             }
         } else {
-            print("✅ No existing window, requesting new main window")
-            // Request new window via notification
+            print("✅ No existing window found, creating new window")
+
+            // CRITICAL: For SwiftUI WindowGroup, we must trigger window creation properly
+            // Post notification first to trigger SwiftUI's window system
             NotificationCenter.default.post(
                 name: NSNotification.Name("OpenMainWindow"),
-                object: nil
+                object: nil,
+                userInfo: ["hadithIndex": index]
             )
 
-            // Wait for window to appear, then navigate
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                if let newWindow = NSApp.windows.first(where: { $0.title == "40 Hadith Nawawi" }) {
+            // Use performSelector to execute on next run loop - gives SwiftUI time to process
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                // Check if window was created
+                if let newWindow = NSApp.windows.first(where: { $0.title == "40 Hadith Nawawi" || $0.identifier?.rawValue.contains("main-window") == true }) {
                     newWindow.makeKeyAndOrderFront(nil)
                     NSApp.activate(ignoringOtherApps: true)
+                    print("✅ Window created and activated")
 
-                    // Navigate after window is ready
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    // Navigate to hadith
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                         NotificationCenter.default.post(
                             name: NSNotification.Name("OpenHadith"),
                             object: nil,
                             userInfo: ["hadithIndex": index]
                         )
-                        print("✅ Navigated to hadith \(index) in new window")
+                        print("✅ Navigated to hadith \(index)")
                     }
                 } else {
-                    print("⚠️ Failed to open main window")
+                    // SwiftUI window creation failed, try using AppDelegate method
+                    print("⚠️ SwiftUI window creation failed, using AppDelegate fallback")
+                    if let appDelegate = NSApp.delegate as? AppDelegate {
+                        _ = appDelegate.applicationShouldHandleReopen(NSApp, hasVisibleWindows: false)
+
+                        // Try again after delegation
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            if let finalWindow = NSApp.windows.first(where: { $0.title == "40 Hadith Nawawi" }) {
+                                finalWindow.makeKeyAndOrderFront(nil)
+                                NotificationCenter.default.post(
+                                    name: NSNotification.Name("OpenHadith"),
+                                    object: nil,
+                                    userInfo: ["hadithIndex": index]
+                                )
+                                print("✅ Window opened via AppDelegate fallback")
+                            } else {
+                                print("❌ Failed to create main window - all methods exhausted")
+                            }
+                        }
+                    }
                 }
             }
         }

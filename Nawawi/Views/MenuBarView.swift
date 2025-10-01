@@ -197,9 +197,24 @@ struct MenuBarView: View {
                 }
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("OpenMainWindow"))) { _ in
+            print("🪟 MenuBarView: Received OpenMainWindow request")
+            openWindow(id: "main-window")
+            print("🪟 Called openWindow(id: main-window)")
+        }
         .onReceive(appState.$showSettings) { show in
             if show {
                 currentView = .settings
+            }
+        }
+        .onReceive(appState.$shouldOpenMainWindow) { shouldOpen in
+            if shouldOpen {
+                print("🪟 MenuBarView: shouldOpenMainWindow flag triggered")
+                openWindow(id: "main-window")
+                // Reset flag
+                DispatchQueue.main.async {
+                    appState.shouldOpenMainWindow = false
+                }
             }
         }
     }
