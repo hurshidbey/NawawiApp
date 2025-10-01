@@ -27,6 +27,10 @@ struct NawawiApp: App {
             }
             .environmentObject(appState)
             .colorScheme(.light)
+            .task {
+                // Ensure activation policy allows windows
+                NSApp.setActivationPolicy(.regular)
+            }
             .onAppear {
                 NSApp.activate(ignoringOtherApps: true)
             }
@@ -41,8 +45,12 @@ struct NawawiApp: App {
                 .environmentObject(appState)
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
-                .onAppear {
+                .task {
+                    // Ensure activation policy allows windows
+                    NSApp.setActivationPolicy(.regular)
                     appState.loadData()
+                }
+                .onAppear {
                     // Activate app for macOS 26 Tahoe visibility
                     NSApp.activate(ignoringOtherApps: true)
                 }
