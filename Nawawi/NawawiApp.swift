@@ -379,13 +379,23 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
         // Handle notification tap
         if let hadithNumber = response.notification.request.content.userInfo["hadithNumber"] as? Int {
             print("User tapped notification for Hadith #\(hadithNumber)")
-            // Navigate to the specific hadith (index is number - 1)
+
             DispatchQueue.main.async {
+                // Activate the app and bring it to front
+                NSApp.setActivationPolicy(.regular)
+                NSApp.activate(ignoringOtherApps: true)
+
+                // Navigate to the specific hadith (index is number - 1)
                 NotificationCenter.default.post(
                     name: NSNotification.Name("OpenHadith"),
                     object: nil,
                     userInfo: ["hadithIndex": hadithNumber - 1]
                 )
+
+                // Open the main window if not already open
+                if let url = URL(string: "nawawi://main-window") {
+                    NSWorkspace.shared.open(url)
+                }
             }
         }
     }
