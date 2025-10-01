@@ -1191,6 +1191,44 @@ struct SettingsInlineView: View {
                         }
                     }
 
+                    // Updates Section (Sparkle)
+                    GroupBox {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Label("Updates", systemImage: "arrow.down.circle")
+                                .font(.headline)
+
+                            Text("Automatic updates keep the app secure and add new features")
+                                .font(.caption)
+                                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            Button(action: {
+                                // Sparkle check for updates - uncomment after adding Sparkle package:
+                                // if let updater = (NSApp.delegate as? AppDelegate)?.updaterController {
+                                //     updater.checkForUpdates(nil)
+                                // }
+
+                                // Temporary fallback until Sparkle is integrated
+                                let alert = NSAlert()
+                                alert.messageText = "Update Check"
+                                alert.informativeText = "Sparkle auto-updates will be integrated soon. For now, check GitHub releases for updates:\n\nhttps://github.com/hurshidbey/NawawiApp/releases"
+                                alert.alertStyle = .informational
+                                alert.addButton(withTitle: "OK")
+                                alert.addButton(withTitle: "Open GitHub")
+                                let response = alert.runModal()
+                                if response == .alertSecondButtonReturn {
+                                    if let url = URL(string: "https://github.com/hurshidbey/NawawiApp/releases") {
+                                        NSWorkspace.shared.open(url)
+                                    }
+                                }
+                            }) {
+                                Text("Check for Updates...")
+                                    .foregroundColor(.black)
+                            }
+                            .buttonStyle(.link)
+                        }
+                    }
+
                     // About Section
                     GroupBox {
                         VStack(alignment: .leading, spacing: 12) {

@@ -9,6 +9,8 @@ import SwiftUI
 import UserNotifications
 import Combine
 import ServiceManagement
+// Sparkle will be added via Swift Package Manager - uncomment after adding package:
+// import Sparkle
 
 @main
 struct NawawiApp: App {
@@ -16,8 +18,18 @@ struct NawawiApp: App {
     @StateObject private var appState = AppState()
     @State private var isAppActive = true
 
+    // Sparkle updater controller - uncomment after adding Sparkle package:
+    // private let updaterController: SPUStandardUpdaterController
+
     init() {
         setupNotifications()
+
+        // Initialize Sparkle - uncomment after adding package:
+        // updaterController = SPUStandardUpdaterController(
+        //     startingUpdater: true,
+        //     updaterDelegate: nil,
+        //     userDriverDelegate: nil
+        // )
     }
 
     private func setupNotificationsWithState() {

@@ -36,5 +36,13 @@
         <string>Fonts/Nohemi-ExtraBold.ttf</string>
         <string>Fonts/Nohemi-Black.ttf</string>
     </array>
+    <key>SUFeedURL</key>
+    <string>https://raw.githubusercontent.com/hurshidbey/NawawiApp/main/appcast.xml</string>
+    <key>SUEnableAutomaticChecks</key>
+    <true/>
+    <key>SUPublicEDKey</key>
+    <string>SPARKLE_PUBLIC_KEY_PLACEHOLDER</string>
+    <key>SUScheduledCheckInterval</key>
+    <integer>86400</integer>
 </dict>
 </plist>

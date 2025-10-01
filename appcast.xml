@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>40 Hadith Nawawi Updates</title>
+        <link>https://github.com/hurshidbey/NawawiApp</link>
+        <description>Most recent updates to 40 Hadith Nawawi</description>
+        <language>en</language>
+
+        <!-- Version 1.0.0 - Initial Release -->
+        <item>
+            <title>Version 1.0.0</title>
+            <description>
+                <![CDATA[
+                    <h2>Initial Release 🎉</h2>
+                    <h3>Features</h3>
+                    <ul>
+                        <li>✨ Beautiful modern UI with Nohemi typography</li>
+                        <li>📚 All 40 Hadith Nawawi with Arabic, English, and Uzbek translations</li>
+                        <li>🔍 Powerful search across all languages</li>
+                        <li>❤️ Favorites system to mark your preferred hadiths</li>
+                        <li>🔔 Daily reminder notifications</li>
+                        <li>📍 Menu bar integration for quick access</li>
+                        <li>📤 Export to text, markdown, or JSON</li>
+                        <li>⌨️ Keyboard shortcuts for efficient navigation</li>
+                        <li>🔒 100% private - no data collection</li>
+                    </ul>
+
+                    <h3>System Requirements</h3>
+                    <ul>
+                        <li>macOS 14.0 (Sonoma) or later</li>
+                        <li>Apple Silicon or Intel Mac</li>
+                    </ul>
+
+                    <p><strong>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</strong></p>
+                    <p><em>May Allah accept this humble effort.</em></p>
+                ]]>
+            </description>
+            <pubDate>Wed, 01 Oct 2025 00:00:00 +0000</pubDate>
+
+            <!-- REPLACE WITH YOUR ACTUAL VALUES AFTER BUILDING -->
+            <enclosure
+                url="https://github.com/hurshidbey/NawawiApp/releases/download/v1.0.0/Nawawi-1.0.0.zip"
+                sparkle:version="1.0.0"
+                sparkle:shortVersionString="1.0.0"
+                type="application/octet-stream"
+                length="REPLACE_WITH_FILE_SIZE"
+                sparkle:edSignature="REPLACE_WITH_SIGNATURE_AFTER_SIGNING"
+            />
+
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+        </item>
+
+        <!-- Future updates will be added here
+
+        Example for version 1.0.1:
+
+        <item>
+            <title>Version 1.0.1</title>
+            <description>
+                <![CDATA[
+                    <h2>Bug Fixes</h2>
+                    <ul>
+                        <li>Fixed notification click handling</li>
+                        <li>Improved search performance</li>
+                    </ul>
+                ]]>
+            </description>
+            <pubDate>Thu, 15 Oct 2025 00:00:00 +0000</pubDate>
+            <enclosure
+                url="https://github.com/hurshidbey/NawawiApp/releases/download/v1.0.1/Nawawi-1.0.1.zip"
+                sparkle:version="1.0.1"
+                sparkle:shortVersionString="1.0.1"
+                type="application/octet-stream"
+                length="FILE_SIZE"
+                sparkle:edSignature="SIGNATURE"
+            />
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+        </item>
+        -->
+
+    </channel>
+</rss>
