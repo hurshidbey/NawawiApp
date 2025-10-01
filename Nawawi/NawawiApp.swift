@@ -209,34 +209,61 @@ class AppState: ObservableObject {
     }
 
     private func syncStateObjects() {
-        // Navigation state sync
+        // Navigation state sync - one-way bindings to prevent circular updates
         navigationState.$currentHadithIndex
-            .assign(to: &$currentHadithIndex)
-        $currentHadithIndex
+            .removeDuplicates()
             .sink { [weak self] value in
-                self?.navigationState.currentHadithIndex = value
+                guard let self = self, self.currentHadithIndex != value else { return }
+                self.currentHadithIndex = value
+            }
+            .store(in: &cancellables)
+
+        $currentHadithIndex
+            .removeDuplicates()
+            .sink { [weak self] value in
+                guard let self = self, self.navigationState.currentHadithIndex != value else { return }
+                self.navigationState.currentHadithIndex = value
             }
             .store(in: &cancellables)
 
         navigationState.$pendingHadithNavigation
-            .assign(to: &$pendingHadithNavigation)
-        navigationState.$shouldOpenMainWindow
-            .assign(to: &$shouldOpenMainWindow)
-
-        // Preferences state sync
-        preferencesState.$selectedLanguage
-            .assign(to: &$selectedLanguage)
-        $selectedLanguage
             .sink { [weak self] value in
-                self?.preferencesState.selectedLanguage = value
+                guard let self = self, self.pendingHadithNavigation != value else { return }
+                self.pendingHadithNavigation = value
             }
             .store(in: &cancellables)
 
-        // Note: launchAtLogin is @AppStorage and managed directly by PreferencesState
+        navigationState.$shouldOpenMainWindow
+            .sink { [weak self] value in
+                guard let self = self, self.shouldOpenMainWindow != value else { return }
+                self.shouldOpenMainWindow = value
+            }
+            .store(in: &cancellables)
+
+        // Preferences state sync
+        preferencesState.$selectedLanguage
+            .removeDuplicates()
+            .sink { [weak self] value in
+                guard let self = self, self.selectedLanguage != value else { return }
+                self.selectedLanguage = value
+            }
+            .store(in: &cancellables)
+
+        $selectedLanguage
+            .removeDuplicates()
+            .sink { [weak self] value in
+                guard let self = self, self.preferencesState.selectedLanguage != value else { return }
+                self.preferencesState.selectedLanguage = value
+            }
+            .store(in: &cancellables)
 
         // Onboarding state sync
         onboardingState.$showOnboarding
-            .assign(to: &$showOnboarding)
+            .sink { [weak self] value in
+                guard let self = self, self.showOnboarding != value else { return }
+                self.showOnboarding = value
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - Lifecycle
