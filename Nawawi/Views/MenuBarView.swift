@@ -23,6 +23,7 @@ struct MenuBarView: View {
     @State private var showExportMenu = false
 
     @FocusState private var isSearchFocused: Bool
+    @State private var keyboardMonitor: Any?
 
     enum ViewMode {
         case main
@@ -33,18 +34,26 @@ struct MenuBarView: View {
     var currentHadith: Hadith? {
         let displayHadiths = filteredHadiths
         guard !displayHadiths.isEmpty else {
-            DispatchQueue.main.async {
+            return nil
+        }
+        // Validate and clamp index without mutation
+        let safeIndex = min(max(0, appState.currentHadithIndex), displayHadiths.count - 1)
+        return displayHadiths[safeIndex]
+    }
+
+    // Helper function to validate and update index safely
+    private func validateCurrentIndex() {
+        let displayHadiths = filteredHadiths
+        if displayHadiths.isEmpty {
+            if appState.currentHadithIndex != 0 {
                 appState.currentHadithIndex = 0
             }
-            return nil
+            return
         }
         let safeIndex = min(max(0, appState.currentHadithIndex), displayHadiths.count - 1)
         if safeIndex != appState.currentHadithIndex {
-            DispatchQueue.main.async {
-                appState.currentHadithIndex = safeIndex
-            }
+            appState.currentHadithIndex = safeIndex
         }
-        return displayHadiths[safeIndex]
     }
 
     var filteredHadiths: [Hadith] {
@@ -164,6 +173,7 @@ struct MenuBarView: View {
         .animation(.spring(response: 0.5, dampingFraction: 0.8), value: currentView)
         .onAppear {
             setupKeyboardShortcuts()
+            validateCurrentIndex()
 
             // Check if we need to show onboarding on first launch
             print("📱 MenuBarView.onAppear - showOnboarding: \(appState.showOnboarding)")
@@ -189,6 +199,9 @@ struct MenuBarView: View {
             } else {
                 print("❌ Onboarding already completed")
             }
+        }
+        .onDisappear {
+            removeKeyboardShortcuts()
         }
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("OpenHadith"))) { notification in
             if let hadithIndex = notification.userInfo?["hadithIndex"] as? Int {
@@ -221,7 +234,13 @@ struct MenuBarView: View {
     }
 
     private func setupKeyboardShortcuts() {
-        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+        // Remove existing monitor if any
+        if let monitor = keyboardMonitor {
+            NSEvent.removeMonitor(monitor)
+        }
+
+        // Add new monitor and store reference
+        keyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             guard NSApp.isActive else { return event }
 
             switch event.keyCode {
@@ -249,6 +268,13 @@ struct MenuBarView: View {
                 break
             }
             return event
+        }
+    }
+
+    private func removeKeyboardShortcuts() {
+        if let monitor = keyboardMonitor {
+            NSEvent.removeMonitor(monitor)
+            keyboardMonitor = nil
         }
     }
 
@@ -781,6 +807,7 @@ struct HadithDetailInlineView: View {
     @EnvironmentObject var dataManager: HadithDataManager
     @State private var copiedToClipboard = false
     @State private var selectedExportFormat: ExportFormat = .plain
+    @State private var speechSynthesizer: NSSpeechSynthesizer?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -993,9 +1020,16 @@ struct HadithDetailInlineView: View {
     }
 
     private func speakText(_ text: String, language: String) {
-        let synthesizer = NSSpeechSynthesizer()
-        synthesizer.setVoice(NSSpeechSynthesizer.VoiceName(rawValue: "com.apple.speech.synthesis.voice.\(language)"))
-        synthesizer.startSpeaking(text)
+        // Stop any ongoing speech
+        speechSynthesizer?.stopSpeaking()
+
+        // Create or reuse synthesizer
+        if speechSynthesizer == nil {
+            speechSynthesizer = NSSpeechSynthesizer()
+        }
+
+        speechSynthesizer?.setVoice(NSSpeechSynthesizer.VoiceName(rawValue: "com.apple.speech.synthesis.voice.\(language)"))
+        speechSynthesizer?.startSpeaking(text)
     }
 }
 

@@ -285,6 +285,7 @@ struct HadithDetailView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var dataManager: HadithDataManager
     @State private var copiedToClipboard = false
+    @State private var speechSynthesizer: NSSpeechSynthesizer?
 
     var body: some View {
         ScrollView {
@@ -436,9 +437,16 @@ struct HadithDetailView: View {
     }
 
     private func speakText(_ text: String, language: String) {
-        let synthesizer = NSSpeechSynthesizer()
-        synthesizer.setVoice(NSSpeechSynthesizer.VoiceName(rawValue: "com.apple.speech.synthesis.voice.\(language)"))
-        synthesizer.startSpeaking(text)
+        // Stop any ongoing speech
+        speechSynthesizer?.stopSpeaking()
+
+        // Create or reuse synthesizer
+        if speechSynthesizer == nil {
+            speechSynthesizer = NSSpeechSynthesizer()
+        }
+
+        speechSynthesizer?.setVoice(NSSpeechSynthesizer.VoiceName(rawValue: "com.apple.speech.synthesis.voice.\(language)"))
+        speechSynthesizer?.startSpeaking(text)
     }
 }
 

@@ -19,9 +19,8 @@ struct NawawiApp: App {
 
     init() {
         setupNotifications()
-
-        // Sparkle is initialized in AppDelegate
-        appDelegate.setupSparkle()
+        // Sparkle initialization moved to AppDelegate.applicationDidFinishLaunching
+        // to avoid race condition accessing appDelegate before initialization
     }
 
     private func setupNotificationsWithState() {
@@ -156,6 +155,7 @@ enum AppLanguage: String, CaseIterable {
     }
 }
 
+@MainActor
 class AppState: ObservableObject {
     @Published var currentHadithIndex = 0
     @Published var favorites: Set<Int> = []
@@ -191,8 +191,6 @@ class AppState: ObservableObject {
     @AppStorage("lastHadithIndex") private var savedIndex = 0
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("launchAtLogin") var launchAtLogin = false
-
-    private var reminderTimer: Timer?
 
     func loadData() {
         currentHadithIndex = savedIndex
@@ -255,8 +253,6 @@ class AppState: ObservableObject {
     }
 
     func scheduleReminder() {
-        reminderTimer?.invalidate()
-
         guard reminderEnabled else {
             hasActiveReminder = false
             return
@@ -266,7 +262,8 @@ class AppState: ObservableObject {
         UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
             guard let self = self else { return }
 
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
                 if settings.authorizationStatus == .authorized {
                     self.hasActiveReminder = true
 
@@ -291,10 +288,12 @@ class AppState: ObservableObject {
                     let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
                     let request = UNNotificationRequest(identifier: "daily-hadith", content: content, trigger: trigger)
 
-                    UNUserNotificationCenter.current().add(request) { error in
+                    UNUserNotificationCenter.current().add(request) { [weak self] error in
+                        guard let self = self else { return }
                         if let error = error {
                             print("Error scheduling notification: \(error)")
-                            DispatchQueue.main.async {
+                            DispatchQueue.main.async { [weak self] in
+                                guard let self = self else { return }
                                 self.hasActiveReminder = false
                                 self.reminderEnabled = false
                             }
@@ -309,9 +308,11 @@ class AppState: ObservableObject {
                     print("Notification permission not granted")
 
                     // Request permission again
-                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
+                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
+                        guard let self = self else { return }
                         if granted {
-                            DispatchQueue.main.async {
+                            DispatchQueue.main.async { [weak self] in
+                                guard let self = self else { return }
                                 self.scheduleReminder()
                             }
                         }
@@ -322,7 +323,6 @@ class AppState: ObservableObject {
     }
 
     func cancelReminder() {
-        reminderTimer?.invalidate()
         hasActiveReminder = false
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["daily-hadith"])
     }
@@ -457,6 +457,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Set activation policy to regular to allow windows
         NSApp.setActivationPolicy(.regular)
         print("✅ App finished launching - activation policy set to .regular")
+
+        // Initialize Sparkle auto-updater (moved here to avoid race condition)
+        setupSparkle()
     }
 
     func applicationDidBecomeActive(_ notification: Notification) {

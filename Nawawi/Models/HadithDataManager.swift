@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 
+@MainActor
 class HadithDataManager: ObservableObject {
     static let shared = HadithDataManager()
 
@@ -35,7 +36,8 @@ class HadithDataManager: ObservableObject {
                 // Check cache first
                 if let cachedData = self.cache.object(forKey: self.hadithFileName as NSString) as Data? {
                     let decoded = try JSONDecoder().decode([Hadith].self, from: cachedData)
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
                         self.hadiths = decoded
                         self.isLoading = false
                         self.lastLoadTime = Date()
@@ -54,13 +56,15 @@ class HadithDataManager: ObservableObject {
                 // Cache the data
                 self.cache.setObject(data as NSData, forKey: self.hadithFileName as NSString)
 
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     self.hadiths = decoded
                     self.isLoading = false
                     self.lastLoadTime = Date()
                 }
             } catch {
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     self.error = error
                     self.isLoading = false
                     print("Error loading hadiths: \(error)")
