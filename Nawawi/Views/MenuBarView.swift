@@ -165,10 +165,15 @@ struct MenuBarView: View {
             setupKeyboardShortcuts()
 
             // Check if we need to show onboarding on first launch
+            print("📱 MenuBarView.onAppear - showOnboarding: \(appState.showOnboarding)")
             if appState.showOnboarding {
+                print("✅ Opening onboarding window...")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     openWindow(id: "onboarding")
+                    print("🪟 openWindow(id: onboarding) called")
                 }
+            } else {
+                print("❌ Onboarding already completed")
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("OpenHadith"))) { notification in

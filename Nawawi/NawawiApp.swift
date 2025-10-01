@@ -17,6 +17,8 @@ struct NawawiApp: App {
 
     init() {
         setupNotifications()
+        // Load data immediately to set showOnboarding flag
+        _appState.wrappedValue.loadData()
     }
 
     var body: some Scene {
@@ -189,6 +191,7 @@ class AppState: ObservableObject {
 
         // Check if onboarding should be shown
         showOnboarding = !hasCompletedOnboarding
+        print("🚀 AppState.loadData() - hasCompletedOnboarding: \(hasCompletedOnboarding), showOnboarding: \(showOnboarding)")
     }
 
     func completeOnboarding() {
