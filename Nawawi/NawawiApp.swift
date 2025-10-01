@@ -16,9 +16,17 @@ struct NawawiApp: App {
     @State private var isAppActive = true
 
     init() {
+        // Set activation policy to regular app (allows windows to open)
+        NSApp.setActivationPolicy(.regular)
+
         setupNotifications()
         // Load data immediately to set showOnboarding flag
         _appState.wrappedValue.loadData()
+
+        // If first launch, ensure window can be shown
+        if _appState.wrappedValue.showOnboarding {
+            print("🎯 FIRST LAUNCH DETECTED - activation policy set to .regular")
+        }
     }
 
     var body: some Scene {

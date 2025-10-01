@@ -167,10 +167,23 @@ struct MenuBarView: View {
             // Check if we need to show onboarding on first launch
             print("📱 MenuBarView.onAppear - showOnboarding: \(appState.showOnboarding)")
             if appState.showOnboarding {
-                print("✅ Opening onboarding window...")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                print("✅ Attempting to open onboarding window...")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    // Use SwiftUI's openWindow
                     openWindow(id: "onboarding")
-                    print("🪟 openWindow(id: onboarding) called")
+
+                    // Fallback: activate the app to bring windows forward
+                    NSApp.activate(ignoringOtherApps: true)
+
+                    // Force window to front if it exists
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        if let window = NSApp.windows.first(where: { $0.title == "Welcome" }) {
+                            window.makeKeyAndOrderFront(nil)
+                            print("🪟 Found and activated Welcome window")
+                        } else {
+                            print("⚠️ Welcome window not found in NSApp.windows: \(NSApp.windows.map { $0.title })")
+                        }
+                    }
                 }
             } else {
                 print("❌ Onboarding already completed")
