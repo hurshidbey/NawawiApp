@@ -20,13 +20,6 @@ struct NawawiApp: App {
         NSApp.setActivationPolicy(.regular)
 
         setupNotifications()
-        // Load data immediately to set showOnboarding flag
-        _appState.wrappedValue.loadData()
-
-        // If first launch, ensure window can be shown
-        if _appState.wrappedValue.showOnboarding {
-            print("🎯 FIRST LAUNCH DETECTED - activation policy set to .regular")
-        }
     }
 
     var body: some Scene {
@@ -71,8 +64,12 @@ struct NawawiApp: App {
                 .environmentObject(appState)
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
-                .onAppear {
+                .task {
+                    // Load data when menu bar appears
                     appState.loadData()
+                    print("🚀 MenuBarExtra task - showOnboarding: \(appState.showOnboarding)")
+                }
+                .onAppear {
                     // Activate app for macOS 26 Tahoe visibility
                     NSApp.activate(ignoringOtherApps: true)
                 }
