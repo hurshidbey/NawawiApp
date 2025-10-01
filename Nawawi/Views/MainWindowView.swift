@@ -7,6 +7,8 @@
 
 import SwiftUI
 import AppKit
+import UserNotifications
+import Sparkle
 
 struct MainWindowView: View {
     @EnvironmentObject var appState: AppState
@@ -444,6 +446,8 @@ struct HadithDetailView: View {
 struct SettingsWindowView: View {
     @EnvironmentObject var appState: AppState
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedTime = Date()
+    @State private var permissionStatus: UNAuthorizationStatus = .notDetermined
 
     var body: some View {
         VStack(spacing: 0) {
@@ -465,11 +469,167 @@ struct SettingsWindowView: View {
             Divider()
 
             ScrollView {
-                SettingsContentView()
-                    .environmentObject(appState)
+                VStack(spacing: 20) {
+                    // Notifications Section
+                    GroupBox {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Label("Notifications", systemImage: "bell")
+                                .font(.nohemiHeadline)
+                                .foregroundColor(.black)
+
+                            if permissionStatus == .denied {
+                                HStack {
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .foregroundStyle(.yellow)
+                                    Text("Notifications are disabled in System Settings")
+                                        .font(.nohemiCaption)
+                                        .foregroundColor(.gray)
+                                }
+
+                                Button(action: {
+                                    if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+                                        NSWorkspace.shared.open(url)
+                                    }
+                                }) {
+                                    Text("Open System Settings")
+                                }
+                            } else if permissionStatus == .notDetermined {
+                                Button(action: {
+                                    appState.requestNotificationPermission { granted in
+                                        checkPermissionStatus()
+                                        if granted {
+                                            appState.reminderEnabled = true
+                                            appState.scheduleReminder()
+                                        }
+                                    }
+                                }) {
+                                    Text("Enable Notifications")
+                                }
+                                .buttonStyle(.borderedProminent)
+                            }
+
+                            Toggle("Daily Reminder", isOn: $appState.reminderEnabled)
+                                .disabled(permissionStatus != .authorized)
+                                .onChange(of: appState.reminderEnabled) { _, enabled in
+                                    if enabled {
+                                        appState.scheduleReminder()
+                                    } else {
+                                        appState.cancelReminder()
+                                    }
+                                }
+
+                            if appState.reminderEnabled && permissionStatus == .authorized {
+                                DatePicker("Reminder Time",
+                                          selection: $selectedTime,
+                                          displayedComponents: .hourAndMinute)
+                                    .onChange(of: selectedTime) { _, newTime in
+                                        let components = Calendar.current.dateComponents([.hour, .minute], from: newTime)
+                                        appState.reminderHour = components.hour ?? 9
+                                        appState.reminderMinute = components.minute ?? 0
+                                        appState.scheduleReminder()
+                                    }
+
+                                Button(action: {
+                                    appState.sendTestNotification()
+                                }) {
+                                    Text("Send Test Notification")
+                                }
+                            }
+                        }
+                    }
+
+                    // Updates Section (Sparkle)
+                    GroupBox {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Label("Updates", systemImage: "arrow.down.circle")
+                                .font(.nohemiHeadline)
+                                .foregroundColor(.black)
+
+                            Text("Automatic updates keep the app secure and add new features")
+                                .font(.nohemiCaption)
+                                .foregroundColor(.gray)
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            Button(action: {
+                                if let appDelegate = NSApp.delegate as? AppDelegate,
+                                   let updater = appDelegate.updaterController {
+                                    updater.checkForUpdates(nil)
+                                } else {
+                                    let alert = NSAlert()
+                                    alert.messageText = "Update Check"
+                                    alert.informativeText = "Unable to check for updates. Please restart the app and try again."
+                                    alert.alertStyle = .warning
+                                    alert.addButton(withTitle: "OK")
+                                    alert.runModal()
+                                }
+                            }) {
+                                Text("Check for Updates...")
+                            }
+                        }
+                    }
+
+                    // Favorites Section
+                    GroupBox {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Label("Favorites", systemImage: "heart")
+                                .font(.nohemiHeadline)
+                                .foregroundColor(.black)
+
+                            if appState.favorites.isEmpty {
+                                Text("No favorites yet")
+                                    .foregroundColor(.gray)
+                            } else {
+                                Text("\(appState.favorites.count) hadith\(appState.favorites.count == 1 ? "" : "s") marked as favorite")
+                                    .foregroundColor(.black)
+
+                                Button(action: {
+                                    appState.favorites.removeAll()
+                                    appState.saveFavorites()
+                                }) {
+                                    Text("Clear All Favorites")
+                                        .foregroundColor(.red)
+                                }
+                            }
+                        }
+                    }
+
+                    // About Section
+                    GroupBox {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Label("About", systemImage: "info.circle")
+                                .font(.nohemiHeadline)
+                                .foregroundColor(.black)
+
+                            Text("40 Hadith Nawawi")
+                                .font(.nohemiBody)
+                                .foregroundColor(.black)
+                            Text("Version 1.0.0")
+                                .font(.nohemiCaption)
+                                .foregroundColor(.black)
+                            Text("A collection of forty hadiths compiled by Imam Nawawi")
+                                .font(.nohemiCaption)
+                                .foregroundColor(.black)
+                        }
+                    }
+                }
+                .padding()
             }
         }
-        .frame(width: 500, height: 400)
+        .frame(width: 500, height: 600)
         .background(Color.nawawi_background)
+        .onAppear {
+            var components = DateComponents()
+            components.hour = appState.reminderHour
+            components.minute = appState.reminderMinute
+            selectedTime = Calendar.current.date(from: components) ?? Date()
+
+            checkPermissionStatus()
+        }
+    }
+
+    private func checkPermissionStatus() {
+        appState.checkNotificationPermission { status in
+            permissionStatus = status
+        }
     }
 }
