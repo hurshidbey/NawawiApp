@@ -1124,6 +1124,9 @@ struct SettingsInlineView: View {
 
                             Toggle("Launch at Login", isOn: $appState.launchAtLogin)
                                 .help("Automatically launch the app when you log in to your Mac")
+                                .onChange(of: appState.launchAtLogin) { _, _ in
+                                    appState.updateLaunchAtLogin()
+                                }
 
                             Text("The app will start in the menu bar when your Mac starts")
                                 .font(.caption)

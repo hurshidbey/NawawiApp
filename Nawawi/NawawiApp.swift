@@ -161,11 +161,7 @@ class AppState: ObservableObject {
     @AppStorage("favorites") private var favoritesData = Data()
     @AppStorage("lastHadithIndex") private var savedIndex = 0
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
-    @AppStorage("launchAtLogin") var launchAtLogin = false {
-        didSet {
-            updateLaunchAtLogin()
-        }
-    }
+    @AppStorage("launchAtLogin") var launchAtLogin = false
 
     private var reminderTimer: Timer?
 
@@ -345,23 +341,26 @@ class AppState: ObservableObject {
     }
 
     func updateLaunchAtLogin() {
+        #if os(macOS)
         do {
+            let service = SMAppService.mainApp
             if launchAtLogin {
-                if SMAppService.mainApp.status == .enabled {
+                if service.status == .enabled {
                     print("Launch at login already enabled")
                 } else {
-                    try SMAppService.mainApp.register()
+                    try service.register()
                     print("Launch at login enabled")
                 }
             } else {
-                if SMAppService.mainApp.status == .enabled {
-                    try SMAppService.mainApp.unregister()
+                if service.status == .enabled {
+                    try service.unregister()
                     print("Launch at login disabled")
                 }
             }
         } catch {
             print("Failed to update launch at login: \(error)")
         }
+        #endif
     }
 }
 
