@@ -1206,6 +1206,25 @@ struct SettingsInlineView: View {
                             Text("A collection of forty hadiths compiled by Imam Nawawi")
                                 .font(.caption)
                                 .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
+
+                            Button(action: {
+                                // Open About window
+                                let aboutWindow = NSWindow(
+                                    contentRect: NSRect(x: 0, y: 0, width: 600, height: 700),
+                                    styleMask: [.titled, .closable],
+                                    backing: .buffered,
+                                    defer: false
+                                )
+                                aboutWindow.center()
+                                aboutWindow.title = "About 40 Hadith Nawawi"
+                                aboutWindow.contentView = NSHostingView(rootView: AboutView())
+                                aboutWindow.makeKeyAndOrderFront(nil)
+                            }) {
+                                Text("Credits & Attributions")
+                                    .foregroundColor(.black)
+                            }
+                            .buttonStyle(.link)
+                            .padding(.top, 4)
                         }
                     }
                 }
