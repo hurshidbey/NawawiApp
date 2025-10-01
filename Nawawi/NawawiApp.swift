@@ -394,20 +394,29 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
 
         // CRITICAL: Use MainActor for all UI operations
         await MainActor.run {
-            // 1. Set activation policy and activate app
-            NSApp.setActivationPolicy(.regular)
-            NSApp.activate(ignoringOtherApps: true)
-
-            // 2. Store the hadith index in AppState FIRST
+            // 1. FIRST: Store the hadith index in AppState before UI operations
             if let appState = self.appState {
                 appState.currentHadithIndex = hadithNumber - 1
                 appState.pendingHadithNavigation = hadithNumber - 1
-                appState.shouldOpenMainWindow = true  // Signal to open window
-                print("✅ Set hadith index and shouldOpenMainWindow flag")
+                appState.shouldOpenMainWindow = true
+                print("✅ Set hadith index to \(hadithNumber - 1) and shouldOpenMainWindow flag")
             }
 
-            // 3. Open or bring forward window
-            self.openMainWindow(forHadith: hadithNumber - 1)
+            // 2. Set activation policy and activate app with FORCE
+            NSApp.setActivationPolicy(.regular)
+            NSApp.activate(ignoringOtherApps: true)
+
+            // 3. Use NSWorkspace to bring app to front (more reliable for background apps)
+            if let bundleURL = Bundle.main.bundleURL as URL? {
+                NSWorkspace.shared.open(bundleURL)
+            }
+
+            print("✅ App activation requested")
+
+            // 4. Open or bring forward window with delay to ensure activation completes
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.openMainWindow(forHadith: hadithNumber - 1)
+            }
         }
     }
 
