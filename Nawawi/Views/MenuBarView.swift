@@ -1150,31 +1150,7 @@ struct SettingsInlineView: View {
                         }
                     }
 
-                    // Favorites Section
-                    GroupBox {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("Favorites", systemImage: "heart")
-                                .font(.headline)
-
-                            if appState.favorites.isEmpty {
-                                Text("No favorites yet")
-                                    .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
-                            } else {
-                                Text("\(appState.favorites.count) hadith\(appState.favorites.count == 1 ? "" : "s") marked as favorite")
-                                    .foregroundColor(.black)
-
-                                Button(action: {
-                                    appState.favorites.removeAll()
-                                    appState.saveFavorites()
-                                }) {
-                                    Text("Clear All Favorites")
-                                        .foregroundStyle(.red)
-                                }
-                            }
-                        }
-                    }
-
-                    // Keyboard Shortcuts
+                    // Keyboard Shortcuts (menu bar specific)
                     GroupBox {
                         VStack(alignment: .leading, spacing: 12) {
                             Label("Keyboard Shortcuts", systemImage: "keyboard")
@@ -1192,75 +1168,9 @@ struct SettingsInlineView: View {
                         }
                     }
 
-                    // Updates Section (Sparkle)
-                    GroupBox {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("Updates", systemImage: "arrow.down.circle")
-                                .font(.headline)
-
-                            Text("Automatic updates keep the app secure and add new features")
-                                .font(.caption)
-                                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
-                                .fixedSize(horizontal: false, vertical: true)
-
-                            Button(action: {
-                                // Trigger Sparkle update check
-                                if let appDelegate = NSApp.delegate as? AppDelegate,
-                                   let updater = appDelegate.updaterController {
-                                    updater.checkForUpdates(nil)
-                                } else {
-                                    // Fallback if Sparkle isn't initialized
-                                    let alert = NSAlert()
-                                    alert.messageText = "Update Check"
-                                    alert.informativeText = "Unable to check for updates. Please restart the app and try again."
-                                    alert.alertStyle = .warning
-                                    alert.addButton(withTitle: "OK")
-                                    alert.runModal()
-                                }
-                            }) {
-                                Text("Check for Updates...")
-                                    .foregroundColor(.black)
-                            }
-                            .buttonStyle(.link)
-                        }
-                    }
-
-                    // About Section
-                    GroupBox {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("About", systemImage: "info.circle")
-                                .font(.headline)
-
-                            Text("40 Hadith Nawawi")
-                                .font(.body)
-                                .foregroundColor(.black)
-                            Text("Version 1.0.0")
-                                .font(.caption)
-                                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
-                            Text("A collection of forty hadiths compiled by Imam Nawawi")
-                                .font(.caption)
-                                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
-
-                            Button(action: {
-                                // Open About window
-                                let aboutWindow = NSWindow(
-                                    contentRect: NSRect(x: 0, y: 0, width: 600, height: 700),
-                                    styleMask: [.titled, .closable],
-                                    backing: .buffered,
-                                    defer: false
-                                )
-                                aboutWindow.center()
-                                aboutWindow.title = "About 40 Hadith Nawawi"
-                                aboutWindow.contentView = NSHostingView(rootView: AboutView())
-                                aboutWindow.makeKeyAndOrderFront(nil)
-                            }) {
-                                Text("Credits & Attributions")
-                                    .foregroundColor(.black)
-                            }
-                            .buttonStyle(.link)
-                            .padding(.top, 4)
-                        }
-                    }
+                    // Shared settings (Updates, Favorites, About)
+                    SettingsContentView()
+                        .environmentObject(appState)
                 }
                 .padding()
             }

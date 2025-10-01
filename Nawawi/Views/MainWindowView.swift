@@ -465,70 +465,8 @@ struct SettingsWindowView: View {
             Divider()
 
             ScrollView {
-                VStack(spacing: 20) {
-                    // Notifications Section - reuse from MenuBarView settings
-                    GroupBox {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("Notifications", systemImage: "bell")
-                                .font(.nohemiHeadline)
-                                .foregroundColor(.black)
-
-                            Toggle("Daily Reminder", isOn: $appState.reminderEnabled)
-                                .onChange(of: appState.reminderEnabled) { _, enabled in
-                                    if enabled {
-                                        appState.scheduleReminder()
-                                    } else {
-                                        appState.cancelReminder()
-                                    }
-                                }
-                        }
-                    }
-
-                    // Favorites Section
-                    GroupBox {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("Favorites", systemImage: "heart")
-                                .font(.nohemiHeadline)
-                                .foregroundColor(.black)
-
-                            if appState.favorites.isEmpty {
-                                Text("No favorites yet")
-                                    .foregroundColor(.gray)
-                            } else {
-                                Text("\(appState.favorites.count) hadith\(appState.favorites.count == 1 ? "" : "s") marked as favorite")
-                                    .foregroundColor(.black)
-
-                                Button(action: {
-                                    appState.favorites.removeAll()
-                                    appState.saveFavorites()
-                                }) {
-                                    Text("Clear All Favorites")
-                                        .foregroundColor(.red)
-                                }
-                            }
-                        }
-                    }
-
-                    // About Section
-                    GroupBox {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Label("About", systemImage: "info.circle")
-                                .font(.nohemiHeadline)
-                                .foregroundColor(.black)
-
-                            Text("40 Hadith Nawawi")
-                                .font(.nohemiBody)
-                                .foregroundColor(.black)
-                            Text("Version 1.0.0")
-                                .font(.nohemiCaption)
-                                .foregroundColor(.black)
-                            Text("A collection of forty hadiths compiled by Imam Nawawi")
-                                .font(.nohemiCaption)
-                                .foregroundColor(.black)
-                        }
-                    }
-                }
-                .padding()
+                SettingsContentView()
+                    .environmentObject(appState)
             }
         }
         .frame(width: 500, height: 400)
