@@ -10,6 +10,7 @@ import UserNotifications
 
 struct OnboardingView: View {
     @EnvironmentObject var appState: AppState
+    @Environment(\.openWindow) private var openWindow
     @State private var currentPage = 0
     @State private var selectedTime = Date()
     @State private var reminderEnabled = true
@@ -188,9 +189,8 @@ struct OnboardingView: View {
                             selection: $selectedTime,
                             displayedComponents: .hourAndMinute
                         )
-                        .datePickerStyle(.graphical)
+                        .datePickerStyle(.stepperField)
                         .labelsHidden()
-                        .frame(maxWidth: 300)
                         .padding()
                         .background(
                             RoundedRectangle(cornerRadius: 16)
@@ -381,6 +381,11 @@ struct OnboardingView: View {
     private func completeOnboarding() {
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
         onComplete()
+
+        // Open main window after onboarding completes
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            openWindow(id: "main-window")
+        }
     }
 }
 
