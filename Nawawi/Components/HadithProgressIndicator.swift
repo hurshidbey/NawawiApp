@@ -26,7 +26,7 @@ struct HadithProgressIndicator: View {
             }) {
                 Image(systemName: "chevron.left.circle.fill")
                     .font(.title3)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
             }
             .buttonStyle(.plain)
             .disabled(selectedIndex == 0)
@@ -83,7 +83,7 @@ struct HadithProgressIndicator: View {
 
                     Text("\(total)")
                         .font(.nohemiCaptionLight)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                         .monospacedDigit()
                 }
             }
@@ -98,7 +98,7 @@ struct HadithProgressIndicator: View {
             }) {
                 Image(systemName: "chevron.right.circle.fill")
                     .font(.title3)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
             }
             .buttonStyle(.plain)
             .disabled(selectedIndex >= total - 1)

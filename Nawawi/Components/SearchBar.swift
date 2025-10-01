@@ -16,7 +16,7 @@ struct SearchBar: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(.gray)
+                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 .symbolEffect(.pulse, isActive: !text.isEmpty)
 
             TextField(placeholder, text: $text)
@@ -35,7 +35,7 @@ struct SearchBar: View {
                     onClear()
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                         .symbolEffect(.bounce, value: text)
                 }
                 .buttonStyle(.plain)

@@ -285,7 +285,7 @@ struct EnhancedHeaderView: View {
                             .font(.title3)
                         Image(systemName: "chevron.down")
                             .font(.caption2)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                     }
                 }
                 .menuStyle(.borderlessButton)
@@ -365,7 +365,7 @@ struct EnhancedHadithCard: View {
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 }
                 .menuStyle(.borderlessButton)
 
@@ -455,11 +455,11 @@ struct EnhancedHadithCard: View {
             Label {
                 if !searchHighlight.isEmpty && hadith.narrator.localizedCaseInsensitiveContains(searchHighlight) {
                     HighlightedText(hadith.narrator, highlight: searchHighlight, font: .caption)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 } else {
                     Text(hadith.narrator)
                         .font(.caption)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 }
             } icon: {
                 Image(systemName: "person.circle.fill")
@@ -524,6 +524,7 @@ struct EnhancedToolbarView: View {
                 Button(action: navigatePrevious) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 14))
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 }
                 .buttonStyle(.plain)
                 .disabled(filteredCount == 0)
@@ -538,6 +539,7 @@ struct EnhancedToolbarView: View {
                 Button(action: navigateNext) {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 14))
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 }
                 .buttonStyle(.plain)
                 .disabled(filteredCount == 0)
@@ -554,7 +556,7 @@ struct EnhancedToolbarView: View {
                 Button(action: onRandomHadith) {
                     Image(systemName: "shuffle")
                         .font(.system(size: 14))
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 }
                 .buttonStyle(.plain)
                 .help("Random Hadith (⌘R)")
@@ -563,7 +565,7 @@ struct EnhancedToolbarView: View {
                 Button(action: onExport) {
                     Image(systemName: "square.and.arrow.up")
                         .font(.system(size: 14))
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 }
                 .buttonStyle(.plain)
                 .help("Export")
@@ -582,7 +584,7 @@ struct EnhancedToolbarView: View {
                 }) {
                     Image(systemName: "macwindow")
                         .font(.system(size: 14))
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 }
                 .buttonStyle(.plain)
                 .help("Open Main Window")
@@ -591,7 +593,7 @@ struct EnhancedToolbarView: View {
                 Button(action: { currentView = .settings }) {
                     Image(systemName: "gearshape")
                         .font(.system(size: 14))
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 }
                 .buttonStyle(.plain)
                 .help("Settings")
@@ -741,7 +743,7 @@ struct HadithDetailInlineView: View {
 
                     Label(hadith.narrator, systemImage: "person.circle.fill")
                         .font(.caption)
-                        .foregroundStyle(.gray)
+                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                 }
 
                 Spacer()
@@ -791,7 +793,7 @@ struct HadithDetailInlineView: View {
                     }) {
                         Label("Back", systemImage: "arrow.left.circle.fill")
                             .font(.title3)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                     }
                     .buttonStyle(.plain)
                     .keyboardShortcut(.escape, modifiers: [])
@@ -824,12 +826,12 @@ struct HadithDetailInlineView: View {
                             HStack {
                                 Text("Arabic Text")
                                     .font(.caption)
-                                    .foregroundStyle(.gray)
+                                    .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                                 Spacer()
                                 Button(action: { speakText(hadith.arabicText, language: "ar-SA") }) {
                                     Image(systemName: "speaker.wave.2")
                                         .font(.caption)
-                                        .foregroundStyle(.gray)
+                                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -854,7 +856,7 @@ struct HadithDetailInlineView: View {
                             HStack {
                                 Text(appState.selectedLanguage == .uzbek ? "O'zbek tarjimasi" : "English Translation")
                                     .font(.caption)
-                                    .foregroundStyle(.gray)
+                                    .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                                 Spacer()
                                 Button(action: {
                                     let text = appState.selectedLanguage == .uzbek ?
@@ -865,7 +867,7 @@ struct HadithDetailInlineView: View {
                                 }) {
                                     Image(systemName: "speaker.wave.2")
                                         .font(.caption)
-                                        .foregroundStyle(.gray)
+                                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -898,7 +900,7 @@ struct HadithDetailInlineView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Label("Narrator", systemImage: "person.circle")
                             .font(.caption)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
 
                         Text(hadith.narrator)
                             .font(.body)
@@ -997,16 +999,14 @@ struct SettingsInlineView: View {
                             }
                             Text("Width: \(Int(windowSize.width))px")
                                 .font(.caption)
-                                .foregroundColor(.black)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
 
                             Slider(value: $windowSize.height, in: 450...700, step: 10) {
                                 Text("Height")
                             }
                             Text("Height: \(Int(windowSize.height))px")
                                 .font(.caption)
-                                .foregroundColor(.black)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                         }
                     }
 
@@ -1022,8 +1022,7 @@ struct SettingsInlineView: View {
                                         .foregroundStyle(.yellow)
                                     Text("Notifications are disabled in System Settings")
                                         .font(.caption)
-                                        .foregroundColor(.black)
-                                        .foregroundStyle(.gray)
+                                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                                 }
 
                                 Button(action: {
@@ -1091,7 +1090,7 @@ struct SettingsInlineView: View {
 
                             if appState.favorites.isEmpty {
                                 Text("No favorites yet")
-                                    .foregroundStyle(.gray)
+                                    .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                             } else {
                                 Text("\(appState.favorites.count) hadith\(appState.favorites.count == 1 ? "" : "s") marked as favorite")
                                     .foregroundColor(.black)
@@ -1101,9 +1100,8 @@ struct SettingsInlineView: View {
                                     appState.saveFavorites()
                                 }) {
                                     Text("Clear All Favorites")
-                                        .foregroundColor(.red)
+                                        .foregroundStyle(.red)
                                 }
-                                .foregroundStyle(.red)
                             }
                         }
                     }
@@ -1137,12 +1135,10 @@ struct SettingsInlineView: View {
                                 .foregroundColor(.black)
                             Text("Version 1.0.0")
                                 .font(.caption)
-                                .foregroundColor(.black)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                             Text("A collection of forty hadiths compiled by Imam Nawawi")
                                 .font(.caption)
-                                .foregroundColor(.black)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                         }
                     }
                 }
@@ -1186,8 +1182,7 @@ struct ShortcutRow: View {
 
             Text(action)
                 .font(.caption)
-                .foregroundColor(.black)
-                .foregroundStyle(.gray)
+                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
 
             Spacer()
         }
