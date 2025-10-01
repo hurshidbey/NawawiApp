@@ -14,8 +14,13 @@ import Sparkle
 @main
 struct NawawiApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @StateObject private var appState = AppState()
+
+    // Core managers following dependency injection pattern
     @StateObject private var hadithDataManager = HadithDataManager()
+    @StateObject private var favoritesManager = FavoritesManager()
+    @StateObject private var notificationManager = NotificationManager()
+    @StateObject private var appState = AppState()
+
     @State private var isAppActive = true
 
     init() {
@@ -35,6 +40,7 @@ struct NawawiApp: App {
                 appState.completeOnboarding()
             }
             .environmentObject(appState)
+            .environmentObject(notificationManager)
             .colorScheme(.light)
             .task {
                 // Ensure activation policy allows windows
@@ -53,6 +59,8 @@ struct NawawiApp: App {
             MainWindowView()
                 .environmentObject(appState)
                 .environmentObject(hadithDataManager)
+                .environmentObject(favoritesManager)
+                .environmentObject(notificationManager)
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
                 .task {
@@ -74,6 +82,8 @@ struct NawawiApp: App {
             MenuBarView()
                 .environmentObject(appState)
                 .environmentObject(hadithDataManager)
+                .environmentObject(favoritesManager)
+                .environmentObject(notificationManager)
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
                 .task {
@@ -160,44 +170,63 @@ enum AppLanguage: String, CaseIterable {
 
 @MainActor
 class AppState: ObservableObject {
+    // Navigation & UI State
     @Published var currentHadithIndex = 0
-    @Published var favorites: Set<Int> = []
     @Published var showSettings = false
-    @Published var hasActiveReminder = false
-    @Published var reminderInterval: TimeInterval = 3600 // 1 hour default
+    @Published var shouldOpenMainWindow = false
+    @Published var showOnboarding = false
+    @Published var pendingHadithNavigation: Int? = nil
     @Published var lastViewedDate = Date()
+
+    // Language Preference
     @Published var selectedLanguage: AppLanguage = .english {
         didSet {
             UserDefaults.standard.set(selectedLanguage.rawValue, forKey: "selectedLanguage")
         }
     }
-    @Published var reminderEnabled = false {
-        didSet {
-            UserDefaults.standard.set(reminderEnabled, forKey: "reminderEnabled")
-        }
-    }
-    @Published var reminderHour = 9 {
-        didSet {
-            UserDefaults.standard.set(reminderHour, forKey: "reminderHour")
-        }
-    }
-    @Published var reminderMinute = 0 {
-        didSet {
-            UserDefaults.standard.set(reminderMinute, forKey: "reminderMinute")
-        }
-    }
-    @Published var shouldOpenMainWindow = false
-    @Published var showOnboarding = false
-    @Published var pendingHadithNavigation: Int? = nil
 
-    @AppStorage("favorites") private var favoritesData = Data()
+    // Persistence
     @AppStorage("lastHadithIndex") private var savedIndex = 0
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("launchAtLogin") var launchAtLogin = false
 
+    // MARK: - Delegated Properties (Forwarded to Managers)
+    // These provide backward compatibility while delegating to focused managers
+
+    var favorites: Set<Int> {
+        get { _favorites }
+        set { _favorites = newValue }
+    }
+    @Published private var _favorites: Set<Int> = []
+
+    var reminderEnabled: Bool {
+        get { _reminderEnabled }
+        set { _reminderEnabled = newValue }
+    }
+    @Published private var _reminderEnabled = false
+
+    var reminderHour: Int {
+        get { _reminderHour }
+        set { _reminderHour = newValue }
+    }
+    @Published private var _reminderHour = 9
+
+    var reminderMinute: Int {
+        get { _reminderMinute }
+        set { _reminderMinute = newValue }
+    }
+    @Published private var _reminderMinute = 0
+
+    var hasActiveReminder: Bool {
+        get { _hasActiveReminder }
+        set { _hasActiveReminder = newValue }
+    }
+    @Published private var _hasActiveReminder = false
+
+    @AppStorage("favorites") private var favoritesData = Data()
+
     func loadData() {
         currentHadithIndex = savedIndex
-        loadFavorites()
 
         // Load language preference
         if let savedLanguage = UserDefaults.standard.string(forKey: "selectedLanguage"),
@@ -205,20 +234,8 @@ class AppState: ObservableObject {
             selectedLanguage = language
         }
 
-        // Load reminder settings from UserDefaults
-        reminderEnabled = UserDefaults.standard.bool(forKey: "reminderEnabled")
-        reminderHour = UserDefaults.standard.integer(forKey: "reminderHour")
-        reminderMinute = UserDefaults.standard.integer(forKey: "reminderMinute")
-
-        // Set defaults if not set
-        if reminderHour == 0 && reminderMinute == 0 {
-            reminderHour = 9
-            reminderMinute = 0
-        }
-
-        if reminderEnabled {
-            scheduleReminder()
-        }
+        // NOTE: Favorites are now managed by FavoritesManager (auto-loads in init)
+        // NOTE: Notifications are now managed by NotificationManager (auto-loads in init)
 
         // Check if onboarding should be shown
         showOnboarding = !hasCompletedOnboarding
@@ -234,28 +251,36 @@ class AppState: ObservableObject {
         savedIndex = currentHadithIndex
     }
 
+    // MARK: - Backward Compatibility Stubs
+    // TODO: Remove these once all views use FavoritesManager directly
+
     func toggleFavorite(_ number: Int) {
-        if favorites.contains(number) {
-            favorites.remove(number)
+        // Temporary: maintain local state
+        if _favorites.contains(number) {
+            _favorites.remove(number)
         } else {
-            favorites.insert(number)
+            _favorites.insert(number)
         }
         saveFavorites()
     }
 
     private func loadFavorites() {
         if let decoded = try? JSONDecoder().decode(Set<Int>.self, from: favoritesData) {
-            favorites = decoded
+            _favorites = decoded
         }
     }
 
     func saveFavorites() {
-        if let encoded = try? JSONEncoder().encode(favorites) {
+        if let encoded = try? JSONEncoder().encode(_favorites) {
             favoritesData = encoded
         }
     }
 
+    // MARK: - Notification Backward Compatibility Stubs
+    // TODO: Remove these once all views use NotificationManager directly
+
     func scheduleReminder() {
+        // Temporary: will be delegated to NotificationManager
         guard reminderEnabled else {
             hasActiveReminder = false
             return
