@@ -102,7 +102,7 @@ struct NawawiApp: App {
                     NSApp.activate(ignoringOtherApps: true)
                 }
         } label: {
-            Image(systemName: appState.hasActiveReminder ? "book.fill" : "book")
+            Image(systemName: notificationManager.hasActiveReminder ? "book.fill" : "book")
                 .renderingMode(.template) // Critical for macOS 26 Tahoe
         }
         .menuBarExtraStyle(.window) // Use window style for richer UI
@@ -190,41 +190,6 @@ class AppState: ObservableObject {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("launchAtLogin") var launchAtLogin = false
 
-    // MARK: - Delegated Properties (Forwarded to Managers)
-    // These provide backward compatibility while delegating to focused managers
-
-    var favorites: Set<Int> {
-        get { _favorites }
-        set { _favorites = newValue }
-    }
-    @Published private var _favorites: Set<Int> = []
-
-    var reminderEnabled: Bool {
-        get { _reminderEnabled }
-        set { _reminderEnabled = newValue }
-    }
-    @Published private var _reminderEnabled = false
-
-    var reminderHour: Int {
-        get { _reminderHour }
-        set { _reminderHour = newValue }
-    }
-    @Published private var _reminderHour = 9
-
-    var reminderMinute: Int {
-        get { _reminderMinute }
-        set { _reminderMinute = newValue }
-    }
-    @Published private var _reminderMinute = 0
-
-    var hasActiveReminder: Bool {
-        get { _hasActiveReminder }
-        set { _hasActiveReminder = newValue }
-    }
-    @Published private var _hasActiveReminder = false
-
-    @AppStorage("favorites") private var favoritesData = Data()
-
     func loadData() {
         currentHadithIndex = savedIndex
 
@@ -249,152 +214,6 @@ class AppState: ObservableObject {
 
     func saveCurrentIndex() {
         savedIndex = currentHadithIndex
-    }
-
-    // MARK: - Backward Compatibility Stubs
-    // TODO: Remove these once all views use FavoritesManager directly
-
-    func toggleFavorite(_ number: Int) {
-        // Temporary: maintain local state
-        if _favorites.contains(number) {
-            _favorites.remove(number)
-        } else {
-            _favorites.insert(number)
-        }
-        saveFavorites()
-    }
-
-    private func loadFavorites() {
-        if let decoded = try? JSONDecoder().decode(Set<Int>.self, from: favoritesData) {
-            _favorites = decoded
-        }
-    }
-
-    func saveFavorites() {
-        if let encoded = try? JSONEncoder().encode(_favorites) {
-            favoritesData = encoded
-        }
-    }
-
-    // MARK: - Notification Backward Compatibility Stubs
-    // TODO: Remove these once all views use NotificationManager directly
-
-    func scheduleReminder() {
-        // Temporary: will be delegated to NotificationManager
-        guard reminderEnabled else {
-            hasActiveReminder = false
-            return
-        }
-
-        // First check notification permissions
-        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
-            guard let self = self else { return }
-
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                if settings.authorizationStatus == .authorized {
-                    self.hasActiveReminder = true
-
-                    // Remove existing notifications
-                    UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["daily-hadith"])
-
-                    // Schedule daily notification with random hadith
-                    let content = UNMutableNotificationContent()
-                    content.title = "Daily Hadith Reminder"
-
-                    // Select a random hadith number (1-40)
-                    let randomHadithNumber = Int.random(in: 1...40)
-                    content.body = "Time to read Hadith #\(randomHadithNumber)"
-                    content.sound = .default
-                    content.categoryIdentifier = "HADITH_REMINDER"
-                    content.userInfo = ["hadithNumber": randomHadithNumber]
-
-                    var dateComponents = DateComponents()
-                    dateComponents.hour = self.reminderHour
-                    dateComponents.minute = self.reminderMinute
-
-                    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-                    let request = UNNotificationRequest(identifier: "daily-hadith", content: content, trigger: trigger)
-
-                    UNUserNotificationCenter.current().add(request) { [weak self] error in
-                        guard let self = self else { return }
-                        if let error = error {
-                            print("Error scheduling notification: \(error)")
-                            DispatchQueue.main.async { [weak self] in
-                                guard let self = self else { return }
-                                self.hasActiveReminder = false
-                                self.reminderEnabled = false
-                            }
-                        } else {
-                            print("Notification scheduled for \(self.reminderHour):\(String(format: "%02d", self.reminderMinute))")
-                        }
-                    }
-                } else {
-                    // No permission, disable reminders
-                    self.reminderEnabled = false
-                    self.hasActiveReminder = false
-                    print("Notification permission not granted")
-
-                    // Request permission again
-                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
-                        guard let self = self else { return }
-                        if granted {
-                            DispatchQueue.main.async { [weak self] in
-                                guard let self = self else { return }
-                                self.scheduleReminder()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    func cancelReminder() {
-        hasActiveReminder = false
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["daily-hadith"])
-    }
-
-    func sendTestNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "Test Reminder"
-        content.body = "Your daily hadith reminders are working!"
-        content.sound = .default
-
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        let request = UNNotificationRequest(identifier: "test-notification", content: content, trigger: trigger)
-
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Test notification error: \(error)")
-            } else {
-                print("Test notification scheduled - will appear in 5 seconds")
-            }
-        }
-    }
-
-    func requestNotificationPermission(completion: @escaping (Bool) -> Void) {
-        Task {
-            do {
-                let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
-                await MainActor.run {
-                    completion(granted)
-                }
-            } catch {
-                print("Permission request error: \(error)")
-                await MainActor.run {
-                    completion(false)
-                }
-            }
-        }
-    }
-
-    func checkNotificationPermission(completion: @escaping (UNAuthorizationStatus) -> Void) {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            DispatchQueue.main.async {
-                completion(settings.authorizationStatus)
-            }
-        }
     }
 
     func updateLaunchAtLogin() {

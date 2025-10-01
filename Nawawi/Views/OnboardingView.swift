@@ -10,6 +10,7 @@ import UserNotifications
 
 struct OnboardingView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var notificationManager: NotificationManager
     @Environment(\.openWindow) private var openWindow
     @State private var currentPage = 0
     @State private var selectedTime = Date()
@@ -363,10 +364,9 @@ struct OnboardingView: View {
                 if granted {
                     // Save reminder settings
                     let components = Calendar.current.dateComponents([.hour, .minute], from: selectedTime)
-                    appState.reminderHour = components.hour ?? 9
-                    appState.reminderMinute = components.minute ?? 0
-                    appState.reminderEnabled = true
-                    appState.scheduleReminder()
+                    notificationManager.reminderHour = components.hour ?? 9
+                    notificationManager.reminderMinute = components.minute ?? 0
+                    notificationManager.reminderEnabled = true
 
                     withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
                         currentPage = 2

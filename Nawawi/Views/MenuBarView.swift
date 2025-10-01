@@ -13,6 +13,8 @@ import Sparkle
 struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var dataManager: HadithDataManager
+    @EnvironmentObject var favoritesManager: FavoritesManager
+    @EnvironmentObject var notificationManager: NotificationManager
     @Environment(\.openWindow) private var openWindow
     @State private var showFullHadith = false
     @State private var showSettings = false
@@ -61,7 +63,7 @@ struct MenuBarView: View {
             query: searchText,
             language: appState.selectedLanguage,
             favoritesOnly: showingFavoritesOnly,
-            favorites: appState.favorites
+            favorites: favoritesManager.favorites
         )
     }
 
@@ -313,6 +315,7 @@ struct EnhancedHeaderView: View {
     var isSearchFocused: FocusState<Bool>.Binding
     @Binding var showingFavoritesOnly: Bool
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var notificationManager: NotificationManager
 
     var body: some View {
         VStack(spacing: 12) {
@@ -327,7 +330,7 @@ struct EnhancedHeaderView: View {
                             endPoint: .bottom
                         )
                     )
-                    .symbolEffect(.pulse, isActive: appState.hasActiveReminder)
+                    .symbolEffect(.pulse, isActive: notificationManager.hasActiveReminder)
 
                 Text("40 Hadith")
                     .font(.nohemiHeadline)
@@ -409,6 +412,7 @@ struct EnhancedHadithCard: View {
     let searchHighlight: String
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var dataManager: HadithDataManager
+    @EnvironmentObject var favoritesManager: FavoritesManager
     @State private var isHovered = false
     @State private var isFavoriteAnimating = false
 
@@ -448,16 +452,16 @@ struct EnhancedHadithCard: View {
                 // Favorite button with enhanced animation
                 Button(action: {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                        appState.toggleFavorite(hadith.number)
+                        favoritesManager.toggleFavorite(hadith.number)
                         isFavoriteAnimating = true
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         isFavoriteAnimating = false
                     }
                 }) {
-                    Image(systemName: appState.favorites.contains(hadith.number) ? "heart.fill" : "heart")
-                        .foregroundStyle(appState.favorites.contains(hadith.number) ? Color.nawawi_darkGreen : .gray)
-                        .symbolEffect(.bounce, value: appState.favorites.contains(hadith.number))
+                    Image(systemName: favoritesManager.isFavorite(hadith.number) ? "heart.fill" : "heart")
+                        .foregroundStyle(favoritesManager.isFavorite(hadith.number) ? Color.nawawi_darkGreen : .gray)
+                        .symbolEffect(.bounce, value: favoritesManager.isFavorite(hadith.number))
                         .scaleEffect(isFavoriteAnimating ? 1.2 : 1.0)
                 }
                 .buttonStyle(.plain)
@@ -805,6 +809,7 @@ struct HadithDetailInlineView: View {
     @Binding var windowSize: CGSize
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var dataManager: HadithDataManager
+    @EnvironmentObject var favoritesManager: FavoritesManager
     @State private var copiedToClipboard = false
     @State private var selectedExportFormat: ExportFormat = .plain
     @State private var speechSynthesizer: NSSpeechSynthesizer?
@@ -829,13 +834,13 @@ struct HadithDetailInlineView: View {
                     // Favorite button
                     Button(action: {
                         withAnimation(.spring(response: 0.3)) {
-                            appState.toggleFavorite(hadith.number)
+                            favoritesManager.toggleFavorite(hadith.number)
                         }
                     }) {
-                        Image(systemName: appState.favorites.contains(hadith.number) ? "heart.fill" : "heart")
+                        Image(systemName: favoritesManager.isFavorite(hadith.number) ? "heart.fill" : "heart")
                             .font(.title3)
-                            .foregroundStyle(appState.favorites.contains(hadith.number) ? .red : .gray)
-                            .symbolEffect(.bounce, value: appState.favorites.contains(hadith.number))
+                            .foregroundStyle(favoritesManager.isFavorite(hadith.number) ? .red : .gray)
+                            .symbolEffect(.bounce, value: favoritesManager.isFavorite(hadith.number))
                     }
                     .buttonStyle(.plain)
 
@@ -1036,6 +1041,8 @@ struct HadithDetailInlineView: View {
 // MARK: - Enhanced Settings View
 struct SettingsInlineView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var favoritesManager: FavoritesManager
+    @EnvironmentObject var notificationManager: NotificationManager
     @Binding var currentView: MenuBarView.ViewMode
     @Binding var windowSize: CGSize
     @State private var selectedTime = Date()
@@ -1120,11 +1127,10 @@ struct SettingsInlineView: View {
                                 .buttonStyle(.link)
                             } else if permissionStatus == .notDetermined {
                                 Button(action: {
-                                    appState.requestNotificationPermission { granted in
+                                    notificationManager.requestNotificationPermission { granted in
                                         checkPermissionStatus()
                                         if granted {
-                                            appState.reminderEnabled = true
-                                            appState.scheduleReminder()
+                                            notificationManager.reminderEnabled = true
                                         }
                                     }
                                 }) {
@@ -1134,29 +1140,21 @@ struct SettingsInlineView: View {
                                 .buttonStyle(.borderedProminent)
                             }
 
-                            Toggle("Daily Reminder", isOn: $appState.reminderEnabled)
+                            Toggle("Daily Reminder", isOn: $notificationManager.reminderEnabled)
                                 .disabled(permissionStatus != .authorized)
-                                .onChange(of: appState.reminderEnabled) { _, enabled in
-                                    if enabled {
-                                        appState.scheduleReminder()
-                                    } else {
-                                        appState.cancelReminder()
-                                    }
-                                }
 
-                            if appState.reminderEnabled && permissionStatus == .authorized {
+                            if notificationManager.reminderEnabled && permissionStatus == .authorized {
                                 DatePicker("Reminder Time",
                                           selection: $selectedTime,
                                           displayedComponents: .hourAndMinute)
                                     .onChange(of: selectedTime) { _, newTime in
                                         let components = Calendar.current.dateComponents([.hour, .minute], from: newTime)
-                                        appState.reminderHour = components.hour ?? 9
-                                        appState.reminderMinute = components.minute ?? 0
-                                        appState.scheduleReminder()
+                                        notificationManager.reminderHour = components.hour ?? 9
+                                        notificationManager.reminderMinute = components.minute ?? 0
                                     }
 
                                 Button(action: {
-                                    appState.sendTestNotification()
+                                    notificationManager.sendTestNotification()
                                 }) {
                                     Text("Send Test Notification")
                                         .foregroundColor(.black)
@@ -1190,16 +1188,15 @@ struct SettingsInlineView: View {
                             Label("Favorites", systemImage: "heart")
                                 .font(.headline)
 
-                            if appState.favorites.isEmpty {
+                            if favoritesManager.favorites.isEmpty {
                                 Text("No favorites yet")
                                     .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
                             } else {
-                                Text("\(appState.favorites.count) hadith\(appState.favorites.count == 1 ? "" : "s") marked as favorite")
+                                Text("\(favoritesManager.favorites.count) hadith\(favoritesManager.favorites.count == 1 ? "" : "s") marked as favorite")
                                     .foregroundColor(.black)
 
                                 Button(action: {
-                                    appState.favorites.removeAll()
-                                    appState.saveFavorites()
+                                    favoritesManager.clearAllFavorites()
                                 }) {
                                     Text("Clear All Favorites")
                                         .foregroundStyle(.red)
@@ -1302,8 +1299,8 @@ struct SettingsInlineView: View {
         }
         .onAppear {
             var components = DateComponents()
-            components.hour = appState.reminderHour
-            components.minute = appState.reminderMinute
+            components.hour = notificationManager.reminderHour
+            components.minute = notificationManager.reminderMinute
             selectedTime = Calendar.current.date(from: components) ?? Date()
 
             checkPermissionStatus()
@@ -1311,7 +1308,7 @@ struct SettingsInlineView: View {
     }
 
     private func checkPermissionStatus() {
-        appState.checkNotificationPermission { status in
+        notificationManager.checkNotificationPermission { status in
             permissionStatus = status
         }
     }

@@ -13,6 +13,8 @@ import Sparkle
 struct MainWindowView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var dataManager: HadithDataManager
+    @EnvironmentObject var favoritesManager: FavoritesManager
+    @EnvironmentObject var notificationManager: NotificationManager
     @State private var searchText = ""
     @State private var showingFavoritesOnly = false
     @State private var selectedHadithIndex: Int? = nil
@@ -25,7 +27,7 @@ struct MainWindowView: View {
             query: searchText,
             language: appState.selectedLanguage,
             favoritesOnly: showingFavoritesOnly,
-            favorites: appState.favorites
+            favorites: favoritesManager.favorites
         )
     }
 
@@ -149,10 +151,10 @@ struct MainWindowView: View {
                         HadithListRow(
                             hadith: filteredHadiths[index],
                             isSelected: selectedHadithIndex == index,
-                            isFavorite: appState.favorites.contains(filteredHadiths[index].number),
+                            isFavorite: favoritesManager.isFavorite(filteredHadiths[index].number),
                             searchHighlight: searchText
                         ) {
-                            appState.toggleFavorite(filteredHadiths[index].number)
+                            favoritesManager.toggleFavorite(filteredHadiths[index].number)
                         }
                         .tag(index)
                     }
@@ -165,6 +167,8 @@ struct MainWindowView: View {
                 HadithDetailView(hadith: hadith)
                     .environmentObject(appState)
                     .environmentObject(dataManager)
+                    .environmentObject(favoritesManager)
+                    .environmentObject(notificationManager)
             } else {
                 ContentUnavailableView(
                     "Select a Hadith",
@@ -220,6 +224,8 @@ struct MainWindowView: View {
         .sheet(isPresented: $showSettings) {
             SettingsWindowView()
                 .environmentObject(appState)
+                .environmentObject(favoritesManager)
+                .environmentObject(notificationManager)
         }
     }
 }
@@ -284,6 +290,8 @@ struct HadithDetailView: View {
     let hadith: Hadith
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var dataManager: HadithDataManager
+    @EnvironmentObject var favoritesManager: FavoritesManager
+    @EnvironmentObject var notificationManager: NotificationManager
     @State private var copiedToClipboard = false
     @State private var speechSynthesizer: NSSpeechSynthesizer?
 
@@ -308,13 +316,13 @@ struct HadithDetailView: View {
                         // Favorite button
                         Button(action: {
                             withAnimation(.spring(response: 0.3)) {
-                                appState.toggleFavorite(hadith.number)
+                                favoritesManager.toggleFavorite(hadith.number)
                             }
                         }) {
-                            Image(systemName: appState.favorites.contains(hadith.number) ? "heart.fill" : "heart")
+                            Image(systemName: favoritesManager.isFavorite(hadith.number) ? "heart.fill" : "heart")
                                 .font(.title2)
-                                .foregroundStyle(appState.favorites.contains(hadith.number) ? .red : .gray)
-                                .symbolEffect(.bounce, value: appState.favorites.contains(hadith.number))
+                                .foregroundStyle(favoritesManager.isFavorite(hadith.number) ? .red : .gray)
+                                .symbolEffect(.bounce, value: favoritesManager.isFavorite(hadith.number))
                         }
                         .buttonStyle(.plain)
 
@@ -453,6 +461,8 @@ struct HadithDetailView: View {
 // MARK: - Settings Window View
 struct SettingsWindowView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var favoritesManager: FavoritesManager
+    @EnvironmentObject var notificationManager: NotificationManager
     @Environment(\.dismiss) private var dismiss
     @State private var selectedTime = Date()
     @State private var permissionStatus: UNAuthorizationStatus = .notDetermined
@@ -503,11 +513,10 @@ struct SettingsWindowView: View {
                                 }
                             } else if permissionStatus == .notDetermined {
                                 Button(action: {
-                                    appState.requestNotificationPermission { granted in
+                                    notificationManager.requestNotificationPermission { granted in
                                         checkPermissionStatus()
                                         if granted {
-                                            appState.reminderEnabled = true
-                                            appState.scheduleReminder()
+                                            notificationManager.reminderEnabled = true
                                         }
                                     }
                                 }) {
@@ -516,29 +525,21 @@ struct SettingsWindowView: View {
                                 .buttonStyle(.borderedProminent)
                             }
 
-                            Toggle("Daily Reminder", isOn: $appState.reminderEnabled)
+                            Toggle("Daily Reminder", isOn: $notificationManager.reminderEnabled)
                                 .disabled(permissionStatus != .authorized)
-                                .onChange(of: appState.reminderEnabled) { _, enabled in
-                                    if enabled {
-                                        appState.scheduleReminder()
-                                    } else {
-                                        appState.cancelReminder()
-                                    }
-                                }
 
-                            if appState.reminderEnabled && permissionStatus == .authorized {
+                            if notificationManager.reminderEnabled && permissionStatus == .authorized {
                                 DatePicker("Reminder Time",
                                           selection: $selectedTime,
                                           displayedComponents: .hourAndMinute)
                                     .onChange(of: selectedTime) { _, newTime in
                                         let components = Calendar.current.dateComponents([.hour, .minute], from: newTime)
-                                        appState.reminderHour = components.hour ?? 9
-                                        appState.reminderMinute = components.minute ?? 0
-                                        appState.scheduleReminder()
+                                        notificationManager.reminderHour = components.hour ?? 9
+                                        notificationManager.reminderMinute = components.minute ?? 0
                                     }
 
                                 Button(action: {
-                                    appState.sendTestNotification()
+                                    notificationManager.sendTestNotification()
                                 }) {
                                     Text("Send Test Notification")
                                 }
@@ -583,16 +584,15 @@ struct SettingsWindowView: View {
                                 .font(.nohemiHeadline)
                                 .foregroundColor(.black)
 
-                            if appState.favorites.isEmpty {
+                            if favoritesManager.favorites.isEmpty {
                                 Text("No favorites yet")
                                     .foregroundColor(.gray)
                             } else {
-                                Text("\(appState.favorites.count) hadith\(appState.favorites.count == 1 ? "" : "s") marked as favorite")
+                                Text("\(favoritesManager.favorites.count) hadith\(favoritesManager.favorites.count == 1 ? "" : "s") marked as favorite")
                                     .foregroundColor(.black)
 
                                 Button(action: {
-                                    appState.favorites.removeAll()
-                                    appState.saveFavorites()
+                                    favoritesManager.clearAllFavorites()
                                 }) {
                                     Text("Clear All Favorites")
                                         .foregroundColor(.red)
@@ -627,8 +627,8 @@ struct SettingsWindowView: View {
         .background(Color.nawawi_background)
         .onAppear {
             var components = DateComponents()
-            components.hour = appState.reminderHour
-            components.minute = appState.reminderMinute
+            components.hour = notificationManager.reminderHour
+            components.minute = notificationManager.reminderMinute
             selectedTime = Calendar.current.date(from: components) ?? Date()
 
             checkPermissionStatus()
@@ -636,7 +636,7 @@ struct SettingsWindowView: View {
     }
 
     private func checkPermissionStatus() {
-        appState.checkNotificationPermission { status in
+        notificationManager.checkNotificationPermission { status in
             permissionStatus = status
         }
     }
