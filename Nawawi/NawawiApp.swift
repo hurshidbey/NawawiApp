@@ -21,6 +21,10 @@ struct NawawiApp: App {
     @StateObject private var notificationManager = NotificationManager()
     @StateObject private var appState = AppState()
 
+    // Services (Phase 4: Deduplication)
+    @StateObject private var hadithActionService = HadithActionService()
+    @StateObject private var speechService = SpeechService()
+
     @State private var isAppActive = true
 
     init() {
@@ -61,6 +65,8 @@ struct NawawiApp: App {
                 .environmentObject(hadithDataManager)
                 .environmentObject(favoritesManager)
                 .environmentObject(notificationManager)
+                .environmentObject(hadithActionService)
+                .environmentObject(speechService)
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
                 .task {
@@ -84,6 +90,8 @@ struct NawawiApp: App {
                 .environmentObject(hadithDataManager)
                 .environmentObject(favoritesManager)
                 .environmentObject(notificationManager)
+                .environmentObject(hadithActionService)
+                .environmentObject(speechService)
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
                 .task {
