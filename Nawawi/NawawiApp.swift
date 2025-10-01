@@ -170,73 +170,88 @@ enum AppLanguage: String, CaseIterable {
 
 @MainActor
 class AppState: ObservableObject {
-    // Navigation & UI State
-    @Published var currentHadithIndex = 0
+    // MARK: - Composed State Objects
+    // Using composition pattern - each state object handles one responsibility
+    let navigationState = NavigationState()
+    let preferencesState = PreferencesState()
+    let onboardingState = OnboardingState()
+
+    // MARK: - UI-Only State (not persisted)
     @Published var showSettings = false
-    @Published var shouldOpenMainWindow = false
+
+    // MARK: - Published Properties (synced with state objects)
+    // These are @Published to support SwiftUI bindings ($property)
+    private var cancellables = Set<AnyCancellable>()
+
+    @Published var currentHadithIndex = 0
+    @Published var selectedLanguage: AppLanguage = .english
     @Published var showOnboarding = false
     @Published var pendingHadithNavigation: Int? = nil
-    @Published var lastViewedDate = Date()
+    @Published var shouldOpenMainWindow = false
 
-    // Language Preference
-    @Published var selectedLanguage: AppLanguage = .english {
-        didSet {
-            UserDefaults.standard.set(selectedLanguage.rawValue, forKey: "selectedLanguage")
-        }
+    // Delegated to preferencesState (cannot be @Published due to @AppStorage)
+    var launchAtLogin: Bool {
+        get { preferencesState.launchAtLogin }
+        set { preferencesState.launchAtLogin = newValue }
     }
 
-    // Persistence
-    @AppStorage("lastHadithIndex") private var savedIndex = 0
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
-    @AppStorage("launchAtLogin") var launchAtLogin = false
+    init() {
+        // Sync state objects with published properties
+        syncStateObjects()
+    }
+
+    private func syncStateObjects() {
+        // Navigation state sync
+        navigationState.$currentHadithIndex
+            .assign(to: &$currentHadithIndex)
+        $currentHadithIndex
+            .sink { [weak self] value in
+                self?.navigationState.currentHadithIndex = value
+            }
+            .store(in: &cancellables)
+
+        navigationState.$pendingHadithNavigation
+            .assign(to: &$pendingHadithNavigation)
+        navigationState.$shouldOpenMainWindow
+            .assign(to: &$shouldOpenMainWindow)
+
+        // Preferences state sync
+        preferencesState.$selectedLanguage
+            .assign(to: &$selectedLanguage)
+        $selectedLanguage
+            .sink { [weak self] value in
+                self?.preferencesState.selectedLanguage = value
+            }
+            .store(in: &cancellables)
+
+        // Note: launchAtLogin is @AppStorage and managed directly by PreferencesState
+
+        // Onboarding state sync
+        onboardingState.$showOnboarding
+            .assign(to: &$showOnboarding)
+    }
+
+    // MARK: - Lifecycle
 
     func loadData() {
-        currentHadithIndex = savedIndex
-
-        // Load language preference
-        if let savedLanguage = UserDefaults.standard.string(forKey: "selectedLanguage"),
-           let language = AppLanguage(rawValue: savedLanguage) {
-            selectedLanguage = language
-        }
-
-        // NOTE: Favorites are now managed by FavoritesManager (auto-loads in init)
-        // NOTE: Notifications are now managed by NotificationManager (auto-loads in init)
-
-        // Check if onboarding should be shown
-        showOnboarding = !hasCompletedOnboarding
-        print("🚀 AppState.loadData() - hasCompletedOnboarding: \(hasCompletedOnboarding), showOnboarding: \(showOnboarding)")
+        // All state objects auto-load in their init()
+        // NOTE: Favorites managed by FavoritesManager
+        // NOTE: Notifications managed by NotificationManager
+        print("🚀 AppState.loadData() - delegating to state objects")
     }
 
+    // MARK: - Convenience Methods (delegate to state objects)
+
     func completeOnboarding() {
-        hasCompletedOnboarding = true
-        showOnboarding = false
+        onboardingState.completeOnboarding()
     }
 
     func saveCurrentIndex() {
-        savedIndex = currentHadithIndex
+        navigationState.saveCurrentIndex()
     }
 
     func updateLaunchAtLogin() {
-        #if os(macOS)
-        do {
-            let service = SMAppService.mainApp
-            if launchAtLogin {
-                if service.status == .enabled {
-                    print("Launch at login already enabled")
-                } else {
-                    try service.register()
-                    print("Launch at login enabled")
-                }
-            } else {
-                if service.status == .enabled {
-                    try service.unregister()
-                    print("Launch at login disabled")
-                }
-            }
-        } catch {
-            print("Failed to update launch at login: \(error)")
-        }
-        #endif
+        preferencesState.updateLaunchAtLogin()
     }
 }
 
