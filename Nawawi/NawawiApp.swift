@@ -12,6 +12,7 @@ import ServiceManagement
 
 @main
 struct NawawiApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var appState = AppState()
     @State private var isAppActive = true
 
@@ -367,6 +368,14 @@ class AppState: ObservableObject {
     }
 }
 
+// MARK: - App Delegate
+class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        // Keep app running in menu bar even when all windows are closed
+        return false
+    }
+}
+
 // MARK: - Notification Delegate
 class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationDelegate()
@@ -378,9 +387,9 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         // Handle notification tap
         if let hadithNumber = response.notification.request.content.userInfo["hadithNumber"] as? Int {
-            print("User tapped notification for Hadith #\(hadithNumber)")
+            print("🔔 User tapped notification for Hadith #\(hadithNumber)")
 
-            DispatchQueue.main.async {
+            await MainActor.run {
                 // Activate the app and bring it to front
                 NSApp.setActivationPolicy(.regular)
                 NSApp.activate(ignoringOtherApps: true)
@@ -392,10 +401,7 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
                     userInfo: ["hadithIndex": hadithNumber - 1]
                 )
 
-                // Open the main window if not already open
-                if let url = URL(string: "nawawi://main-window") {
-                    NSWorkspace.shared.open(url)
-                }
+                print("✅ Posted OpenHadith notification for index \(hadithNumber - 1)")
             }
         }
     }
