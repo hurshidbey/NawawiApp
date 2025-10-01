@@ -9,8 +9,7 @@ import SwiftUI
 import UserNotifications
 import Combine
 import ServiceManagement
-// Sparkle will be added via Swift Package Manager - uncomment after adding package:
-// import Sparkle
+import Sparkle
 
 @main
 struct NawawiApp: App {
@@ -18,18 +17,11 @@ struct NawawiApp: App {
     @StateObject private var appState = AppState()
     @State private var isAppActive = true
 
-    // Sparkle updater controller - uncomment after adding Sparkle package:
-    // private let updaterController: SPUStandardUpdaterController
-
     init() {
         setupNotifications()
 
-        // Initialize Sparkle - uncomment after adding package:
-        // updaterController = SPUStandardUpdaterController(
-        //     startingUpdater: true,
-        //     updaterDelegate: nil,
-        //     userDriverDelegate: nil
-        // )
+        // Sparkle is initialized in AppDelegate
+        appDelegate.setupSparkle()
     }
 
     private func setupNotificationsWithState() {
@@ -403,6 +395,18 @@ class AppState: ObservableObject {
 
 // MARK: - App Delegate
 class AppDelegate: NSObject, NSApplicationDelegate {
+    var updaterController: SPUStandardUpdaterController!
+
+    func setupSparkle() {
+        // Initialize Sparkle updater
+        updaterController = SPUStandardUpdaterController(
+            startingUpdater: true,
+            updaterDelegate: nil,
+            userDriverDelegate: nil
+        )
+        print("✅ Sparkle updater initialized")
+    }
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         // Keep app running in menu bar even when all windows are closed
         return false

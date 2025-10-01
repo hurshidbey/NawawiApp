@@ -8,6 +8,7 @@
 import SwiftUI
 import UserNotifications
 import AppKit
+import Sparkle
 
 struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
@@ -1203,23 +1204,18 @@ struct SettingsInlineView: View {
                                 .fixedSize(horizontal: false, vertical: true)
 
                             Button(action: {
-                                // Sparkle check for updates - uncomment after adding Sparkle package:
-                                // if let updater = (NSApp.delegate as? AppDelegate)?.updaterController {
-                                //     updater.checkForUpdates(nil)
-                                // }
-
-                                // Temporary fallback until Sparkle is integrated
-                                let alert = NSAlert()
-                                alert.messageText = "Update Check"
-                                alert.informativeText = "Sparkle auto-updates will be integrated soon. For now, check GitHub releases for updates:\n\nhttps://github.com/hurshidbey/NawawiApp/releases"
-                                alert.alertStyle = .informational
-                                alert.addButton(withTitle: "OK")
-                                alert.addButton(withTitle: "Open GitHub")
-                                let response = alert.runModal()
-                                if response == .alertSecondButtonReturn {
-                                    if let url = URL(string: "https://github.com/hurshidbey/NawawiApp/releases") {
-                                        NSWorkspace.shared.open(url)
-                                    }
+                                // Trigger Sparkle update check
+                                if let appDelegate = NSApp.delegate as? AppDelegate,
+                                   let updater = appDelegate.updaterController {
+                                    updater.checkForUpdates(nil)
+                                } else {
+                                    // Fallback if Sparkle isn't initialized
+                                    let alert = NSAlert()
+                                    alert.messageText = "Update Check"
+                                    alert.informativeText = "Unable to check for updates. Please restart the app and try again."
+                                    alert.alertStyle = .warning
+                                    alert.addButton(withTitle: "OK")
+                                    alert.runModal()
                                 }
                             }) {
                                 Text("Check for Updates...")
