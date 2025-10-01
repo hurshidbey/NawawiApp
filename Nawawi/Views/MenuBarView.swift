@@ -12,6 +12,7 @@ import AppKit
 struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
     @StateObject private var dataManager = HadithDataManager.shared
+    @Environment(\.openWindow) private var openWindow
     @State private var showFullHadith = false
     @State private var showSettings = false
     @State private var showingFavoritesOnly = false
@@ -162,6 +163,13 @@ struct MenuBarView: View {
         .animation(.spring(response: 0.5, dampingFraction: 0.8), value: currentView)
         .onAppear {
             setupKeyboardShortcuts()
+
+            // Check if we need to show onboarding on first launch
+            if appState.showOnboarding {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    openWindow(id: "onboarding")
+                }
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("OpenHadith"))) { notification in
             if let hadithIndex = notification.userInfo?["hadithIndex"] as? Int {

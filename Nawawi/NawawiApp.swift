@@ -31,11 +31,14 @@ struct NawawiApp: App {
                 .onAppear {
                     NSApp.activate(ignoringOtherApps: true)
                 }
+            } else {
+                EmptyView()
             }
         }
         .defaultSize(width: 600, height: 550)
         .defaultPosition(.center)
         .windowResizability(.contentSize)
+        .handlesExternalEvents(matching: ["onboarding"])
 
         // Main standalone window
         WindowGroup("40 Hadith Nawawi", id: "main-window") {
