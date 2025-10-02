@@ -1,0 +1,172 @@
+[
+  {
+    "id": 1,
+    "output": "bukhari.json",
+    "title": "Sahih al-Bukhari",
+    "arabicTitle": "صحيح البخاري",
+    "author": "Imam Muhammad ibn Ismail al-Bukhari",
+    "icon": "book.closed.fill",
+    "priority": 1,
+    "hadithCount": 7277
+  },
+  {
+    "id": 2,
+    "output": "muslim.json",
+    "title": "Sahih Muslim",
+    "arabicTitle": "صحيح مسلم",
+    "author": "Imam Muslim ibn al-Hajjaj al-Naysaburi",
+    "icon": "book.closed.fill",
+    "priority": 1,
+    "hadithCount": 7459
+  },
+  {
+    "id": 3,
+    "output": "abudawud.json",
+    "title": "Sunan Abi Dawud",
+    "arabicTitle": "سنن أبي داود",
+    "author": "Imam Sulayman ibn al-Ash'ath Abu Dawud al-Sijistani",
+    "icon": "text.book.closed",
+    "priority": 2,
+    "hadithCount": 5276
+  },
+  {
+    "id": 4,
+    "output": "tirmidhi.json",
+    "title": "Jami' al-Tirmidhi",
+    "arabicTitle": "جامع الترمذي",
+    "author": "Imam Abu Isa Muhammad ibn Isa al-Tirmidhi",
+    "icon": "text.book.closed",
+    "priority": 2,
+    "hadithCount": 4053
+  },
+  {
+    "id": 5,
+    "output": "nasai.json",
+    "title": "Sunan al-Nasa'i",
+    "arabicTitle": "سنن النسائي",
+    "author": "Imam Ahmad ibn Shu'ayb al-Nasa'i",
+    "icon": "text.book.closed",
+    "priority": 2,
+    "hadithCount": 5768
+  },
+  {
+    "id": 6,
+    "output": "ibnmajah.json",
+    "title": "Sunan Ibn Majah",
+    "arabicTitle": "سنن ابن ماجه",
+    "author": "Imam Muhammad ibn Yazid Ibn Majah al-Qazwini",
+    "icon": "text.book.closed",
+    "priority": 2,
+    "hadithCount": 4345
+  },
+  {
+    "id": 7,
+    "output": "malik.json",
+    "title": "Muwatta Malik",
+    "arabicTitle": "موطأ مالك",
+    "author": "Imam Malik ibn Anas",
+    "icon": "books.vertical.fill",
+    "priority": 2,
+    "hadithCount": 1985
+  },
+  {
+    "id": 8,
+    "output": "ahmed.json",
+    "title": "Musnad Ahmad ibn Hanbal",
+    "arabicTitle": "مسند الإمام أحمد بن حنبل",
+    "author": "Imam Ahmad ibn Hanbal",
+    "icon": "books.vertical.fill",
+    "priority": 2,
+    "hadithCount": 1374
+  },
+  {
+    "id": 9,
+    "output": "darimi.json",
+    "title": "Sunan al-Darimi",
+    "arabicTitle": "سنن الدارمي",
+    "author": "Imam Abu Muhammad Abd al-Rahman ibn Abd Allah ibn al-Darimi",
+    "icon": "books.vertical.fill",
+    "priority": 2,
+    "hadithCount": 3406
+  },
+  {
+    "id": 10,
+    "output": "riyad.json",
+    "title": "Riyad as-Salihin",
+    "arabicTitle": "رياض الصالحين",
+    "author": "Imam Yahya ibn Sharaf al-Nawawi",
+    "icon": "leaf.fill",
+    "priority": 1,
+    "hadithCount": 1896
+  },
+  {
+    "id": 11,
+    "output": "qudsi40.json",
+    "title": "The Forty Hadith Qudsi",
+    "arabicTitle": "الأربعون القدسية",
+    "author": "",
+    "icon": "star.fill",
+    "priority": 1,
+    "hadithCount": 40
+  },
+  {
+    "id": 12,
+    "output": "nawawi40.json",
+    "title": "The Forty Hadith of Imam Nawawi",
+    "arabicTitle": "الأربعون النووية",
+    "author": "Imam Yahya ibn Sharaf al-Nawawi",
+    "icon": "book.fill",
+    "priority": 1,
+    "hadithCount": 42
+  },
+  {
+    "id": 13,
+    "output": "shahwaliullah40.json",
+    "title": "The Forty Hadith of Shah Waliullah",
+    "arabicTitle": "أربعون ولي الله الدهلوي",
+    "author": "Shah Waliullah Dahlawi",
+    "icon": "sparkles",
+    "priority": 3,
+    "hadithCount": 40
+  },
+  {
+    "id": 14,
+    "output": "adab.json",
+    "title": "Al-Adab Al-Mufrad",
+    "arabicTitle": "الأدب المفرد",
+    "author": "Imam Muhammad ibn Ismail al-Bukhari",
+    "icon": "heart.text.square.fill",
+    "priority": 2,
+    "hadithCount": 1326
+  },
+  {
+    "id": 15,
+    "output": "bulugh.json",
+    "title": "Bulugh al-Maram",
+    "arabicTitle": "بلوغ المرام",
+    "author": "Ibn Hajar al-Asqalani",
+    "icon": "flag.fill",
+    "priority": 2,
+    "hadithCount": 1767
+  },
+  {
+    "id": 16,
+    "output": "shamail.json",
+    "title": "Shama'il Muhammadiyah",
+    "arabicTitle": "الشمائل المحمدية",
+    "author": "Imam Tirmidhi",
+    "icon": "person.fill",
+    "priority": 3,
+    "hadithCount": 402
+  },
+  {
+    "id": 17,
+    "output": "mishkat.json",
+    "title": "Mishkat al-Masabih",
+    "arabicTitle": "مشكاة المصابيح",
+    "author": "Al-Khatib Al-Tabrizi",
+    "icon": "lamp.desk.fill",
+    "priority": 3,
+    "hadithCount": 4428
+  }
+]

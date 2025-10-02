@@ -13,6 +13,7 @@ struct EnhancedHeaderView: View {
     var isSearchFocused: FocusState<Bool>.Binding
     @Binding var showingFavoritesOnly: Bool
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var dataManager: HadithDataManager
     @EnvironmentObject var notificationManager: NotificationManager
 
     var body: some View {
@@ -30,9 +31,47 @@ struct EnhancedHeaderView: View {
                     )
                     .symbolEffect(.pulse, isActive: notificationManager.hasActiveReminder)
 
-                Text("40 Hadith")
-                    .font(.nohemiHeadline)
-                    .foregroundColor(.black)
+                // Book selector menu
+                Menu {
+                    ForEach(HadithBook.allCases) { book in
+                        Button(action: {
+                            withAnimation {
+                                dataManager.loadHadiths(book: book)
+                                appState.currentHadithIndex = 0
+                            }
+                        }) {
+                            Label {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(book.displayName)
+                                        .font(.nohemiCaption)
+                                    Text(book.arabicName)
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
+                            } icon: {
+                                Image(systemName: dataManager.currentBook == book ? "checkmark.circle.fill" : book.icon)
+                            }
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: dataManager.currentBook.icon)
+                            .font(.caption)
+                        Text(dataManager.currentBook.shortName)
+                            .font(.nohemiCaption)
+                            .foregroundColor(.black)
+                        Image(systemName: "chevron.down")
+                            .font(.caption2)
+                            .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(Color.nawawi_softCream.opacity(0.5))
+                    )
+                }
+                .menuStyle(.borderlessButton)
 
                 // Language selector with flags
                 Menu {

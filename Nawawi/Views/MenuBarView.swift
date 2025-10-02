@@ -106,6 +106,7 @@ struct MenuBarView: View {
                         showingFavoritesOnly: $showingFavoritesOnly
                     )
                     .environmentObject(appState)
+                    .environmentObject(dataManager)
 
                     // Loading or Error state
                     if dataManager.isLoading {
