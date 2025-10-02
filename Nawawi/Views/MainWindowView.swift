@@ -513,7 +513,7 @@ struct BookSelectorMenu: View {
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: dataManager.currentBook.icon)
-                    .foregroundStyle(.nawawi_darkGreen)
+                    .foregroundStyle(Color.nawawi_darkGreen)
                 VStack(alignment: .leading, spacing: 0) {
                     Text(dataManager.currentBook.displayName)
                         .font(.nohemiCaption)
