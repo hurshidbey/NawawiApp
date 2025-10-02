@@ -323,15 +323,25 @@ struct HadithDetailView: View {
 
                         Spacer()
 
-                        Text("\(hadith.idInBook ?? hadith.number)/\(book.totalHadiths)")
-                            .font(.caption)
-                            .foregroundStyle(.gray)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(
-                                RoundedRectangle(cornerRadius: 6)
-                                    .fill(Color.nawawi_softCream)
-                            )
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text("\(hadith.idInBook ?? hadith.number)/\(book.totalHadiths)")
+                                .font(.caption)
+                                .foregroundStyle(.gray)
+
+                            // Show sunnah.com reference if book has offset
+                            if dataManager.currentBook.sunnahComOffset != 0 {
+                                let sunnahRef = dataManager.currentBook.sunnahComReference(for: hadith.number)
+                                Text("sunnah.com #\(sunnahRef)")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(Color.nawawi_softCream)
+                        )
                     }
                     .padding(12)
                     .background(

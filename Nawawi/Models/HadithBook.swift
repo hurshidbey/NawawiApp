@@ -188,6 +188,22 @@ enum HadithBook: String, CaseIterable, Identifiable {
             return .specialized
         }
     }
+
+    /// Offset to match sunnah.com numbering
+    /// Some books use different editions with different hadith numbering
+    var sunnahComOffset: Int {
+        switch self {
+        case .ibnmajah:
+            return 264  // Our DB numbering is 264 hadiths behind sunnah.com
+        default:
+            return 0
+        }
+    }
+
+    /// Get the sunnah.com reference number for a hadith
+    func sunnahComReference(for hadithNumber: Int) -> Int {
+        return hadithNumber + sunnahComOffset
+    }
 }
 
 enum BookCategory: String, CaseIterable {
