@@ -56,16 +56,6 @@ struct BookInfo: Codable, Identifiable {
     let arabicAuthor: String
     let introduction: String?
     let totalHadiths: Int
-
-    enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case arabicTitle = "arabic_title"
-        case author
-        case arabicAuthor = "arabic_author"
-        case introduction
-        case totalHadiths = "total_hadiths"
-    }
 }
 
 // MARK: - Chapter Information
@@ -75,11 +65,4 @@ struct ChapterInfo: Codable, Identifiable {
     let title: String
     let arabicTitle: String
     let bookId: Int
-
-    enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case arabicTitle = "arabic_title"
-        case bookId
-    }
 }
