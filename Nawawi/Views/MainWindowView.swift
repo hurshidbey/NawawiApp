@@ -329,11 +329,20 @@ struct HadithDetailView: View {
                                 .foregroundStyle(.gray)
 
                             // Show sunnah.com reference if book has offset
-                            if dataManager.currentBook.sunnahComOffset != 0 {
-                                let sunnahRef = dataManager.currentBook.sunnahComReference(for: hadith.number)
+                            if let sunnahRef = dataManager.currentBook.sunnahComReference(for: hadith.number),
+                               sunnahRef != hadith.number {
                                 Text("sunnah.com #\(sunnahRef)")
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)
+                            }
+
+                            // Show numbering note if applicable
+                            if let note = dataManager.currentBook.numberingNote {
+                                Text(note)
+                                    .font(.caption2)
+                                    .foregroundStyle(.orange)
+                                    .multilineTextAlignment(.trailing)
+                                    .frame(maxWidth: 200)
                             }
                         }
                         .padding(.horizontal, 8)

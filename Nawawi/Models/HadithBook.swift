@@ -190,19 +190,48 @@ enum HadithBook: String, CaseIterable, Identifiable {
     }
 
     /// Offset to match sunnah.com numbering
-    /// Some books use different editions with different hadith numbering
+    /// IMPORTANT: Different editions of hadith collections use different numbering systems
+    ///
+    /// Verified books (✅ = matches sunnah.com exactly):
+    /// - ✅ Bukhari, Abu Dawud, Tirmidhi, Nasa'i: No offset needed
+    /// - ⚠️  Muslim: Uses sub-numbering (8a, 8b) - cannot be directly mapped
+    /// - ❌ Ibn Majah: +264 offset (different edition)
+    /// - ⚠️  Others: Not yet fully verified against sunnah.com
+    ///
+    /// Note: Muslim hadith references on sunnah.com use letters (8a, 8b, 8c)
+    /// but our database uses sequential numbering (8, 9, 10).
+    /// This is a fundamental difference in hadith compilation methods.
     var sunnahComOffset: Int {
         switch self {
         case .ibnmajah:
-            return 264  // Our DB numbering is 264 hadiths behind sunnah.com
+            return 264  // Our DB #3107 = Sunnah.com #3371
+        // case .muslim:
+        //     return 0  // WARNING: Muslim uses sub-numbering (8a, 8b), cannot offset
         default:
-            return 0
+            return 0  // Verified: Bukhari, Abu Dawud, Tirmidhi, Nasa'i match correctly
         }
     }
 
     /// Get the sunnah.com reference number for a hadith
-    func sunnahComReference(for hadithNumber: Int) -> Int {
+    /// Returns nil if book uses incompatible numbering system (like Muslim)
+    func sunnahComReference(for hadithNumber: Int) -> Int? {
+        // Muslim uses sub-numbering which cannot be mapped with simple offset
+        if self == .muslim {
+            return nil  // Cannot provide accurate sunnah.com reference
+        }
         return hadithNumber + sunnahComOffset
+    }
+
+    /// Warning message about numbering discrepancies
+    var numberingNote: String? {
+        switch self {
+        case .muslim:
+            return "Note: Sunnah.com uses sub-numbering (8a, 8b) for this collection. Our sequential numbering may not match their references exactly."
+        case .ibnmajah:
+            return "Sunnah.com reference shown above (different edition)"
+        default:
+            return nil
+        }
     }
 }
 
