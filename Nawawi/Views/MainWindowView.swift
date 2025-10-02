@@ -21,6 +21,7 @@ struct MainWindowView: View {
     @State private var showingFavoritesOnly = false
     @State private var selectedHadithIndex: Int? = nil
     @State private var showSettings = false
+    @State private var showChapterNavigator = false
 
     @FocusState private var isSearchFocused: Bool
 
@@ -40,7 +41,16 @@ struct MainWindowView: View {
     }
 
     var body: some View {
-        NavigationSplitView {
+        HStack(spacing: 0) {
+            // Chapter Navigator Sidebar (optional)
+            if showChapterNavigator {
+                ChapterNavigator(isVisible: $showChapterNavigator)
+                    .environmentObject(dataManager)
+                    .environmentObject(appState)
+                    .transition(.move(edge: .leading))
+            }
+
+            NavigationSplitView {
             // Sidebar with hadith list
             VStack(spacing: 0) {
                 // Search and filters
@@ -190,6 +200,17 @@ struct MainWindowView: View {
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button(action: {
+                    withAnimation {
+                        showChapterNavigator.toggle()
+                    }
+                }) {
+                    Image(systemName: "sidebar.left")
+                        .foregroundStyle(showChapterNavigator ? Color.nawawi_darkGreen : .gray)
+                }
+                .help("Toggle Chapters")
+                .keyboardShortcut("k", modifiers: [.command])
+
+                Button(action: {
                     showSettings.toggle()
                 }) {
                     Image(systemName: "gearshape")
@@ -235,6 +256,7 @@ struct MainWindowView: View {
                 .environmentObject(favoritesManager)
                 .environmentObject(notificationManager)
         }
+        } // Close HStack
     }
 }
 
@@ -359,6 +381,76 @@ struct HadithDetailView: View {
                     )
                 }
 
+                // Chapter banner (if available)
+                if let chapter = hadith.chapter {
+                    HStack(spacing: 12) {
+                        // Chapter icon
+                        Image(systemName: "book.pages.fill")
+                            .font(.title2)
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [Color.nawawi_darkGreen, Color.nawawi_lightGreen],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            // Chapter title
+                            Text(chapter.title)
+                                .font(.nohemiHeadline)
+                                .foregroundColor(.black)
+
+                            // Arabic chapter title
+                            Text(chapter.arabicTitle)
+                                .font(.system(size: 14))
+                                .foregroundStyle(.secondary)
+
+                            // Position in chapter
+                            if let chapterId = hadith.chapterId {
+                                let hadiths = dataManager.hadiths.filter { $0.chapterId == chapterId }
+                                let positionInChapter = hadiths.firstIndex(where: { $0.number == hadith.number }).map { $0 + 1 } ?? 0
+
+                                Text("Hadith \(positionInChapter) of \(hadiths.count) in this chapter")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+
+                        Spacer()
+
+                        // Chapter ID badge
+                        Text("Ch \(chapter.id)")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(
+                                Capsule()
+                                    .fill(Color.nawawi_darkGreen)
+                            )
+                    }
+                    .padding(16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(
+                                LinearGradient(
+                                    colors: [
+                                        Color.nawawi_softCream.opacity(0.8),
+                                        Color.nawawi_lightGreen.opacity(0.1)
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.nawawi_darkGreen.opacity(0.2), lineWidth: 1)
+                    )
+                }
+
                 // Header
                 HStack {
                     VStack(alignment: .leading, spacing: 8) {
@@ -366,9 +458,18 @@ struct HadithDetailView: View {
                             .font(.nohemiTitle)
                             .foregroundColor(.black)
 
-                        Label(hadith.narrator, systemImage: "person.circle.fill")
-                            .font(.nohemiCaption)
-                            .foregroundStyle(.gray)
+                        // Enhanced narrator display
+                        if !hadith.narrator.isEmpty {
+                            HStack(spacing: 8) {
+                                Image(systemName: "person.crop.circle.fill")
+                                    .font(.title3)
+                                    .foregroundStyle(Color.nawawi_darkGreen)
+
+                                Text(hadith.narrator)
+                                    .font(.nohemiBody)
+                                    .foregroundStyle(.primary)
+                            }
+                        }
                     }
 
                     Spacer()
@@ -454,6 +555,68 @@ struct HadithDetailView: View {
                             )
                             .textSelection(.enabled)
                     }
+                }
+
+                // Chapter navigation controls
+                if let chapter = hadith.chapter, let chapterId = hadith.chapterId {
+                    let chapHadiths = dataManager.hadiths.filter { $0.chapterId == chapterId }
+                    let currentIndex = chapHadiths.firstIndex(where: { $0.number == hadith.number }) ?? 0
+
+                    HStack(spacing: 16) {
+                        // Previous in chapter
+                        Button(action: {
+                            if currentIndex > 0 {
+                                if let idx = dataManager.hadiths.firstIndex(where: { $0.number == chapHadiths[currentIndex - 1].number }) {
+                                    withAnimation {
+                                        appState.currentHadithIndex = idx
+                                    }
+                                }
+                            }
+                        }) {
+                            Label("Previous in Chapter", systemImage: "arrow.left.circle.fill")
+                                .font(.nohemiButton)
+                                .foregroundStyle(currentIndex > 0 ? Color.nawawi_darkGreen : .gray)
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(currentIndex == 0)
+
+                        Spacer()
+
+                        // Chapter progress
+                        VStack(spacing: 4) {
+                            Text("\(currentIndex + 1) of \(chapHadiths.count)")
+                                .font(.nohemiCaption)
+                                .foregroundStyle(.secondary)
+                            Text("in \(chapter.title)")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        // Next in chapter
+                        Button(action: {
+                            if currentIndex < chapHadiths.count - 1 {
+                                if let idx = dataManager.hadiths.firstIndex(where: { $0.number == chapHadiths[currentIndex + 1].number }) {
+                                    withAnimation {
+                                        appState.currentHadithIndex = idx
+                                    }
+                                }
+                            }
+                        }) {
+                            Label("Next in Chapter", systemImage: "arrow.right.circle.fill")
+                                .font(.nohemiButton)
+                                .foregroundStyle(currentIndex < chapHadiths.count - 1 ? Color.nawawi_darkGreen : .gray)
+                                .labelStyle(.titleAndIcon)
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(currentIndex >= chapHadiths.count - 1)
+                    }
+                    .padding(16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.nawawi_softCream.opacity(0.5))
+                    )
                 }
             }
             .padding(32)
