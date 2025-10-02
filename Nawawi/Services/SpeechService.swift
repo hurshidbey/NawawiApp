@@ -112,8 +112,6 @@ extension SpeechService {
             return "ar-SA"
         case .english:
             return "en-US"
-        case .uzbek:
-            return "uz-UZ"
         }
     }
 }

@@ -56,6 +56,12 @@ struct MainWindowView: View {
                     .keyboardShortcut("f", modifiers: [.command])
 
                     HStack {
+                        // Book selector
+                        BookSelectorMenu(selectedIndex: $selectedHadithIndex)
+
+                        Divider()
+                            .frame(height: 20)
+
                         // Language selector
                         Menu {
                             ForEach(AppLanguage.allCases, id: \.self) { language in
@@ -295,11 +301,45 @@ struct HadithDetailView: View {
     @EnvironmentObject var favoritesManager: FavoritesManager
     @EnvironmentObject var notificationManager: NotificationManager
     @EnvironmentObject var hadithActionService: HadithActionService
-    @EnvironmentObject var speechService: SpeechService
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
+                // Book metadata banner (if available)
+                if let book = hadith.book {
+                    HStack(spacing: 12) {
+                        Image(systemName: dataManager.currentBook.icon)
+                            .font(.title2)
+                            .foregroundStyle(Color.nawawi_darkGreen)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(book.title)
+                                .font(.nohemiBody)
+                                .foregroundColor(.black)
+                            Text(book.arabicTitle)
+                                .font(.caption)
+                                .foregroundStyle(.gray)
+                        }
+
+                        Spacer()
+
+                        Text("\(hadith.idInBook ?? hadith.number)/\(book.totalHadiths)")
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(Color.nawawi_softCream)
+                            )
+                    }
+                    .padding(12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.nawawi_softCream.opacity(0.5))
+                    )
+                }
+
                 // Header
                 HStack {
                     VStack(alignment: .leading, spacing: 8) {
@@ -355,17 +395,10 @@ struct HadithDetailView: View {
 
                 // Arabic text (always shown first according to Islamic practice)
                 VStack(alignment: .trailing, spacing: 12) {
-                    HStack {
-                        Text("Arabic Text")
-                            .font(.nohemiCaption)
-                            .foregroundColor(.black)
-                        Spacer()
-                        Button(action: { speechService.speak(hadith.arabicText, languageCode: "ar-SA") }) {
-                            Image(systemName: speechService.isSpeaking ? "speaker.wave.2.fill" : "speaker.wave.2")
-                                .foregroundStyle(speechService.isSpeaking ? .green : .gray)
-                        }
-                        .buttonStyle(.plain)
-                    }
+                    Text("Arabic Text")
+                        .font(.nohemiCaption)
+                        .foregroundColor(.black)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
                     Text(hadith.arabicText)
                         .font(.system(size: 24, weight: .regular, design: .default))
@@ -379,33 +412,18 @@ struct HadithDetailView: View {
                                 .fill(Color.nawawi_softCream)
                         )
                         .environment(\.layoutDirection, .rightToLeft)
+                        .textSelection(.enabled)
                 }
 
 
                 // Translation
                 if appState.selectedLanguage != .arabic {
                     VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Text(appState.selectedLanguage == .uzbek ? "O'zbek tarjimasi" : "English Translation")
-                                .font(.nohemiCaption)
-                                .foregroundColor(.black)
-                            Spacer()
-                            Button(action: {
-                                let text = appState.selectedLanguage == .uzbek ?
-                                    (hadith.uzbekTranslation ?? hadith.englishTranslation) :
-                                    hadith.englishTranslation
-                                let lang = appState.selectedLanguage == .uzbek ? "uz-UZ" : "en-US"
-                                speechService.speak(text, languageCode: lang)
-                            }) {
-                                Image(systemName: speechService.isSpeaking ? "speaker.wave.2.fill" : "speaker.wave.2")
-                                    .foregroundStyle(speechService.isSpeaking ? .green : .gray)
-                            }
-                            .buttonStyle(.plain)
-                        }
+                        Text("English Translation")
+                            .font(.nohemiCaption)
+                            .foregroundColor(.black)
 
-                        Text(appState.selectedLanguage == .uzbek ?
-                             (hadith.uzbekTranslation ?? hadith.englishTranslation) :
-                             hadith.englishTranslation)
+                        Text(hadith.englishTranslation)
                             .font(.nohemiBody)
                             .foregroundColor(.black)
                             .lineSpacing(8)
@@ -415,6 +433,7 @@ struct HadithDetailView: View {
                                 RoundedRectangle(cornerRadius: 16)
                                     .fill(Color.nawawi_softCream)
                             )
+                            .textSelection(.enabled)
                     }
                 }
             }
@@ -459,5 +478,55 @@ struct SettingsWindowView: View {
         }
         .frame(width: 500, height: 600)
         .background(Color.nawawi_background)
+    }
+}
+
+// MARK: - Book Selector Menu
+struct BookSelectorMenu: View {
+    @EnvironmentObject var dataManager: HadithDataManager
+    @Binding var selectedIndex: Int?
+
+    var body: some View {
+        Menu {
+            ForEach(HadithBook.allCases) { book in
+                Button(action: {
+                    withAnimation {
+                        dataManager.loadHadiths(book: book)
+                        selectedIndex = 0
+                    }
+                }) {
+                    Label {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(book.displayName)
+                                .font(.nohemiCaption)
+                                .foregroundColor(.black)
+                            Text(book.arabicName)
+                                .font(.caption2)
+                                .foregroundStyle(.gray)
+                        }
+                    } icon: {
+                        Image(systemName: dataManager.currentBook == book ? "checkmark.circle.fill" : book.icon)
+                            .foregroundStyle(dataManager.currentBook == book ? .green : .gray)
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: dataManager.currentBook.icon)
+                    .foregroundStyle(.nawawi_darkGreen)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(dataManager.currentBook.displayName)
+                        .font(.nohemiCaption)
+                        .foregroundColor(.black)
+                    Text("\(dataManager.hadiths.count) hadiths")
+                        .font(.caption2)
+                        .foregroundStyle(.gray)
+                }
+                Image(systemName: "chevron.down")
+                    .font(.caption2)
+                    .foregroundStyle(.gray)
+            }
+        }
+        .menuStyle(.borderlessButton)
     }
 }

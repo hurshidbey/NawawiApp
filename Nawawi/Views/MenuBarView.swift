@@ -16,7 +16,6 @@ struct MenuBarView: View {
     @EnvironmentObject var favoritesManager: FavoritesManager
     @EnvironmentObject var notificationManager: NotificationManager
     @EnvironmentObject var hadithActionService: HadithActionService
-    @EnvironmentObject var speechService: SpeechService
     @Environment(\.openWindow) private var openWindow
     @State private var showFullHadith = false
     @State private var showSettings = false
@@ -383,12 +382,14 @@ struct EnhancedHadithCard: View {
                             .multilineTextAlignment(.trailing)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                             .environment(\.layoutDirection, .rightToLeft)
+                            .textSelection(.enabled)
                     } else {
                         Text(hadith.arabicText)
                             .font(.system(size: 20))
                             .multilineTextAlignment(.trailing)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                             .environment(\.layoutDirection, .rightToLeft)
+                            .textSelection(.enabled)
                     }
                 }
                 .padding()
@@ -418,24 +419,13 @@ struct EnhancedHadithCard: View {
                         HighlightedText(hadith.englishTranslation, highlight: searchHighlight, font: .system(size: 14))
                             .foregroundColor(.black)
                             .lineSpacing(4)
+                            .textSelection(.enabled)
                     } else {
                         Text(hadith.englishTranslation)
                             .font(.system(size: 14))
                             .foregroundColor(.black)
                             .lineSpacing(4)
-                    }
-                case .uzbek:
-                    if let uzbekTranslation = hadith.uzbekTranslation {
-                        if !searchHighlight.isEmpty && uzbekTranslation.localizedCaseInsensitiveContains(searchHighlight) {
-                            HighlightedText(uzbekTranslation, highlight: searchHighlight, font: .system(size: 14))
-                                .foregroundColor(.black)
-                                .lineSpacing(4)
-                        } else {
-                            Text(uzbekTranslation)
-                                .font(.system(size: 14))
-                                .foregroundColor(.black)
-                                .lineSpacing(4)
-                        }
+                            .textSelection(.enabled)
                     }
                 }
             }
@@ -605,7 +595,6 @@ struct HadithDetailInlineView: View {
     @EnvironmentObject var dataManager: HadithDataManager
     @EnvironmentObject var favoritesManager: FavoritesManager
     @EnvironmentObject var hadithActionService: HadithActionService
-    @EnvironmentObject var speechService: SpeechService
 
     var body: some View {
         VStack(spacing: 0) {
@@ -698,18 +687,10 @@ struct HadithDetailInlineView: View {
 
                     // Arabic text (always shown first according to Islamic practice)
                         VStack(alignment: .trailing, spacing: 10) {
-                            HStack {
-                                Text("Arabic Text")
-                                    .font(.caption)
-                                    .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
-                                Spacer()
-                                Button(action: { speechService.speak(hadith.arabicText, languageCode: "ar-SA") }) {
-                                    Image(systemName: speechService.isSpeaking ? "speaker.wave.2.fill" : "speaker.wave.2")
-                                        .font(.caption)
-                                        .foregroundStyle(speechService.isSpeaking ? .green : Color(red: 0.4, green: 0.4, blue: 0.4))
-                                }
-                                .buttonStyle(.plain)
-                            }
+                            Text("Arabic Text")
+                                .font(.caption)
+                                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
+                                .frame(maxWidth: .infinity, alignment: .leading)
 
                             Text(hadith.arabicText)
                                 .font(.system(size: 20))
@@ -723,51 +704,26 @@ struct HadithDetailInlineView: View {
                                         .fill(Color.nawawi_softCream)
                                 )
                                 .environment(\.layoutDirection, .rightToLeft)
+                                .textSelection(.enabled)
                         }
 
                     // Translation
                     if appState.selectedLanguage != .arabic {
                         VStack(alignment: .leading, spacing: 10) {
-                            HStack {
-                                Text(appState.selectedLanguage == .uzbek ? "O'zbek tarjimasi" : "English Translation")
-                                    .font(.caption)
-                                    .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
-                                Spacer()
-                                Button(action: {
-                                    let text = appState.selectedLanguage == .uzbek ?
-                                        (hadith.uzbekTranslation ?? hadith.englishTranslation) :
-                                        hadith.englishTranslation
-                                    let lang = appState.selectedLanguage == .uzbek ? "uz-UZ" : "en-US"
-                                    speechService.speak(text, languageCode: lang)
-                                }) {
-                                    Image(systemName: speechService.isSpeaking ? "speaker.wave.2.fill" : "speaker.wave.2")
-                                        .font(.caption)
-                                        .foregroundStyle(speechService.isSpeaking ? .green : Color(red: 0.4, green: 0.4, blue: 0.4))
-                                }
-                                .buttonStyle(.plain)
-                            }
+                            Text("English Translation")
+                                .font(.caption)
+                                .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
 
-                            if appState.selectedLanguage == .uzbek {
-                                Text(hadith.uzbekTranslation ?? hadith.englishTranslation)
-                                    .font(.system(size: 15))
-                                    .foregroundColor(.black)
-                                    .lineSpacing(6)
-                                    .padding()
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(Color.nawawi_softCream)
-                                    )
-                            } else {
-                                Text(hadith.englishTranslation)
-                                    .font(.system(size: 15))
-                                    .foregroundColor(.black)
-                                    .lineSpacing(6)
-                                    .padding()
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(Color.nawawi_softCream)
-                                    )
-                            }
+                            Text(hadith.englishTranslation)
+                                .font(.system(size: 15))
+                                .foregroundColor(.black)
+                                .lineSpacing(6)
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.nawawi_softCream)
+                                )
+                                .textSelection(.enabled)
                         }
                     }
 

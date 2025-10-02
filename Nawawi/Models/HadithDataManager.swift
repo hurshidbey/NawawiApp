@@ -15,24 +15,26 @@ class HadithDataManager: ObservableObject {
     @Published var isLoading = false
     @Published var error: Error?
     @Published var lastLoadTime: Date?
+    @Published var currentBook: HadithBook = .nawawi40
 
     private let cache = NSCache<NSString, NSData>()
-    private let hadithFileName = "hadiths.json"
 
     init() {
-        loadHadiths()
+        loadHadiths(book: currentBook)
     }
 
-    func loadHadiths() {
+    func loadHadiths(book: HadithBook = .nawawi40) {
         isLoading = true
         error = nil
+        currentBook = book
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
 
             do {
                 // Check cache first
-                if let cachedData = self.cache.object(forKey: self.hadithFileName as NSString) as Data? {
+                let cacheKey = book.fileName as NSString
+                if let cachedData = self.cache.object(forKey: cacheKey) as Data? {
                     let decoded = try JSONDecoder().decode([Hadith].self, from: cachedData)
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }
@@ -44,7 +46,8 @@ class HadithDataManager: ObservableObject {
                 }
 
                 // Load from bundle
-                guard let url = Bundle.main.url(forResource: "hadiths", withExtension: "json") else {
+                let resourceName = book.fileName.replacingOccurrences(of: ".json", with: "")
+                guard let url = Bundle.main.url(forResource: resourceName, withExtension: "json") else {
                     throw HadithError.fileNotFound
                 }
 
@@ -52,7 +55,7 @@ class HadithDataManager: ObservableObject {
                 let decoded = try JSONDecoder().decode([Hadith].self, from: data)
 
                 // Cache the data
-                self.cache.setObject(data as NSData, forKey: self.hadithFileName as NSString)
+                self.cache.setObject(data as NSData, forKey: cacheKey)
 
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
@@ -65,7 +68,7 @@ class HadithDataManager: ObservableObject {
                     guard let self = self else { return }
                     self.error = error
                     self.isLoading = false
-                    print("Error loading hadiths: \(error)")
+                    print("Error loading hadiths from \(book.displayName): \(error)")
                 }
             }
         }
@@ -84,8 +87,6 @@ class HadithDataManager: ObservableObject {
                 switch language {
                 case .arabic:
                     searchTarget = hadith.arabicText
-                case .uzbek:
-                    searchTarget = hadith.uzbekTranslation ?? hadith.englishTranslation
                 case .english:
                     searchTarget = hadith.englishTranslation
                 }
@@ -120,7 +121,6 @@ class HadithDataManager: ObservableObject {
             English:
             \(hadith.englishTranslation)
 
-            \(hadith.uzbekTranslation.map { "Uzbek:\n\($0)\n\n" } ?? "")
             Narrator: \(hadith.narrator)
             """
 
@@ -134,7 +134,6 @@ class HadithDataManager: ObservableObject {
             ## English Translation
             \(hadith.englishTranslation)
 
-            \(hadith.uzbekTranslation.map { "## Uzbek Translation\n\($0)\n\n" } ?? "")
             **Narrator:** \(hadith.narrator)
             """
 

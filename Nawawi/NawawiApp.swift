@@ -23,7 +23,6 @@ struct NawawiApp: App {
 
     // Services (Phase 4: Deduplication)
     @StateObject private var hadithActionService = HadithActionService()
-    @StateObject private var speechService = SpeechService()
 
     @State private var isAppActive = true
 
@@ -66,7 +65,6 @@ struct NawawiApp: App {
                 .environmentObject(favoritesManager)
                 .environmentObject(notificationManager)
                 .environmentObject(hadithActionService)
-                .environmentObject(speechService)
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
                 .task {
@@ -91,7 +89,6 @@ struct NawawiApp: App {
                 .environmentObject(favoritesManager)
                 .environmentObject(notificationManager)
                 .environmentObject(hadithActionService)
-                .environmentObject(speechService)
                 .colorScheme(.light) // Force light mode globally
                 .foregroundColor(.black) // Force all text to be black
                 .task {
@@ -157,13 +154,11 @@ struct NawawiApp: App {
 enum AppLanguage: String, CaseIterable {
     case arabic = "ar"
     case english = "en"
-    case uzbek = "uz"
 
     var displayName: String {
         switch self {
         case .arabic: return "العربية"
         case .english: return "English"
-        case .uzbek: return "O'zbek"
         }
     }
 
@@ -171,7 +166,6 @@ enum AppLanguage: String, CaseIterable {
         switch self {
         case .arabic: return "🇸🇦"
         case .english: return "🇬🇧"
-        case .uzbek: return "🇺🇿"
         }
     }
 }
@@ -406,10 +400,9 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
             NSApp.setActivationPolicy(.regular)
             NSApp.activate(ignoringOtherApps: true)
 
-            // 3. Use NSWorkspace to bring app to front (more reliable for background apps)
-            if let bundleURL = Bundle.main.bundleURL as URL? {
-                NSWorkspace.shared.open(bundleURL)
-            }
+            // 3. Properly activate the running app (fixes "Cannot open app" error)
+            let runningApp = NSRunningApplication.current
+            runningApp.activate(options: .activateAllWindows)
 
             print("✅ App activation requested")
 
