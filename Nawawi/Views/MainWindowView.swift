@@ -44,7 +44,11 @@ struct MainWindowView: View {
         HStack(spacing: 0) {
             // Chapter Navigator Sidebar (optional)
             if showChapterNavigator {
-                ChapterNavigator(isVisible: $showChapterNavigator)
+                ChapterNavigator(
+                    isVisible: $showChapterNavigator,
+                    selectedHadithIndex: $selectedHadithIndex,
+                    filteredHadiths: filteredHadiths
+                )
                     .environmentObject(dataManager)
                     .environmentObject(appState)
                     .transition(.move(edge: .leading))

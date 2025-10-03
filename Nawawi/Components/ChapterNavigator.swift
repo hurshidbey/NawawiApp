@@ -11,6 +11,8 @@ struct ChapterNavigator: View {
     @EnvironmentObject var dataManager: HadithDataManager
     @EnvironmentObject var appState: AppState
     @Binding var isVisible: Bool
+    @Binding var selectedHadithIndex: Int?
+    let filteredHadiths: [Hadith]
     @State private var searchText = ""
     @State private var selectedChapterId: Int?
 
@@ -130,8 +132,10 @@ struct ChapterNavigator: View {
                                 isSelected: chapter.id == currentChapterId,
                                 action: {
                                     // Jump to first hadith in chapter
-                                    if let idx = dataManager.hadiths.firstIndex(where: { $0.number == chapter.firstHadithNumber }) {
+                                    // Find in filteredHadiths, not all hadiths
+                                    if let idx = filteredHadiths.firstIndex(where: { $0.number == chapter.firstHadithNumber }) {
                                         withAnimation {
+                                            selectedHadithIndex = idx
                                             appState.currentHadithIndex = idx
                                         }
                                     }
