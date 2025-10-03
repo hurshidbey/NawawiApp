@@ -331,9 +331,11 @@ struct HadithDetailView: View {
     @EnvironmentObject var hadithActionService: HadithActionService
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // Book metadata banner (if available)
+        VStack(spacing: 0) {
+            // Main scrollable content
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    // Book metadata banner (if available)
                 if let book = hadith.book {
                     HStack(spacing: 12) {
                         Image(systemName: dataManager.currentBook.icon)
@@ -562,14 +564,20 @@ struct HadithDetailView: View {
                             .textSelection(.enabled)
                     }
                 }
+            }
+            .padding(32)
+            }
 
-                // Chapter navigation controls
-                if let chapter = hadith.chapter, let chapterId = hadith.chapterId {
-                    let chapHadiths = filteredHadiths.filter { $0.chapterId == chapterId }
-                    let currentIndex = chapHadiths.firstIndex(where: { $0.number == hadith.number }) ?? 0
+            // Fixed bottom chapter navigation bar (if chapter available)
+            if let chapter = hadith.chapter, let chapterId = hadith.chapterId {
+                let chapHadiths = filteredHadiths.filter { $0.chapterId == chapterId }
+                let currentIndex = chapHadiths.firstIndex(where: { $0.number == hadith.number }) ?? 0
+
+                VStack(spacing: 0) {
+                    Divider()
 
                     HStack(spacing: 16) {
-                        // Previous in chapter
+                        // Previous in chapter button
                         Button(action: {
                             if currentIndex > 0 {
                                 if let idx = filteredHadiths.firstIndex(where: { $0.number == chapHadiths[currentIndex - 1].number }) {
@@ -580,28 +588,40 @@ struct HadithDetailView: View {
                                 }
                             }
                         }) {
-                            Label("Previous in Chapter", systemImage: "arrow.left.circle.fill")
-                                .font(.nohemiButton)
-                                .foregroundStyle(currentIndex > 0 ? Color.nawawi_darkGreen : .gray)
+                            HStack(spacing: 8) {
+                                Image(systemName: "chevron.left.circle.fill")
+                                    .font(.title2)
+                                Text("Previous")
+                                    .font(.nohemiButton)
+                            }
+                            .foregroundStyle(currentIndex > 0 ? Color.nawawi_darkGreen : .gray)
                         }
                         .buttonStyle(.plain)
                         .disabled(currentIndex == 0)
+                        .help("Previous hadith in chapter")
 
                         Spacer()
 
-                        // Chapter progress
+                        // Chapter info in center
                         VStack(spacing: 4) {
-                            Text("\(currentIndex + 1) of \(chapHadiths.count)")
-                                .font(.nohemiCaption)
-                                .foregroundStyle(.secondary)
-                            Text("in \(chapter.title)")
-                                .font(.caption2)
+                            HStack(spacing: 6) {
+                                Image(systemName: "book.pages.fill")
+                                    .foregroundStyle(Color.nawawi_darkGreen)
+                                Text("Ch \(chapter.id):")
+                                    .fontWeight(.semibold)
+                                Text(chapter.title)
+                            }
+                            .font(.nohemiBody)
+                            .foregroundColor(.black)
+
+                            Text("Hadith \(currentIndex + 1) of \(chapHadiths.count)")
+                                .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
 
                         Spacer()
 
-                        // Next in chapter
+                        // Next in chapter button
                         Button(action: {
                             if currentIndex < chapHadiths.count - 1 {
                                 if let idx = filteredHadiths.firstIndex(where: { $0.number == chapHadiths[currentIndex + 1].number }) {
@@ -612,22 +632,23 @@ struct HadithDetailView: View {
                                 }
                             }
                         }) {
-                            Label("Next in Chapter", systemImage: "arrow.right.circle.fill")
-                                .font(.nohemiButton)
-                                .foregroundStyle(currentIndex < chapHadiths.count - 1 ? Color.nawawi_darkGreen : .gray)
-                                .labelStyle(.titleAndIcon)
+                            HStack(spacing: 8) {
+                                Text("Next")
+                                    .font(.nohemiButton)
+                                Image(systemName: "chevron.right.circle.fill")
+                                    .font(.title2)
+                            }
+                            .foregroundStyle(currentIndex < chapHadiths.count - 1 ? Color.nawawi_darkGreen : .gray)
                         }
                         .buttonStyle(.plain)
                         .disabled(currentIndex >= chapHadiths.count - 1)
+                        .help("Next hadith in chapter")
                     }
-                    .padding(16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.nawawi_softCream.opacity(0.5))
-                    )
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 12)
+                    .background(Color.nawawi_softCream.opacity(0.8))
                 }
             }
-            .padding(32)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.nawawi_background)
