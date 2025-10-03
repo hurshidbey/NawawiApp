@@ -113,10 +113,11 @@ struct ChapterNavigator: View {
                         .font(.nohemiBody)
                         .foregroundStyle(.secondary)
 
-                    Text("This book may not have chapter information")
+                    Text("\(dataManager.currentBook.displayName) does not contain chapter divisions.\n\nChapter navigation is available for books like Bukhari, Muslim, Abu Dawud, Tirmidhi, Nasa'i, and Ibn Majah.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
+                        .padding(.horizontal)
                 }
                 .frame(maxHeight: .infinity)
                 .padding()

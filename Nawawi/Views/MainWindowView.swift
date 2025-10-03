@@ -182,7 +182,11 @@ struct MainWindowView: View {
         } detail: {
             // Main content area
             if let hadith = currentHadith {
-                HadithDetailView(hadith: hadith)
+                HadithDetailView(
+                    hadith: hadith,
+                    filteredHadiths: filteredHadiths,
+                    selectedHadithIndex: $selectedHadithIndex
+                )
                     .environmentObject(appState)
                     .environmentObject(dataManager)
                     .environmentObject(favoritesManager)
@@ -318,6 +322,8 @@ struct HadithListRow: View {
 // MARK: - Hadith Detail View
 struct HadithDetailView: View {
     let hadith: Hadith
+    let filteredHadiths: [Hadith]
+    @Binding var selectedHadithIndex: Int?
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var dataManager: HadithDataManager
     @EnvironmentObject var favoritesManager: FavoritesManager
@@ -559,15 +565,16 @@ struct HadithDetailView: View {
 
                 // Chapter navigation controls
                 if let chapter = hadith.chapter, let chapterId = hadith.chapterId {
-                    let chapHadiths = dataManager.hadiths.filter { $0.chapterId == chapterId }
+                    let chapHadiths = filteredHadiths.filter { $0.chapterId == chapterId }
                     let currentIndex = chapHadiths.firstIndex(where: { $0.number == hadith.number }) ?? 0
 
                     HStack(spacing: 16) {
                         // Previous in chapter
                         Button(action: {
                             if currentIndex > 0 {
-                                if let idx = dataManager.hadiths.firstIndex(where: { $0.number == chapHadiths[currentIndex - 1].number }) {
+                                if let idx = filteredHadiths.firstIndex(where: { $0.number == chapHadiths[currentIndex - 1].number }) {
                                     withAnimation {
+                                        selectedHadithIndex = idx
                                         appState.currentHadithIndex = idx
                                     }
                                 }
@@ -597,8 +604,9 @@ struct HadithDetailView: View {
                         // Next in chapter
                         Button(action: {
                             if currentIndex < chapHadiths.count - 1 {
-                                if let idx = dataManager.hadiths.firstIndex(where: { $0.number == chapHadiths[currentIndex + 1].number }) {
+                                if let idx = filteredHadiths.firstIndex(where: { $0.number == chapHadiths[currentIndex + 1].number }) {
                                     withAnimation {
+                                        selectedHadithIndex = idx
                                         appState.currentHadithIndex = idx
                                     }
                                 }
