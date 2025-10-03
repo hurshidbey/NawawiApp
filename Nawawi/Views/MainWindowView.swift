@@ -22,16 +22,24 @@ struct MainWindowView: View {
     @State private var selectedHadithIndex: Int? = nil
     @State private var showSettings = false
     @State private var showChapterNavigator = false
+    @State private var filterByChapterId: Int? = nil
 
     @FocusState private var isSearchFocused: Bool
 
     var filteredHadiths: [Hadith] {
-        dataManager.searchHadiths(
+        var hadiths = dataManager.searchHadiths(
             query: searchText,
             language: appState.selectedLanguage,
             favoritesOnly: showingFavoritesOnly,
             favorites: favoritesManager.favorites
         )
+
+        // Apply chapter filter if active
+        if let chapterId = filterByChapterId {
+            hadiths = hadiths.filter { $0.chapterId == chapterId }
+        }
+
+        return hadiths
     }
 
     var currentHadith: Hadith? {
@@ -47,6 +55,7 @@ struct MainWindowView: View {
                 ChapterNavigator(
                     isVisible: $showChapterNavigator,
                     selectedHadithIndex: $selectedHadithIndex,
+                    filterByChapterId: $filterByChapterId,
                     filteredHadiths: filteredHadiths
                 )
                     .environmentObject(dataManager)
@@ -136,6 +145,36 @@ struct MainWindowView: View {
                 .background(Color.nawawi_softCream)
 
                 Divider()
+
+                // Chapter filter indicator (if active)
+                if filterByChapterId != nil,
+                   let firstHadith = filteredHadiths.first,
+                   let chapter = firstHadith.chapter {
+                    HStack(spacing: 8) {
+                        Image(systemName: "book.pages.fill")
+                            .foregroundStyle(Color.nawawi_darkGreen)
+                        Text("Chapter \(chapter.id): \(chapter.title)")
+                            .font(.nohemiCaption)
+                            .foregroundColor(.black)
+                        Spacer()
+                        Button(action: {
+                            withAnimation {
+                                filterByChapterId = nil
+                                selectedHadithIndex = 0
+                            }
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .help("Show all hadiths")
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.nawawi_lightGreen.opacity(0.2))
+
+                    Divider()
+                }
 
                 // Hadith list
                 if dataManager.isLoading {
