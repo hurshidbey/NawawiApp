@@ -17,9 +17,22 @@ extension Font {
     // MARK: - Typography Scale
     static let nohemiDisplay = Font.nohemi(.black, size: 32)
     static let nohemiTitle = Font.nohemi(.extraBold, size: 24)
+    static let nohemiSubheading = Font.nohemi(.semiBold, size: 20)
     static let nohemiHeadline = Font.nohemi(.bold, size: 18)
+
+    // Reading-optimized fonts for long-form content
+    static let nohemiReading = Font.nohemi(.regular, size: 18)
+    static let nohemiReadingMedium = Font.nohemi(.medium, size: 18)
+
+    // Body text
     static let nohemiBody = Font.nohemi(.regular, size: 16)
     static let nohemiBodyMedium = Font.nohemi(.medium, size: 16)
+
+    // List and UI fonts
+    static let nohemiListTitle = Font.nohemi(.medium, size: 15)
+    static let nohemiListSubtitle = Font.nohemi(.regular, size: 13)
+
+    // Captions and small text
     static let nohemiCaption = Font.nohemi(.medium, size: 12)
     static let nohemiCaptionLight = Font.nohemi(.light, size: 12)
     static let nohemiSmall = Font.nohemi(.regular, size: 10)
@@ -28,6 +41,13 @@ extension Font {
     static let nohemiButton = Font.nohemi(.semiBold, size: 14)
     static let nohemiNavigation = Font.nohemi(.medium, size: 15)
     static let nohemiNumber = Font.nohemi(.medium, size: 14)
+
+    // MARK: - Arabic Typography
+    // Arabic text needs larger sizes for optimal readability
+    static let nohemiArabicDisplay = Font.system(size: 32, weight: .regular, design: .default)
+    static let nohemiArabicReading = Font.system(size: 28, weight: .regular, design: .default)
+    static let nohemiArabicBody = Font.system(size: 22, weight: .regular, design: .default)
+    static let nohemiArabicCaption = Font.system(size: 14, weight: .regular, design: .default)
 }
 
 enum NohemiWeight: String, CaseIterable {
@@ -68,9 +88,13 @@ extension Color {
     static let nawawi_accent = nawawi_darkGreen
 
     // MARK: - Text Color Helpers (Prevent future white text issues)
-    static let nawawi_primaryText = Color.black
-    static let nawawi_secondaryText = Color.gray
-    static let nawawi_subtleText = Color(red: 0.4, green: 0.4, blue: 0.4)
+    static let nawawi_headingText = Color.black                           // Headings, titles
+    static let nawawi_primaryText = Color.black                           // Primary body text
+    static let nawawi_bodyText = Color(white: 0.1)                        // Reading text (#1A1A1A)
+    static let nawawi_secondaryText = Color.gray                          // Secondary info
+    static let nawawi_captionText = Color(white: 0.4)                     // Captions, metadata (#666666)
+    static let nawawi_mutedText = Color(white: 0.6)                       // Muted, disabled (#999999)
+    static let nawawi_subtleText = Color(red: 0.4, green: 0.4, blue: 0.4) // Subtle elements
 }
 
 // MARK: - Modern Spacing System
@@ -88,6 +112,14 @@ extension CGFloat {
     static let button_padding_horizontal: CGFloat = 16
     static let button_padding_vertical: CGFloat = 8
     static let section_spacing: CGFloat = 24
+
+    // MARK: - Line Spacing for Readability
+    // Based on optimal reading research (1.4-1.8x font size)
+    static let lineSpacing_tight: CGFloat = 4      // UI elements, compact lists
+    static let lineSpacing_normal: CGFloat = 6     // Body text (1.4x for 16pt)
+    static let lineSpacing_relaxed: CGFloat = 10   // Reading text (1.6x for 18pt)
+    static let lineSpacing_arabic: CGFloat = 14    // Arabic text (1.8x for 28pt)
+    static let lineSpacing_arabicCompact: CGFloat = 6  // Arabic in compact views
 }
 
 // MARK: - Sophisticated Shadow System

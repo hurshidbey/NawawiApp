@@ -379,14 +379,16 @@ struct EnhancedHadithCard: View {
             // Arabic text with glass background (always shown first according to Islamic practice)
                 VStack(alignment: .trailing, spacing: 8) {
                     if !searchHighlight.isEmpty && hadith.arabicText.contains(searchHighlight) {
-                        HighlightedText(hadith.arabicText, highlight: searchHighlight, font: .system(size: 20))
+                        HighlightedText(hadith.arabicText, highlight: searchHighlight, font: .system(size: 22))
+                            .lineSpacing(.lineSpacing_arabicCompact)
                             .multilineTextAlignment(.trailing)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                             .environment(\.layoutDirection, .rightToLeft)
                             .textSelection(.enabled)
                     } else {
                         Text(hadith.arabicText)
-                            .font(.system(size: 20))
+                            .font(.nohemiArabicBody)
+                            .lineSpacing(.lineSpacing_arabicCompact)
                             .multilineTextAlignment(.trailing)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                             .environment(\.layoutDirection, .rightToLeft)
@@ -417,15 +419,15 @@ struct EnhancedHadithCard: View {
                     EmptyView()
                 case .english:
                     if !searchHighlight.isEmpty && hadith.englishTranslation.localizedCaseInsensitiveContains(searchHighlight) {
-                        HighlightedText(hadith.englishTranslation, highlight: searchHighlight, font: .system(size: 14))
-                            .foregroundColor(.black)
-                            .lineSpacing(4)
+                        HighlightedText(hadith.englishTranslation, highlight: searchHighlight, font: .system(size: 15))
+                            .foregroundColor(.nawawi_bodyText)
+                            .lineSpacing(.lineSpacing_normal)
                             .textSelection(.enabled)
                     } else {
                         Text(hadith.englishTranslation)
-                            .font(.system(size: 14))
-                            .foregroundColor(.black)
-                            .lineSpacing(4)
+                            .font(.nohemiListTitle)
+                            .foregroundColor(.nawawi_bodyText)
+                            .lineSpacing(.lineSpacing_normal)
                             .textSelection(.enabled)
                     }
                 }
@@ -435,15 +437,15 @@ struct EnhancedHadithCard: View {
             Label {
                 if !searchHighlight.isEmpty && hadith.narrator.localizedCaseInsensitiveContains(searchHighlight) {
                     HighlightedText(hadith.narrator, highlight: searchHighlight, font: .caption)
-                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
+                        .foregroundStyle(Color.nawawi_captionText)
                 } else {
                     Text(hadith.narrator)
-                        .font(.caption)
-                        .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
+                        .font(.nohemiCaption)
+                        .foregroundStyle(Color.nawawi_captionText)
                 }
             } icon: {
                 Image(systemName: "person.circle.fill")
-                    .font(.caption)
+                    .font(.nohemiCaption)
                     .symbolRenderingMode(.hierarchical)
             }
         }
@@ -697,11 +699,11 @@ struct HadithDetailInlineView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
 
                             Text(hadith.arabicText)
-                                .font(.system(size: 20))
-                                .foregroundColor(.black)
+                                .font(.nohemiArabicBody)
+                                .foregroundColor(.nawawi_headingText)
                                 .multilineTextAlignment(.trailing)
                                 .frame(maxWidth: .infinity, alignment: .trailing)
-                                .lineSpacing(8)
+                                .lineSpacing(.lineSpacing_arabicCompact)
                                 .padding()
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
@@ -719,9 +721,9 @@ struct HadithDetailInlineView: View {
                                 .foregroundStyle(Color(red: 0.4, green: 0.4, blue: 0.4))
 
                             Text(hadith.englishTranslation)
-                                .font(.system(size: 15))
-                                .foregroundColor(.black)
-                                .lineSpacing(6)
+                                .font(.nohemiListTitle)
+                                .foregroundColor(.nawawi_bodyText)
+                                .lineSpacing(.lineSpacing_normal)
                                 .padding()
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)

@@ -215,33 +215,33 @@ struct ChapterRow: View {
         HStack(spacing: 12) {
             // Chapter number badge
             Text("\(chapter.id)")
-                .font(.caption)
-                .fontWeight(.bold)
+                .font(.nohemiButton)
                 .foregroundColor(isSelected ? .white : Color.nawawi_darkGreen)
-                .frame(width: 32, height: 32)
+                .frame(width: 36, height: 36)
                 .background(
                     Circle()
                         .fill(isSelected ? Color.nawawi_darkGreen : Color.nawawi_cream)
                 )
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 // English title
                 Text(chapter.title)
-                    .font(.nohemiBody)
-                    .foregroundColor(isSelected ? .black : .primary)
+                    .font(.nohemiListTitle)
+                    .foregroundColor(isSelected ? .nawawi_headingText : .nawawi_headingText)
+                    .lineSpacing(.lineSpacing_tight)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
 
                 // Arabic title
                 Text(chapter.arabicTitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.nohemiArabicCaption)
+                    .foregroundColor(.nawawi_captionText)
                     .lineLimit(1)
 
                 // Hadith count
                 Text("\(chapter.hadithCount) hadiths")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .font(.nohemiSmall)
+                    .foregroundColor(.nawawi_mutedText)
             }
 
             Spacer()
@@ -251,8 +251,10 @@ struct ChapterRow: View {
                     .foregroundStyle(Color.nawawi_darkGreen)
             }
         }
-        .padding(12)
+        .padding(.vertical, 14)
+        .padding(.horizontal, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(minHeight: 72)
         .contentShape(Rectangle())
         .background(
             RoundedRectangle(cornerRadius: 10)

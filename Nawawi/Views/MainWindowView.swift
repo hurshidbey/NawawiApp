@@ -369,8 +369,8 @@ struct HadithListRow: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text("Hadith #\(hadith.number)")
-                        .font(.nohemiButton)
-                        .foregroundColor(isSelected ? .white : .black)
+                        .font(.nohemiBodyMedium)
+                        .foregroundColor(isSelected ? .white : .nawawi_headingText)
 
                     Spacer()
 
@@ -387,18 +387,20 @@ struct HadithListRow: View {
                         highlight: searchHighlight,
                         font: .caption
                     )
-                    .foregroundColor(isSelected ? .white : .black)
-                    .lineLimit(3)
+                    .foregroundColor(isSelected ? .white : .nawawi_bodyText)
+                    .lineSpacing(.lineSpacing_tight)
+                    .lineLimit(2)
                 } else {
                     Text(hadith.englishTranslation)
-                        .font(.nohemiCaptionLight)
-                        .foregroundColor(isSelected ? .white : .black)
-                        .lineLimit(3)
+                        .font(.nohemiListSubtitle)
+                        .foregroundColor(isSelected ? .white : .nawawi_bodyText)
+                        .lineSpacing(.lineSpacing_tight)
+                        .lineLimit(2)
                 }
 
                 Text(hadith.narrator)
-                    .font(.caption2)
-                    .foregroundStyle(isSelected ? .white.opacity(0.8) : .gray)
+                    .font(.nohemiSmall)
+                    .foregroundColor(isSelected ? .white.opacity(0.8) : .nawawi_captionText)
                     .lineLimit(1)
             }
         }
@@ -556,19 +558,19 @@ struct HadithDetailView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Hadith #\(hadith.number)")
-                            .font(.nohemiTitle)
-                            .foregroundColor(.black)
+                            .font(.nohemiSubheading)
+                            .foregroundColor(.nawawi_headingText)
 
                         // Enhanced narrator display
                         if !hadith.narrator.isEmpty {
-                            HStack(spacing: 8) {
+                            HStack(spacing: 10) {
                                 Image(systemName: "person.crop.circle.fill")
                                     .font(.title3)
                                     .foregroundStyle(Color.nawawi_darkGreen)
 
                                 Text(hadith.narrator)
-                                    .font(.nohemiBody)
-                                    .foregroundStyle(.primary)
+                                    .font(.nohemiBodyMedium)
+                                    .foregroundColor(.nawawi_bodyText)
                             }
                         }
                     }
@@ -618,16 +620,16 @@ struct HadithDetailView: View {
                 VStack(alignment: .trailing, spacing: 12) {
                     Text("Arabic Text")
                         .font(.nohemiCaption)
-                        .foregroundColor(.black)
+                        .foregroundColor(.nawawi_captionText)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     Text(hadith.arabicText)
-                        .font(.system(size: 24, weight: .regular, design: .default))
-                        .foregroundColor(.black)
+                        .font(.nohemiArabicReading)
+                        .foregroundColor(.nawawi_headingText)
                         .multilineTextAlignment(.trailing)
                         .frame(maxWidth: .infinity, alignment: .trailing)
-                        .lineSpacing(10)
-                        .padding(20)
+                        .lineSpacing(.lineSpacing_arabic)
+                        .padding(24)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
                                 .fill(Color.nawawi_softCream)
@@ -642,13 +644,13 @@ struct HadithDetailView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("English Translation")
                             .font(.nohemiCaption)
-                            .foregroundColor(.black)
+                            .foregroundColor(.nawawi_captionText)
 
                         Text(hadith.englishTranslation)
-                            .font(.nohemiBody)
-                            .foregroundColor(.black)
-                            .lineSpacing(8)
-                            .padding(20)
+                            .font(.nohemiReading)
+                            .foregroundColor(.nawawi_bodyText)
+                            .lineSpacing(.lineSpacing_relaxed)
+                            .padding(24)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(
                                 RoundedRectangle(cornerRadius: 16)
