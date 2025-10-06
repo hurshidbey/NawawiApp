@@ -31,6 +31,7 @@ class HadithDataManager: ObservableObject {
     }
 
     func loadHadiths(book: HadithBook = .nawawi40) {
+        print("🚀 loadHadiths() called for: \(book.displayName)")
         isLoading = true
         error = nil
         currentBook = book
