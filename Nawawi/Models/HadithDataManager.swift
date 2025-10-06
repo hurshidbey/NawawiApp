@@ -39,6 +39,9 @@ class HadithDataManager: ObservableObject {
             guard let self = self else { return }
 
             do {
+                // TEMPORARILY DISABLE CACHE to ensure fresh decode
+                // TODO: Re-enable after fixing decoder issue
+                /*
                 // Check cache first
                 let cacheKey = book.fileName as NSString
                 if let cachedData = self.cache.object(forKey: cacheKey) as Data? {
@@ -52,6 +55,7 @@ class HadithDataManager: ObservableObject {
                     }
                     return
                 }
+                */
 
                 // Load from bundle
                 let resourceName = book.fileName.replacingOccurrences(of: ".json", with: "")
@@ -60,13 +64,16 @@ class HadithDataManager: ObservableObject {
                 }
 
                 let data = try Data(contentsOf: url)
-                print("📖 Loading \(book.displayName): File size = \(data.count) bytes")
+                print("📖 Loading \(book.displayName): File size = \(String(format: "%.2f", Double(data.count) / 1024.0 / 1024.0)) MB")
 
+                let startTime = Date()
                 let decoded = try JSONDecoder().decode([Hadith].self, from: data)
-                print("✅ Successfully decoded \(decoded.count) hadiths from \(book.displayName)")
+                let decodeTime = Date().timeIntervalSince(startTime)
+                print("✅ Successfully decoded \(decoded.count) hadiths from \(book.displayName) in \(String(format: "%.2f", decodeTime))s")
 
-                // Cache the data
-                self.cache.setObject(data as NSData, forKey: cacheKey)
+                // Cache the data (disabled for now)
+                // let cacheKey = book.fileName as NSString
+                // self.cache.setObject(data as NSData, forKey: cacheKey)
 
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
