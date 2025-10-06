@@ -71,6 +71,23 @@ struct Hadith: Codable, Identifiable {
         chapter = try container.decodeIfPresent(ChapterInfo.self, forKey: .chapter)
     }
 
+    // Custom encoder to always use "globalId" when encoding
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(number, forKey: .number)
+        try container.encodeIfPresent(globalId, forKey: .globalId)
+        try container.encodeIfPresent(idInBook, forKey: .idInBook)
+        try container.encode(arabicText, forKey: .arabicText)
+        try container.encode(englishTranslation, forKey: .englishTranslation)
+        try container.encodeIfPresent(uzbekTranslation, forKey: .uzbekTranslation)
+        try container.encode(narrator, forKey: .narrator)
+        try container.encodeIfPresent(bookId, forKey: .bookId)
+        try container.encodeIfPresent(chapterId, forKey: .chapterId)
+        try container.encodeIfPresent(book, forKey: .book)
+        try container.encodeIfPresent(chapter, forKey: .chapter)
+    }
+
     // Alternative coding keys for backwards compatibility
     private enum AlternativeCodingKeys: String, CodingKey {
         case id

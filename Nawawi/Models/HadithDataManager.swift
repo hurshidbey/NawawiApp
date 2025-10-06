@@ -60,7 +60,10 @@ class HadithDataManager: ObservableObject {
                 }
 
                 let data = try Data(contentsOf: url)
+                print("📖 Loading \(book.displayName): File size = \(data.count) bytes")
+
                 let decoded = try JSONDecoder().decode([Hadith].self, from: data)
+                print("✅ Successfully decoded \(decoded.count) hadiths from \(book.displayName)")
 
                 // Cache the data
                 self.cache.setObject(data as NSData, forKey: cacheKey)
@@ -77,7 +80,22 @@ class HadithDataManager: ObservableObject {
                     guard let self = self else { return }
                     self.error = error
                     self.isLoading = false
-                    print("Error loading hadiths from \(book.displayName): \(error)")
+                    print("❌ Error loading hadiths from \(book.displayName): \(error)")
+                    print("   Error details: \(error.localizedDescription)")
+                    if let decodingError = error as? DecodingError {
+                        switch decodingError {
+                        case .keyNotFound(let key, let context):
+                            print("   Missing key: \(key.stringValue) at path: \(context.codingPath)")
+                        case .typeMismatch(let type, let context):
+                            print("   Type mismatch: expected \(type) at path: \(context.codingPath)")
+                        case .valueNotFound(let type, let context):
+                            print("   Value not found: \(type) at path: \(context.codingPath)")
+                        case .dataCorrupted(let context):
+                            print("   Data corrupted at path: \(context.codingPath)")
+                        @unknown default:
+                            print("   Unknown decoding error")
+                        }
+                    }
                 }
             }
         }
