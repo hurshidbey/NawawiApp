@@ -212,56 +212,58 @@ struct ChapterRow: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                // Chapter number badge
-                Text("\(chapter.id)")
+        HStack(spacing: 12) {
+            // Chapter number badge
+            Text("\(chapter.id)")
+                .font(.caption)
+                .fontWeight(.bold)
+                .foregroundColor(isSelected ? .white : Color.nawawi_darkGreen)
+                .frame(width: 32, height: 32)
+                .background(
+                    Circle()
+                        .fill(isSelected ? Color.nawawi_darkGreen : Color.nawawi_cream)
+                )
+
+            VStack(alignment: .leading, spacing: 4) {
+                // English title
+                Text(chapter.title)
+                    .font(.nohemiBody)
+                    .foregroundColor(isSelected ? .black : .primary)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+
+                // Arabic title
+                Text(chapter.arabicTitle)
                     .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundColor(isSelected ? .white : Color.nawawi_darkGreen)
-                    .frame(width: 32, height: 32)
-                    .background(
-                        Circle()
-                            .fill(isSelected ? Color.nawawi_darkGreen : Color.nawawi_cream)
-                    )
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    // English title
-                    Text(chapter.title)
-                        .font(.nohemiBody)
-                        .foregroundColor(isSelected ? .black : .primary)
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-
-                    // Arabic title
-                    Text(chapter.arabicTitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-
-                    // Hadith count
-                    Text("\(chapter.hadithCount) hadiths")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Color.nawawi_darkGreen)
-                }
+                // Hadith count
+                Text("\(chapter.hadithCount) hadiths")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
             }
-            .padding(12)
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(isSelected ? Color.nawawi_softCream : Color.clear)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(isSelected ? Color.nawawi_darkGreen.opacity(0.3) : Color.clear, lineWidth: 1)
-            )
+
+            Spacer()
+
+            if isSelected {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(Color.nawawi_darkGreen)
+            }
         }
-        .buttonStyle(.plain)
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(isSelected ? Color.nawawi_softCream : Color.clear)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(isSelected ? Color.nawawi_darkGreen.opacity(0.3) : Color.clear, lineWidth: 1)
+        )
+        .onTapGesture {
+            action()
+        }
     }
 }
