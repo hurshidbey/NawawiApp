@@ -480,6 +480,7 @@ struct EnhancedToolbarView: View {
     let filteredCount: Int
     @Binding var currentView: MenuBarView.ViewMode
     @EnvironmentObject var appState: AppState
+    @Environment(\.openWindow) private var openWindow
     let navigateNext: () -> Void
     let navigatePrevious: () -> Void
     let onRandomHadith: () -> Void
@@ -544,8 +545,10 @@ struct EnhancedToolbarView: View {
                         window.makeKeyAndOrderFront(nil)
                         NSApp.activate(ignoringOtherApps: true)
                     } else {
-                        // Create a new window by opening it
-                        DispatchQueue.main.async {
+                        // Use SwiftUI openWindow to create new window
+                        openWindow(id: "main-window")
+                        // Activate after opening
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             NSApp.activate(ignoringOtherApps: true)
                         }
                     }

@@ -56,7 +56,11 @@ struct MainWindowView: View {
                     isVisible: $showChapterNavigator,
                     selectedHadithIndex: $selectedHadithIndex,
                     filterByChapterId: $filterByChapterId,
-                    filteredHadiths: filteredHadiths
+                    filteredHadiths: filteredHadiths,
+                    onChapterSelected: {
+                        // Clear search text when chapter is selected
+                        searchText = ""
+                    }
                 )
                     .environmentObject(dataManager)
                     .environmentObject(appState)
@@ -80,7 +84,15 @@ struct MainWindowView: View {
 
                     HStack {
                         // Book selector
-                        BookSelectorMenu(selectedIndex: $selectedHadithIndex)
+                        BookSelectorMenu(
+                            selectedIndex: $selectedHadithIndex,
+                            onBookChange: {
+                                // Clear all filters when book changes
+                                filterByChapterId = nil
+                                searchText = ""
+                                showingFavoritesOnly = false
+                            }
+                        )
 
                         Divider()
                             .frame(height: 20)
@@ -285,16 +297,45 @@ struct MainWindowView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("OpenHadith"))) { notification in
             if let hadithIndex = notification.userInfo?["hadithIndex"] as? Int {
                 print("📍 MainWindowView: Received OpenHadith notification for index \(hadithIndex)")
+
+                // Clear all filters to ensure the hadith is visible
                 withAnimation {
-                    selectedHadithIndex = hadithIndex
+                    filterByChapterId = nil
+                    searchText = ""
+                    showingFavoritesOnly = false
+
+                    // Set the hadith index
                     appState.currentHadithIndex = hadithIndex
+
+                    // Find the hadith in the now-unfiltered list
+                    if hadithIndex < dataManager.hadiths.count {
+                        let targetHadith = dataManager.hadiths[hadithIndex]
+                        if let filteredIndex = filteredHadiths.firstIndex(where: { $0.number == targetHadith.number }) {
+                            selectedHadithIndex = filteredIndex
+                        }
+                    }
                 }
             }
         }
         .onChange(of: selectedHadithIndex) { _, newIndex in
             if let index = newIndex, index < filteredHadiths.count {
-                appState.currentHadithIndex = index
-                appState.saveCurrentIndex()
+                // Update appState.currentHadithIndex to match the actual hadith number
+                // Find the hadith in the full list by number
+                let selectedHadith = filteredHadiths[index]
+                if let indexInFullList = dataManager.hadiths.firstIndex(where: { $0.number == selectedHadith.number }) {
+                    appState.currentHadithIndex = indexInFullList
+                    appState.saveCurrentIndex()
+                }
+            }
+        }
+        .onChange(of: appState.currentHadithIndex) { _, newIndex in
+            // Sync selectedHadithIndex when appState.currentHadithIndex changes externally
+            guard newIndex < dataManager.hadiths.count else { return }
+            let currentHadith = dataManager.hadiths[newIndex]
+            if let indexInFilteredList = filteredHadiths.firstIndex(where: { $0.number == currentHadith.number }) {
+                if selectedHadithIndex != indexInFilteredList {
+                    selectedHadithIndex = indexInFilteredList
+                }
             }
         }
         .sheet(isPresented: $showSettings) {
@@ -613,7 +654,8 @@ struct HadithDetailView: View {
 
             // Fixed bottom chapter navigation bar (if chapter available)
             if let chapter = hadith.chapter, let chapterId = hadith.chapterId {
-                let chapHadiths = filteredHadiths.filter { $0.chapterId == chapterId }
+                // Get hadiths in this chapter from the FULL list (not filtered list)
+                let chapHadiths = dataManager.hadiths.filter { $0.chapterId == chapterId }
                 let currentIndex = chapHadiths.firstIndex(where: { $0.number == hadith.number }) ?? 0
 
                 VStack(spacing: 0) {
@@ -623,10 +665,15 @@ struct HadithDetailView: View {
                         // Previous in chapter button
                         Button(action: {
                             if currentIndex > 0 {
-                                if let idx = filteredHadiths.firstIndex(where: { $0.number == chapHadiths[currentIndex - 1].number }) {
-                                    withAnimation {
-                                        selectedHadithIndex = idx
-                                        appState.currentHadithIndex = idx
+                                let prevHadith = chapHadiths[currentIndex - 1]
+                                // Find in full list
+                                if let fullListIndex = dataManager.hadiths.firstIndex(where: { $0.number == prevHadith.number }) {
+                                    // Find in filtered list
+                                    if let filteredListIndex = filteredHadiths.firstIndex(where: { $0.number == prevHadith.number }) {
+                                        withAnimation {
+                                            selectedHadithIndex = filteredListIndex
+                                            appState.currentHadithIndex = fullListIndex
+                                        }
                                     }
                                 }
                             }
@@ -667,10 +714,15 @@ struct HadithDetailView: View {
                         // Next in chapter button
                         Button(action: {
                             if currentIndex < chapHadiths.count - 1 {
-                                if let idx = filteredHadiths.firstIndex(where: { $0.number == chapHadiths[currentIndex + 1].number }) {
-                                    withAnimation {
-                                        selectedHadithIndex = idx
-                                        appState.currentHadithIndex = idx
+                                let nextHadith = chapHadiths[currentIndex + 1]
+                                // Find in full list
+                                if let fullListIndex = dataManager.hadiths.firstIndex(where: { $0.number == nextHadith.number }) {
+                                    // Find in filtered list
+                                    if let filteredListIndex = filteredHadiths.firstIndex(where: { $0.number == nextHadith.number }) {
+                                        withAnimation {
+                                            selectedHadithIndex = filteredListIndex
+                                            appState.currentHadithIndex = fullListIndex
+                                        }
                                     }
                                 }
                             }
@@ -739,12 +791,15 @@ struct SettingsWindowView: View {
 struct BookSelectorMenu: View {
     @EnvironmentObject var dataManager: HadithDataManager
     @Binding var selectedIndex: Int?
+    let onBookChange: () -> Void
 
     var body: some View {
         Menu {
             ForEach(HadithBook.allCases) { book in
                 Button(action: {
                     withAnimation {
+                        // Clear filters before changing book
+                        onBookChange()
                         dataManager.loadHadiths(book: book)
                         selectedIndex = 0
                     }

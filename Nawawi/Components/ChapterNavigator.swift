@@ -15,7 +15,9 @@ struct ChapterNavigator: View {
     @Binding var filterByChapterId: Int?
     let filteredHadiths: [Hadith]
     @State private var searchText = ""
-    @State private var selectedChapterId: Int?
+
+    // Callback to clear search text when navigating to chapter
+    let onChapterSelected: () -> Void
 
     // Get unique chapters from current book
     private var chapters: [ChapterGroup] {
@@ -49,12 +51,12 @@ struct ChapterNavigator: View {
         }
     }
 
-    // Get current chapter based on selected hadith
+    // Get current chapter based on currently displayed hadith in filtered list
     private var currentChapterId: Int? {
-        if appState.currentHadithIndex < dataManager.hadiths.count {
-            return dataManager.hadiths[appState.currentHadithIndex].chapterId
-        }
-        return nil
+        guard !filteredHadiths.isEmpty else { return nil }
+        guard let selectedIndex = selectedHadithIndex else { return nil }
+        let safeIndex = min(max(0, selectedIndex), filteredHadiths.count - 1)
+        return filteredHadiths[safeIndex].chapterId
     }
 
     var body: some View {
@@ -133,11 +135,23 @@ struct ChapterNavigator: View {
                                 isSelected: chapter.id == currentChapterId,
                                 action: {
                                     withAnimation {
+                                        // Clear search filter when selecting chapter
+                                        onChapterSelected()
+
                                         // Set chapter filter to show only this chapter's hadiths
                                         filterByChapterId = chapter.id
-                                        // Select first hadith in filtered list (will be index 0)
+
+                                        // Select first hadith in this chapter by finding its number
+                                        // Find first hadith with this chapter ID in the full list
+                                        if let firstHadithInChapter = dataManager.hadiths.first(where: { $0.chapterId == chapter.id }) {
+                                            // Find this hadith's index in the full list
+                                            if let indexInFullList = dataManager.hadiths.firstIndex(where: { $0.number == firstHadithInChapter.number }) {
+                                                appState.currentHadithIndex = indexInFullList
+                                            }
+                                        }
+
+                                        // Set filtered list index to 0 (first in filtered results)
                                         selectedHadithIndex = 0
-                                        appState.currentHadithIndex = 0
                                     }
                                 }
                             )
