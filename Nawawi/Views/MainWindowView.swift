@@ -208,16 +208,34 @@ struct MainWindowView: View {
                         Text("Unable to Load Hadiths")
                             .font(.nohemiHeadline)
                             .foregroundColor(.black)
-                        Text(error.localizedDescription)
-                            .font(.nohemiCaption)
-                            .foregroundColor(.black)
-                            .multilineTextAlignment(.center)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Error: \(error.localizedDescription)")
+                                .font(.nohemiBody)
+                                .foregroundColor(.nawawi_bodyText)
+                                .multilineTextAlignment(.center)
+
+                            Text("Book: \(dataManager.currentBook.displayName)")
+                                .font(.nohemiCaption)
+                                .foregroundColor(.nawawi_captionText)
+
+                            Text("File: \(dataManager.currentBook.fileName)")
+                                .font(.nohemiCaption)
+                                .foregroundColor(.nawawi_captionText)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.nawawi_softCream)
+                        )
+
                         Button("Try Again") {
-                            dataManager.loadHadiths()
+                            dataManager.loadHadiths(book: dataManager.currentBook)
                         }
                         .buttonStyle(.borderedProminent)
                     }
                     .padding()
+                    .frame(maxWidth: 600)
                     Spacer()
                 } else {
                     List(filteredHadiths.indices, id: \.self, selection: $selectedHadithIndex) { index in
