@@ -19,6 +19,13 @@ class HadithDataManager: ObservableObject {
 
     private let cache = NSCache<NSString, NSData>()
 
+    // MARK: - Performance Caches
+    // Hadith number → index lookup for O(1) access
+    private var numberToIndexMap: [Int: Int] = [:]
+
+    // Chapter ID → array of hadiths in that chapter
+    private var chapterCache: [Int: [Hadith]] = [:]
+
     init() {
         loadHadiths(book: currentBook)
     }
@@ -39,6 +46,7 @@ class HadithDataManager: ObservableObject {
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }
                         self.hadiths = decoded
+                        self.rebuildCaches()
                         self.isLoading = false
                         self.lastLoadTime = Date()
                     }
@@ -60,6 +68,7 @@ class HadithDataManager: ObservableObject {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     self.hadiths = decoded
+                    self.rebuildCaches()
                     self.isLoading = false
                     self.lastLoadTime = Date()
                 }
@@ -107,6 +116,45 @@ class HadithDataManager: ObservableObject {
 
     func getRandomHadith() -> Hadith? {
         hadiths.randomElement()
+    }
+
+    // MARK: - Cache Management
+
+    /// Rebuild all performance caches after hadiths change
+    private func rebuildCaches() {
+        // Clear existing caches
+        numberToIndexMap.removeAll(keepingCapacity: true)
+        chapterCache.removeAll(keepingCapacity: true)
+
+        // Build number → index map
+        for (index, hadith) in hadiths.enumerated() {
+            numberToIndexMap[hadith.number] = index
+        }
+
+        // Build chapter cache
+        for hadith in hadiths {
+            if let chapterId = hadith.chapterId {
+                chapterCache[chapterId, default: []].append(hadith)
+            }
+        }
+    }
+
+    // MARK: - High-Performance Lookups
+
+    /// Get index for hadith number in O(1) time
+    func indexForHadithNumber(_ number: Int) -> Int? {
+        return numberToIndexMap[number]
+    }
+
+    /// Get all hadiths in a chapter in O(1) time
+    func hadithsInChapter(_ chapterId: Int) -> [Hadith] {
+        return chapterCache[chapterId] ?? []
+    }
+
+    /// Find hadith number's index in a filtered list
+    func indexInFilteredList(_ hadithNumber: Int, filteredHadiths: [Hadith]) -> Int? {
+        // For small filtered lists, linear search is fast enough
+        return filteredHadiths.firstIndex(where: { $0.number == hadithNumber })
     }
 
     func exportHadith(_ hadith: Hadith, format: ExportFormat) -> String {

@@ -134,24 +134,26 @@ struct ChapterNavigator: View {
                                 chapter: chapter,
                                 isSelected: chapter.id == currentChapterId,
                                 action: {
+                                    // Clear search filter when selecting chapter
+                                    onChapterSelected()
+
+                                    // OPTIMIZED: Use cached chapter hadiths - O(1) lookup instead of O(n)
+                                    let chapHadiths = dataManager.hadithsInChapter(chapter.id)
+
+                                    // Get first hadith in chapter
+                                    guard let firstHadith = chapHadiths.first else { return }
+
+                                    // OPTIMIZED: Use cached index lookup - O(1) instead of O(n)
+                                    guard let fullListIndex = dataManager.indexForHadithNumber(firstHadith.number) else { return }
+
+                                    // Set indices outside animation block for instant response
+                                    appState.currentHadithIndex = fullListIndex
+                                    filterByChapterId = chapter.id
+                                    selectedHadithIndex = 0
+
+                                    // Only animate the visual update
                                     withAnimation {
-                                        // Clear search filter when selecting chapter
-                                        onChapterSelected()
-
-                                        // Set chapter filter to show only this chapter's hadiths
-                                        filterByChapterId = chapter.id
-
-                                        // Select first hadith in this chapter by finding its number
-                                        // Find first hadith with this chapter ID in the full list
-                                        if let firstHadithInChapter = dataManager.hadiths.first(where: { $0.chapterId == chapter.id }) {
-                                            // Find this hadith's index in the full list
-                                            if let indexInFullList = dataManager.hadiths.firstIndex(where: { $0.number == firstHadithInChapter.number }) {
-                                                appState.currentHadithIndex = indexInFullList
-                                            }
-                                        }
-
-                                        // Set filtered list index to 0 (first in filtered results)
-                                        selectedHadithIndex = 0
+                                        // Trigger view refresh
                                     }
                                 }
                             )

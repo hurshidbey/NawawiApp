@@ -298,41 +298,49 @@ struct MainWindowView: View {
             if let hadithIndex = notification.userInfo?["hadithIndex"] as? Int {
                 print("📍 MainWindowView: Received OpenHadith notification for index \(hadithIndex)")
 
-                // Clear all filters to ensure the hadith is visible
-                withAnimation {
-                    filterByChapterId = nil
-                    searchText = ""
-                    showingFavoritesOnly = false
+                // Clear all filters to ensure the hadith is visible (outside animation)
+                filterByChapterId = nil
+                searchText = ""
+                showingFavoritesOnly = false
 
-                    // Set the hadith index
-                    appState.currentHadithIndex = hadithIndex
+                // Set the hadith index
+                appState.currentHadithIndex = hadithIndex
 
-                    // Find the hadith in the now-unfiltered list
-                    if hadithIndex < dataManager.hadiths.count {
-                        let targetHadith = dataManager.hadiths[hadithIndex]
-                        if let filteredIndex = filteredHadiths.firstIndex(where: { $0.number == targetHadith.number }) {
-                            selectedHadithIndex = filteredIndex
-                        }
+                // OPTIMIZED: Use dataManager helper for filtered list search
+                if hadithIndex < dataManager.hadiths.count {
+                    let targetHadith = dataManager.hadiths[hadithIndex]
+                    if let filteredIndex = dataManager.indexInFilteredList(targetHadith.number, filteredHadiths: filteredHadiths) {
+                        selectedHadithIndex = filteredIndex
                     }
                 }
             }
         }
-        .onChange(of: selectedHadithIndex) { _, newIndex in
+        .onChange(of: selectedHadithIndex) { oldValue, newIndex in
+            // Guard to prevent circular updates
+            guard oldValue != newIndex else { return }
+
             if let index = newIndex, index < filteredHadiths.count {
-                // Update appState.currentHadithIndex to match the actual hadith number
-                // Find the hadith in the full list by number
+                // OPTIMIZED: Use cached index lookup - O(1) instead of O(n)
                 let selectedHadith = filteredHadiths[index]
-                if let indexInFullList = dataManager.hadiths.firstIndex(where: { $0.number == selectedHadith.number }) {
-                    appState.currentHadithIndex = indexInFullList
-                    appState.saveCurrentIndex()
+                if let indexInFullList = dataManager.indexForHadithNumber(selectedHadith.number) {
+                    // Only update if different to prevent cascading
+                    if appState.currentHadithIndex != indexInFullList {
+                        appState.currentHadithIndex = indexInFullList
+                        appState.saveCurrentIndex()
+                    }
                 }
             }
         }
-        .onChange(of: appState.currentHadithIndex) { _, newIndex in
-            // Sync selectedHadithIndex when appState.currentHadithIndex changes externally
+        .onChange(of: appState.currentHadithIndex) { oldValue, newIndex in
+            // Guard to prevent circular updates
+            guard oldValue != newIndex else { return }
             guard newIndex < dataManager.hadiths.count else { return }
+
+            // OPTIMIZED: Direct array access instead of search
             let currentHadith = dataManager.hadiths[newIndex]
-            if let indexInFilteredList = filteredHadiths.firstIndex(where: { $0.number == currentHadith.number }) {
+
+            // OPTIMIZED: Use dataManager helper for filtered list search
+            if let indexInFilteredList = dataManager.indexInFilteredList(currentHadith.number, filteredHadiths: filteredHadiths) {
                 if selectedHadithIndex != indexInFilteredList {
                     selectedHadithIndex = indexInFilteredList
                 }
@@ -500,7 +508,8 @@ struct HadithDetailView: View {
 
                             // Position in chapter
                             if let chapterId = hadith.chapterId {
-                                let hadiths = dataManager.hadiths.filter { $0.chapterId == chapterId }
+                                // OPTIMIZED: Use cached chapter hadiths
+                                let hadiths = dataManager.hadithsInChapter(chapterId)
                                 let positionInChapter = hadiths.firstIndex(where: { $0.number == hadith.number }).map { $0 + 1 } ?? 0
 
                                 Text("Hadith \(positionInChapter) of \(hadiths.count) in this chapter")
@@ -654,8 +663,8 @@ struct HadithDetailView: View {
 
             // Fixed bottom chapter navigation bar (if chapter available)
             if let chapter = hadith.chapter, let chapterId = hadith.chapterId {
-                // Get hadiths in this chapter from the FULL list (not filtered list)
-                let chapHadiths = dataManager.hadiths.filter { $0.chapterId == chapterId }
+                // OPTIMIZED: Use cached chapter hadiths - O(1) lookup instead of O(n) filter
+                let chapHadiths = dataManager.hadithsInChapter(chapterId)
                 let currentIndex = chapHadiths.firstIndex(where: { $0.number == hadith.number }) ?? 0
 
                 VStack(spacing: 0) {
@@ -666,15 +675,16 @@ struct HadithDetailView: View {
                         Button(action: {
                             if currentIndex > 0 {
                                 let prevHadith = chapHadiths[currentIndex - 1]
-                                // Find in full list
-                                if let fullListIndex = dataManager.hadiths.firstIndex(where: { $0.number == prevHadith.number }) {
-                                    // Find in filtered list
-                                    if let filteredListIndex = filteredHadiths.firstIndex(where: { $0.number == prevHadith.number }) {
-                                        withAnimation {
-                                            selectedHadithIndex = filteredListIndex
-                                            appState.currentHadithIndex = fullListIndex
-                                        }
-                                    }
+
+                                // OPTIMIZED: Use cached index lookup - O(1) instead of O(n)
+                                guard let fullListIndex = dataManager.indexForHadithNumber(prevHadith.number) else { return }
+
+                                // OPTIMIZED: Use dataManager helper for filtered search
+                                guard let filteredListIndex = dataManager.indexInFilteredList(prevHadith.number, filteredHadiths: filteredHadiths) else { return }
+
+                                withAnimation {
+                                    selectedHadithIndex = filteredListIndex
+                                    appState.currentHadithIndex = fullListIndex
                                 }
                             }
                         }) {
@@ -715,15 +725,16 @@ struct HadithDetailView: View {
                         Button(action: {
                             if currentIndex < chapHadiths.count - 1 {
                                 let nextHadith = chapHadiths[currentIndex + 1]
-                                // Find in full list
-                                if let fullListIndex = dataManager.hadiths.firstIndex(where: { $0.number == nextHadith.number }) {
-                                    // Find in filtered list
-                                    if let filteredListIndex = filteredHadiths.firstIndex(where: { $0.number == nextHadith.number }) {
-                                        withAnimation {
-                                            selectedHadithIndex = filteredListIndex
-                                            appState.currentHadithIndex = fullListIndex
-                                        }
-                                    }
+
+                                // OPTIMIZED: Use cached index lookup - O(1) instead of O(n)
+                                guard let fullListIndex = dataManager.indexForHadithNumber(nextHadith.number) else { return }
+
+                                // OPTIMIZED: Use dataManager helper for filtered search
+                                guard let filteredListIndex = dataManager.indexInFilteredList(nextHadith.number, filteredHadiths: filteredHadiths) else { return }
+
+                                withAnimation {
+                                    selectedHadithIndex = filteredListIndex
+                                    appState.currentHadithIndex = fullListIndex
                                 }
                             }
                         }) {
